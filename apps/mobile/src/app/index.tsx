@@ -1,9 +1,10 @@
 import { Redirect } from 'expo-router';
 import { useStore } from 'zustand';
 
-import { settingsStore } from '../state/native';
+import { useReminderStores } from '../state/useClock';
 
 export default function EntryRoute() {
-  const setupDone = useStore(settingsStore, ({ value }) => value.setupDone);
+  const { settings } = useReminderStores();
+  const setupDone = useStore(settings, ({ value }) => value.setupDone);
   return <Redirect href={setupDone ? '/today' : '/setup'} />;
 }

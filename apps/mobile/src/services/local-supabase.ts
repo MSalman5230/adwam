@@ -1,10 +1,16 @@
 import 'react-native-url-polyfill/auto';
 import { createClient } from '@supabase/supabase-js';
 
-import { sessionStorage } from '../state/native';
+import { clearSessionStorage, sessionStorage } from '../state/native';
 
 type Connection = 'connected' | 'failed';
 let connection: Promise<Connection> | undefined;
+
+export async function resetLocalSupabaseSession() {
+  await connection;
+  clearSessionStorage();
+  connection = undefined;
+}
 
 export function checkLocalSupabase(): Promise<Connection> | undefined {
   const url = process.env.EXPO_PUBLIC_SUPABASE_URL;

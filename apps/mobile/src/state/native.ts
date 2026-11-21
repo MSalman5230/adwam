@@ -12,7 +12,11 @@ function asStorage(mmkv: MMKV) {
 
 const saved = asStorage(createMMKV({ id: 'adwam-saved' }));
 // Android's backup plugin excludes this store and its CRC file.
-export const sessionStorage = asStorage(createMMKV({ id: 'adwam-session' }));
+const session = createMMKV({ id: 'adwam-session' });
+export const sessionStorage = asStorage(session);
+export function clearSessionStorage() {
+  session.clearAll();
+}
 
 export const deviceStores = createSavedStores(saved);
 export const { settings: settingsStore, trackers: trackersStore, serverCache: serverCacheStore } = deviceStores;
