@@ -60,7 +60,9 @@ export function ListRow({ title, subtitle, icon, end, serif, onPress }: {
 
 type RadioProps = { title: string; subtitle?: string; selected: boolean; disabled?: boolean; onPress: () => void };
 
-function RadioChoice({ title, subtitle, selected, disabled, onPress, framed, detail }: RadioProps & { framed: boolean; detail?: string }) {
+function RadioChoice({ title, subtitle, selected, disabled, onPress, framed, detail, detailIcon }: RadioProps & {
+  framed: boolean; detail?: string; detailIcon?: IconName;
+}) {
   const { palette } = useTheme();
   return (
     <Pressable
@@ -72,7 +74,7 @@ function RadioChoice({ title, subtitle, selected, disabled, onPress, framed, det
         styles.radioChoice,
         framed ? styles.radioCard : styles.optionRow,
         {
-          borderColor: selected && framed ? palette.green : palette.hair,
+          borderColor: selected && framed ? 'transparent' : palette.hair,
           backgroundColor: framed ? selected ? palette.sage : palette.surface : 'transparent',
           opacity: disabled ? 0.45 : 1,
         },
@@ -82,15 +84,18 @@ function RadioChoice({ title, subtitle, selected, disabled, onPress, framed, det
         {selected && <View style={[styles.dot, { backgroundColor: palette.green }]} />}
       </View>
       <View style={styles.grow}>
-        <Text style={[typography.listTitle, { color: palette.ink }]}>{title}</Text>
+        <Text style={[framed ? typography.cardTitle : typography.listTitle, { color: framed && selected ? palette.onSage : palette.ink }]}>{title}</Text>
         {subtitle && <Text style={[typography.supporting, { color: palette.ink2 }]}>{subtitle}</Text>}
-        {detail && <Text style={[typography.caption, { color: palette.green }]}>{detail}</Text>}
+        {detail && <View style={styles.radioDetail}>
+          {detailIcon && <Icon name={detailIcon} color={palette.gold} size={16} />}
+          <Text style={[typography.sectionAside, styles.radioDetailText, { color: palette.gold }]}>{detail}</Text>
+        </View>}
       </View>
     </Pressable>
   );
 }
 
-export function RadioCard(props: RadioProps & { detail?: string }) {
+export function RadioCard(props: RadioProps & { detail?: string; detailIcon?: IconName }) {
   return <RadioChoice {...props} framed />;
 }
 
@@ -133,6 +138,8 @@ export function Banner({ title, body, onPress }: { title: string; body?: string;
 }
 
 const styles = StyleSheet.create({
+  radioDetail: { marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 5 },
+  radioDetailText: { flexShrink: 1, lineHeight: 17 },
   grow: { flex: 1, minWidth: 0 },
   card: { borderWidth: 1, borderRadius: 16 },
   cardTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },

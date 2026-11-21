@@ -1,3 +1,5 @@
+export const brandCrescent = '#D9B66E';
+
 export const colors = {
   light: {
     paper: '#F6F1E7', paper2: '#EFE8DA', surface: '#FFFDF8', hair: '#E3DACB', hair2: '#D3C8B3',
