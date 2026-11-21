@@ -176,6 +176,16 @@ Details:
 
 The agent sets up these commands in milestone 0. Then on real phones, test a preview build that uses the staging server.
 
+### Android setup flow
+
+Run this against the development app on an English-language emulator. The flow resets Adwam’s runtime permissions and uses Developer tools to restart setup between paths.
+
+```sh
+maestro test -e APP_ID=com.msalman5230.adwam.dev apps/mobile/.maestro/setup.yaml
+```
+
+For a development build, connect to Metro from the development launcher once before running the flow. For an installed preview build, use `-e APP_ID=com.msalman5230.adwam.preview`.
+
 ## Instructions for the building agent
 
 `AGENTS.md` at the repository root holds the few rules an agent can't work out from the code or [plan.md](plan.md), and links to the Expo and Supabase documentation. Keep it short: anything an agent would do anyway doesn't belong there.

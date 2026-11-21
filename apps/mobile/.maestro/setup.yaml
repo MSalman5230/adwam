@@ -1,0 +1,65 @@
+appId: ${APP_ID}
+name: Setup paths on Android
+---
+- runFlow: setup/start.yaml
+- tapOn: Use my location
+- tapOn:
+    id: '.*:id/permission_deny_button'
+- assertVisible: Choose your city
+- runFlow: setup/pick-london.yaml
+- tapOn: '\+1'
+- pressKey: Back
+- assertVisible: 'Where are you\?'
+- tapOn: Pick a city
+- runFlow: setup/pick-london.yaml
+- tapOn: Continue
+- assertVisible: Choose your reminders
+- tapOn: In-app only
+- tapOn: Continue
+- assertVisible: Today
+- assertNotVisible: 'Allow notifications\?'
+
+- runFlow: setup/start.yaml
+- runFlow: setup/place-and-date.yaml
+- tapOn: Let me choose
+- tapOn: Continue
+- assertVisible: 'Allow notifications\?'
+- tapOn: Not now
+- assertVisible: Each reminder can push.*
+- tapOn: Done
+- assertVisible: Today
+
+- runFlow: setup/start.yaml
+- runFlow: setup/place-and-date.yaml
+- tapOn: Continue
+- assertVisible: 'Allow notifications\?'
+- tapOn: Continue
+- tapOn:
+    id: '.*:id/permission_allow_button'
+- assertVisible: Today
+
+- runFlow: setup/start.yaml
+- runFlow: setup/place-and-date.yaml
+- tapOn: Continue
+- assertVisible: 'Allow notifications\?'
+- tapOn: Continue
+- tapOn:
+    id: '.*:id/permission_deny_button'
+- assertVisible: Today
+
+- runFlow: setup/start.yaml
+- runFlow: setup/place-and-date.yaml
+- tapOn: Continue
+- assertVisible: 'Allow notifications\?'
+- tapOn: Not now
+- assertVisible: Today
+
+- runFlow: setup/start.yaml
+- setLocation:
+    latitude: 49.2497
+    longitude: -123.1193
+- tapOn: Use my location
+- tapOn:
+    id: '.*:id/permission_allow_foreground_only_button'
+- assertVisible: Check your Hijri date
+- assertVisible: '.* · Vancouver'

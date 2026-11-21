@@ -60,9 +60,10 @@ if (import.meta.main) {
     const data = await checkedContent(process.argv.includes('--release'));
     const content = selectContent(data, includeReview);
     const dist = new URL('dist/', contentRoot);
+    const filename = process.argv.includes('--mobile') ? 'mobile-content.json' : 'content.json';
     await mkdir(dist, { recursive: true });
     await Promise.all([
-      writeFile(new URL('content.json', dist), JSON.stringify(content) + '\n'),
+      writeFile(new URL(filename, dist), JSON.stringify(content) + '\n'),
       writeFile(
         new URL('schema.json', dist),
         JSON.stringify(z.toJSONSchema(schema), null, 2) + '\n',

@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+- launchApp:
+    permissions:
+      all: unset
+- extendedWaitUntil:
+    visible: 'Where are you\?|Today'
+    timeout: 45000
+- runFlow:
+    when:
+      visible: Today
+    commands:
+      - tapOn: Settings
+      - tapOn: Developer tools
+      - tapOn: Show setup again
+- assertVisible: 'Where are you\?'
