@@ -25,6 +25,9 @@ it('registers the permanent Android channels and background notification actions
     expect(categories.get(notificationCategory(['done', 'later'])!)).toEqual([
       { identifier: 'done', buttonTitle: 'Done', options: { opensAppToForeground: false } }, later,
     ]);
+    expect(categories.get(notificationCategory(['done'])!)).toEqual([
+      { identifier: 'done', buttonTitle: 'Done', options: { opensAppToForeground: false } },
+    ]);
     expect(notificationCategory([])).toBeUndefined();
   } finally {
     platform.restore();
