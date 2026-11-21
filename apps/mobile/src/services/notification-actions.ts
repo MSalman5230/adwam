@@ -1,7 +1,7 @@
 import catalog from '@adwam/content/catalog';
 import { laterFor } from '@adwam/core';
 import {
-  dismissNotificationAsync, getAllScheduledNotificationsAsync, type NotificationResponse,
+  dismissNotificationAsync, getAllScheduledNotificationsAsync, type NotificationContent, type NotificationResponse,
 } from 'expo-notifications';
 
 import { deviceStores } from '../state/native';
@@ -12,11 +12,23 @@ import { syncSchedule } from './notification-schedule';
 
 const active = new Map<string, Promise<boolean>>();
 
+function actionData(content: NotificationContent): Record<string, unknown> | undefined {
+  if (content.data) return content.data;
+  // The Android task receives the original bundle; foreground responses are mapped by Expo.
+  if (!('dataString' in content) || typeof content.dataString !== 'string') return;
+  try {
+    const data: unknown = JSON.parse(content.dataString);
+    if (data && typeof data === 'object' && !Array.isArray(data)) return data as Record<string, unknown>;
+  } catch {
+    return;
+  }
+}
+
 export function handleReminderAction(response: NotificationResponse): Promise<boolean> {
   const { actionIdentifier, notification } = response;
   if (actionIdentifier !== 'done' && actionIdentifier !== 'later') return Promise.resolve(false);
   const { identifier, content, trigger } = notification.request;
-  const data = content.data;
+  const data = actionData(content);
   if (!identifier || (trigger && 'type' in trigger && trigger.type === 'push') || data?.kind !== calendarNotification) {
     return Promise.resolve(false);
   }
