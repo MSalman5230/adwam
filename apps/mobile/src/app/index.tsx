@@ -41,6 +41,9 @@ export default function HomeScreen() {
           <Link href="/debug/clock" style={[typography.button, styles.tagline, { color: palette.green }]}>
             {t('developerTools.dateAndTime')}
           </Link>
+          <Link href="/debug/components" style={[typography.button, styles.tagline, { color: palette.green }]}>
+            {t('developerTools.componentGallery')}
+          </Link>
         </>
       )}
     </View>
