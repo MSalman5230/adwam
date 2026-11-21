@@ -4,12 +4,14 @@ import { AppState } from 'react-native';
 import { deviceStores } from '../state/native';
 import { registerNotificationActionTask } from './notification-action-task';
 import { syncSchedule } from './notification-schedule';
+import { registerReminderMaintenance } from './reminder-maintenance-task';
 
 export function useNotificationLifecycle() {
   useEffect(() => {
     const refresh = () => { void syncSchedule(); };
     const onForeground = () => {
       void registerNotificationActionTask().catch(() => {});
+      void registerReminderMaintenance().catch(() => {});
       refresh();
     };
     const changed = ({ value }: { value: unknown }, previous: { value: unknown }) => {
