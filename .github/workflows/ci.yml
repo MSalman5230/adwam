@@ -36,6 +36,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm server:prepare
       - name: Start local Supabase
         run: pnpm db:start > /dev/null
       - run: pnpm db:test
