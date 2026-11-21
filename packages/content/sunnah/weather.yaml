@@ -10,6 +10,7 @@
   pushNote: A push only for the first rain after about 7 dry days.
   evidence:
     - bukhari-1032
+    - muslim-898
   duas:
     - rain-beneficial
   occurrences:
@@ -88,6 +89,7 @@
       Prophet ﷺ.
   evidence:
     - adab-723
+    - malik-56-26
   duas:
     - thunder
   occurrences:
@@ -111,6 +113,8 @@
   pushNote: A push for gusts above about 75 km/h.
   evidence:
     - muslim-899b
+    - abudawud-5097
+    - abudawud-5099
   duas:
     - wind
   occurrences:
@@ -139,7 +143,8 @@
   notes:
     - Some scholars tie the prayer to seeing the eclipse. The phone calculates the visible
       window for your location.
-  evidence: []
+  evidence:
+    - bukhari-1044
   duas: []
   occurrences:
     - on:

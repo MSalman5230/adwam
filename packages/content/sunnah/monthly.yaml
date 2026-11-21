@@ -37,7 +37,9 @@
   when: The 13th, 14th and 15th of each Hijri month. In Dhul-Ḥijjah the 13th is a Tashrīq
     day, so the 14th, the 15th and one other day.
   pushNote: A push on the evening of the 12th.
-  evidence: []
+  evidence:
+    - nasai-2424
+    - muslim-1160
   duas: []
   rules:
     - tracker-white-days

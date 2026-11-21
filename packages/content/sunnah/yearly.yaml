@@ -10,7 +10,8 @@
   notes:
     - Some jurists encourage extra voluntary fasts in these months. The report that
       specifically calls for it is graded weak.
-  evidence: []
+  evidence:
+    - abudawud-2428
   duas: []
   occurrences:
     - key: sacred-months
@@ -38,7 +39,8 @@
   what:
     - Fast often. It is the best month for voluntary fasting after Ramadan.
   when: All of Muḥarram.
-  evidence: []
+  evidence:
+    - muslim-1163a
   duas: []
   occurrences:
     - key: muharram
@@ -66,7 +68,9 @@
   pushNote: Pushes on the evenings of the 8th and 9th.
   notes:
     - If the 9th is missed, some jurists accept pairing the 10th with the 11th.
-  evidence: []
+  evidence:
+    - muslim-1162b
+    - muslim-1134a
   duas: []
   occurrences:
     - key: plan
@@ -117,7 +121,9 @@
   pushNote: A push on 1 Shaʿbān.
   notes:
     - The make-up fasts are obligatory.
-  evidence: []
+  evidence:
+    - bukhari-1969
+    - bukhari-1950
   duas: []
   occurrences:
     - key: season
@@ -161,7 +167,12 @@
       dates, then water.
     - Offer ifṭār to someone fasting. Read more Qurʾan and give more charity.
   when: "Every day of Ramadan: a suḥūr card before Fajr and an ifṭār card at Maghrib."
-  evidence: []
+  evidence:
+    - bukhari-1923
+    - bukhari-1957
+    - abudawud-2356
+    - tirmidhi-807
+    - bukhari-6
   duas: []
   occurrences:
     - key: season
@@ -226,6 +237,10 @@
       so the app treats all ten the same.
   evidence:
     - tirmidhi-3513
+    - bukhari-2017
+    - bukhari-2021
+    - bukhari-2024
+    - bukhari-2026
   duas:
     - laylat-al-qadr
   occurrences:
@@ -289,7 +304,8 @@
     - Pay zakāt al-fiṭr before the Eid prayer. It is obligatory for those who qualify.
   when: From 27 Ramadan until the Eid prayer.
   pushNote: A push around 27 Ramadan.
-  evidence: []
+  evidence:
+    - bukhari-1503
   duas: []
   occurrences:
     - on:
@@ -365,7 +381,11 @@
     - Walk if practical and return by a different route. No fasting today.
   when: 1 Shawwāl, Eid morning.
   pushNote: A push after Fajr.
-  evidence: []
+  evidence:
+    - urn-504320
+    - bukhari-953
+    - tirmidhi-530
+    - bukhari-986
   duas: []
   occurrences:
     - on:
@@ -400,7 +420,8 @@
   pushNote: A push on 2 Shawwāl. Reminders stop once you log six.
   notes:
     - Scholars differ on whether Ramadan make-up fasts must come first.
-  evidence: []
+  evidence:
+    - muslim-1164a
   duas: []
   rules:
     - tracker-shawwal
@@ -446,7 +467,8 @@
   pushNote: A push on the morning of the 29th, only if you answered Yes to the uḍḥiyah question.
   notes:
     - Schools differ on whether this is binding or recommended.
-  evidence: []
+  evidence:
+    - muslim-1977g
   duas: []
   rules:
     - requires-udhiyah
@@ -504,7 +526,9 @@
     - Days 1 to 9 are open for voluntary fasting.
   when: 1 to 10 Dhul-Ḥijjah, as a banner.
   pushNote: A push on 1 Dhul-Ḥijjah.
-  evidence: []
+  evidence:
+    - bukhari-13-18
+    - abudawud-14-125
   duas: []
   occurrences:
     - key: season
@@ -549,7 +573,10 @@
     - Make long duʿāʾ, especially in the afternoon. Pilgrims at ʿArafah do not fast.
   when: 9 Dhul-Ḥijjah.
   pushNote: A push on the evening of the 8th for the fast, and mid-afternoon on the 9th for duʿāʾ.
-  evidence: []
+  evidence:
+    - muslim-1162b
+    - tirmidhi-3585
+    - bukhari-1988
   duas: []
   occurrences:
     - key: fast
@@ -608,7 +635,10 @@
     - Offer the uḍḥiyah after the prayer, then eat from it and share it.
   when: 10 Dhul-Ḥijjah, Eid morning.
   pushNote: A push after Fajr.
-  evidence: []
+  evidence:
+    - tirmidhi-542
+    - bukhari-5546
+    - bukhari-5569
   duas: []
   occurrences:
     - on:
@@ -642,7 +672,8 @@
       13th. Timings vary by school.
     - 11 to 13 Dhul-Ḥijjah are the Tashrīq days of eating, drinking and remembering Allah.
   when: Fajr 9 Dhul-Ḥijjah to ʿAṣr 13 Dhul-Ḥijjah.
-  evidence: []
+  evidence:
+    - muslim-1141b
   duas: []
   occurrences:
     - key: days
@@ -701,7 +732,8 @@
     - Log each one here. At zero, this card leaves Today.
   when: All through Shaʿbān, and on the Shawwāl card.
   hidden: true
-  evidence: []
+  evidence:
+    - bukhari-1950
   duas: []
   rules:
     - tracker-makeup
