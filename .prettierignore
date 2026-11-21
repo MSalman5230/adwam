@@ -1,0 +1,8 @@
+pnpm-lock.yaml
+docs/mobile-app-ui.html
+**/.expo/
+**/android/
+**/ios/
+**/dist/
+coverage/
+supabase/functions/_shared/
