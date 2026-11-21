@@ -3,8 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "test": "vitest run --passWithNoTests",
+    "build": "tsup src/index.ts --format esm --platform neutral --dts --clean",
+    "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "adhan": "4.4.6",
+    "astronomy-engine": "2.1.19"
+  },
+  "devDependencies": {
+    "tsup": "9.0.0"
   }
 }
