@@ -20,6 +20,7 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm server:prepare
       - run: pnpm check
       - run: pnpm --filter @adwam/content calendar --check
       - run: pnpm --filter @adwam/mobile check:routes

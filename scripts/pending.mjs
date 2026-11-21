@@ -1,5 +1,4 @@
 const milestones = {
-  'server:prepare': 'M5.5',
   'server:test': 'M5.11',
   'server:tick': 'M5.11',
   'server:simulate-rain': 'M5.11',
