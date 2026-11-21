@@ -454,6 +454,8 @@
       "search": "Search cities",
       "useCurrent": "Use my current location",
       "updates": "Updates each time the app opens",
+      "locating": "Finding your city…",
+      "unavailable": "Your location is unavailable. Choose a city to continue.",
       "empty": "No match. Try another spelling."
     },
     "prayer": {
@@ -502,6 +504,7 @@
       "accepted": "Accepted corrections",
       "noCorrections": "No accepted corrections.",
       "row": "{{month, hijriMonth}} {{year}} · {{region}}",
+      "savedCorrection": "{{month, hijriMonth}} {{year}}",
       "starts": "Starts {{date, longDate}}"
     },
     "quiet": {

@@ -35,6 +35,11 @@ const methods = {
   () => ReturnType<typeof CalculationMethod.Other>
 >;
 
+export function prayerMethodAngles(method: PrayerMethod) {
+  const { fajrAngle, ishaAngle, ishaInterval } = methods[method]();
+  return { fajr: fajrAngle, isha: ishaAngle, minutes: ishaInterval };
+}
+
 export type Jumuah = Readonly<
   { mode: 'dhuhr' } | { mode: 'fixed'; minutes: number }
 >;

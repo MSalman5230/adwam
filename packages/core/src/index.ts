@@ -21,7 +21,7 @@ export {
 export type { CivilDate, CivilTime, DateParts, ZonedParts } from './civil';
 export { hijriMonthStart, hijriOf } from './hijri';
 export type { HijriCorrection, HijriDate, HijriMethod, HijriSettings } from './hijri';
-export { dailyAnchors, prayerTimes } from './prayer';
+export { dailyAnchors, prayerMethodAngles, prayerTimes } from './prayer';
 export type { Jumuah, PrayerAnchor, PrayerSettings, PrayerTimes } from './prayer';
 export { day, effectiveHijri } from './day';
 export type { Day, DaySettings } from './day';

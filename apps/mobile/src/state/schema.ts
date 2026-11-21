@@ -21,7 +21,7 @@ export const locationSchema = z.object({
   countryCode: z.string().regex(/^[A-Z]{2}$/), timeZone: z.string().min(1),
 });
 
-const prayerMethods = [
+export const prayerMethods = [
   'mwl', 'isna', 'egypt', 'makkah', 'karachi', 'turkey', 'singapore', 'dubai', 'kuwait', 'qatar', 'moonsighting',
 ] as const;
 const prayer = z.object({

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { ListRow } from '../components/cards';
@@ -9,7 +9,7 @@ import { useTheme } from '../theme/ThemeProvider';
 import { typography } from '../theme/typography';
 import { searchCities, type NamedCity } from './cities';
 
-function CitySearch({ onPick }: { onPick: (city: NamedCity) => void }) {
+export function CitySearch({ onPick, leading }: { onPick: (city: NamedCity) => void; leading?: ReactNode }) {
   const { palette } = useTheme();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<{ query: string; cities: NamedCity[] }>();
@@ -31,6 +31,7 @@ function CitySearch({ onPick }: { onPick: (city: NamedCity) => void }) {
           accessibilityLabel={searchLabel} placeholder={searchLabel} placeholderTextColor={palette.ink2}
           style={[typography.body, styles.input, { color: palette.ink }]} />
       </View>
+      {leading}
       {!cities ? <ActivityIndicator color={palette.green} /> : cities.map((city) => (
         <ListRow key={city.id} title={city.name} subtitle={city.country} icon="location_on" onPress={() => onPick(city)} />
       ))}
