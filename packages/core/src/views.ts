@@ -5,7 +5,7 @@ import { day, type Day } from './day';
 import { withEclipses } from './events';
 import { hijriMonthStart, type HijriDate } from './hijri';
 import { activeMeta, comingLabel, fmtDur, nextSentence, relDay } from './labels';
-import { msg, type Msg } from './message';
+import { msg, type MessageKey, type Msg } from './message';
 import { countMonthFasts, type Occurrence } from './occurrences';
 import {
   isDone, level, occurrenceEnabled, paused, pushAllowed, reminderOccurrences, visible,
@@ -33,12 +33,32 @@ type Notice = Readonly<{
   actions: readonly { id: string; label: Msg }[];
 }>;
 
-function notice(id: string, body: Msg, actions: readonly string[], params?: Record<string, string>): Notice {
+type NoticeCopy = { title: MessageKey; actions: Readonly<Record<string, MessageKey>> };
+const noticeCopy = {
+  notifications: {
+    title: 'today.notice.notifications.title', actions: { openSettings: 'today.notice.notifications.openSettings' },
+  },
+  correction: {
+    title: 'today.notice.correction.title', actions: { accept: 'today.notice.correction.accept', decline: 'today.notice.correction.decline' },
+  },
+  usage: {
+    title: 'today.notice.usage.title', actions: { share: 'today.notice.usage.share', decline: 'today.notice.usage.decline' },
+  },
+  udhiyah: {
+    title: 'today.notice.udhiyah.title', actions: { yes: 'today.notice.udhiyah.yes', no: 'today.notice.udhiyah.no' },
+  },
+  pause: {
+    title: 'today.notice.pause.title', actions: { resume: 'today.notice.pause.resume' },
+  },
+} satisfies Record<string, NoticeCopy>;
+
+function notice(id: keyof typeof noticeCopy, body: Msg, params?: Record<string, string>): Notice {
+  const { title, actions }: NoticeCopy = noticeCopy[id];
   return {
     id,
-    title: msg(`today.notice.${id}.title`),
+    title: msg(title),
     body,
-    actions: actions.map((action) => ({ id: action, label: msg(`today.notice.${id}.${action}`, params) })),
+    actions: Object.entries(actions).map(([action, label]) => ({ id: action, label: msg(label, params) })),
   };
 }
 
@@ -48,7 +68,7 @@ function notices(current: Day, date: CivilDate, state: ReminderState, options: T
   const { preferences } = state;
   const wantsPush = state.catalog.some((item) => level(state, item.id, hijri.year) === 'push');
   if (preferences.notifications !== 'granted' && wantsPush) {
-    result.push(notice('notifications', msg('today.notice.notifications.body'), ['openSettings']));
+    result.push(notice('notifications', msg('today.notice.notifications.body')));
   }
   const { correction } = options;
   if (correction && correction.countryCode === state.calendar.place.countryCode && !options.correctionChoices?.[correction.id]) {
@@ -56,17 +76,17 @@ function notices(current: Day, date: CivilDate, state: ReminderState, options: T
     const calculated = hijriMonthStart(year, month, state.calendar.hijri);
     if (calculated !== announced) {
       const body = msg('today.notice.correction.body', { month, announced, calculated, region });
-      result.push(notice('correction', body, ['accept', 'decline'], { announced }));
+      result.push(notice('correction', body, { announced }));
     }
   }
-  if (options.usagePrompt) result.push(notice('usage', msg('today.notice.usage.body'), ['share', 'decline']));
+  if (options.usagePrompt) result.push(notice('usage', msg('today.notice.usage.body')));
   if (hijri.month === 11 && hijri.day >= 10 && hijri.day <= 28 && preferences.udhiyah?.[hijri.year] == null) {
-    result.push(notice('udhiyah', msg('today.notice.udhiyah.body'), ['yes', 'no']));
+    result.push(notice('udhiyah', msg('today.notice.udhiyah.body')));
   }
   if (paused(preferences.pause, date)) {
     const until = preferences.pause?.until;
     const body = until ? msg('today.notice.pause.until', { date: until }) : msg('today.notice.pause.body');
-    result.push(notice('pause', body, ['resume']));
+    result.push(notice('pause', body));
   }
   return result;
 }

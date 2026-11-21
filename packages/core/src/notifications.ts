@@ -22,7 +22,7 @@ export type PlannedNotification = Readonly<{
 }>;
 
 const months = [
-  'Muḥarram', 'Ṣafar', 'Rabīʿ al-Awwal', 'Rabīʿ al-Thānī', 'Jumādā al-Ūlā',
+  'Muḥarram', 'Ṣafar', 'Rabīʿ al-Awwal', 'Rabīʿ al-Ākhir', 'Jumādā al-Ūlā',
   'Jumādā al-Ākhirah', 'Rajab', 'Shaʿbān', 'Ramadan', 'Shawwāl', 'Dhul-Qaʿdah',
   'Dhul-Ḥijjah',
 ] as const;
