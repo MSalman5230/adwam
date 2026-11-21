@@ -25,6 +25,56 @@ export default tseslint.config(
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   {
+    files: ['packages/core/src/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^(react(?:-native)?|expo(?:-[^/]+)?|@expo/[^/]+|@supabase/[^/]+|node:[^/]+)(?:/|$)',
+              message: 'Core runs in Hermes, Deno, and Node with no platform dependencies.',
+            },
+          ],
+        },
+      ],
+      'no-restricted-globals': [
+        'error',
+        {
+          globals: [
+            'fetch',
+            'localStorage',
+            'sessionStorage',
+            'indexedDB',
+            'navigator',
+            'window',
+            'document',
+            'XMLHttpRequest',
+            'WebSocket',
+            'process',
+            'Deno',
+          ],
+          checkGlobalObject: true,
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'NewExpression[callee.name="Date"][arguments.length=0], CallExpression[callee.name="Date"]',
+          message: 'Pass the current instant into core explicitly.',
+        },
+        {
+          selector: 'MemberExpression[object.name="Date"][property.name="now"], MemberExpression[object.name="Date"][property.value="now"]',
+          message: 'Pass the current instant into core explicitly.',
+        },
+        {
+          selector: 'MemberExpression[object.name="Math"][property.name="random"], MemberExpression[object.name="Math"][property.value="random"]',
+          message: 'Core calculations must be deterministic.',
+        },
+      ],
+    },
+  },
+  {
     files: ['apps/mobile/src/**/*.tsx'],
     plugins: { i18next },
     rules: {
