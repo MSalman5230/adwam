@@ -8,7 +8,7 @@
     "node": ">=24.3 <25"
   },
   "scripts": {
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm content:check",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm --filter @adwam/mobile test:native && pnpm content:check",
     "test": "pnpm -r --if-present test",
     "lint": "eslint .",
     "typecheck": "pnpm -r --if-present typecheck",
