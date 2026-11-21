@@ -33,6 +33,7 @@ packages/content/
     quran.yaml
     other.yaml          fatwas and books
   collections.yaml      hadith collections: names and link patterns
+  sources/              the sunnah.com and Quran.com texts the evidence quotes, copied by script
   messages/en.json      UI wording, separate from Sunnah content
   schema/               the rules each file must follow
   scripts/              check, build and generate
@@ -149,17 +150,19 @@ Each entry in `duas.yaml` looks like this:
   tr: Allāhumma ṣayyiban nāfiʿan
   en: O Allah, make it beneficial rain.
   evidence: [bukhari-1032]
-  textSource: <the edition the Arabic was checked against>
+  source: bukhari-1032        # the Arabic is cut from this hadith's stored sunnah.com text
   reviewed: { by: <reviewer's name>, on: <date> }
 ```
 
 - `ar` is the Arabic with full vowel marks (tashkīl). `tr` is the transliteration. `en` is the meaning.
 - A Sunnah shows its duʿāʾ on the detail screen. An occurrence can also show the transliteration on its card, as rain and Laylat al-Qadr do, with `inlineDua: rain-beneficial`.
-- The prototype's Arabic for the seven duʿāʾ was entered during design. Treat it as unchecked until a reviewer compares it with the edition named in `textSource`.
+- `ar` is cut from the stored copy of the hadith named in `source`, and `en` from sunnah.com's English of the same words. The check fails if either isn't an exact part of that copy. The prototype's Arabic for the seven duʿāʾ was entered during design, so the copied text replaces it wherever the two differ.
 
 ## Evidence
 
-Every source a Sunnah cites gets an entry. Hadith and Qurʾan entries hold the relevant words in Arabic with an English meaning, so the detail screen can show the evidence itself, not only a link.
+Every source a Sunnah cites gets an entry. Hadith and Qurʾan entries hold the relevant words in Arabic and English, as sunnah.com and Quran.com show them, so the detail screen can show the evidence itself, not only a link.
+
+**Where the text comes from.** `scripts/fetch-sunnah.ts` and `scripts/fetch-quran.ts` copy each cited hadith and verse into `sources/`, with its URL, the date and the translator's name. For version 1 the sunnah.com script reads the pages once, slowly. Once there's an API key, it reads the API. The copies are committed, and an excerpt is always cut from them, never typed.
 
 ### Hadith
 
@@ -175,12 +178,13 @@ An entry in `evidence/hadith.yaml`:
   grading:
     - { by: Muslim, grade: ṣaḥīḥ, note: In his Ṣaḥīḥ }
   excerpt:
-    ar: <the relevant words in Arabic, copied from the edition below>
-    en: <Adwam's English rendering of the same words>
+    ar: <the relevant words in Arabic, cut from the stored sunnah.com copy>
+    en: <the same words in sunnah.com's English>
     partial: true             # true when only part of the hadith is quoted
   textSource:
-    ar: <edition, volume and page>
-    en: Adwam's own rendering
+    site: sunnah.com
+    fetched: <date the copy was made>
+    translator: <the English translation's credit, as sunnah.com gives it>
   reviewed: { by: <reviewer's name>, on: <date> }
 ```
 
@@ -204,12 +208,13 @@ An entry in `evidence/quran.yaml`:
   ayah: 185                   # or a range, such as 185-186
   url: https://quran.com/2/185
   excerpt:
-    ar: <the verse, copied verbatim from the Tanzil Uthmani text>
-    en: <Adwam's English rendering>
+    ar: <the verse in Uthmani script, cut from the stored Quran.com copy>
+    en: <the same verse in the chosen English translation on Quran.com>
     partial: true
   textSource:
-    ar: Tanzil Project, Uthmani text
-    en: Adwam's own rendering
+    site: quran.com
+    fetched: <date the copy was made>
+    translator: <the translation's name, such as The Clear Quran by Dr. Mustafa Khattab>
   reviewed: { by: <reviewer's name>, on: <date> }
 ```
 
@@ -248,7 +253,7 @@ This extends the prototype, whose Sources section shows only links. The screen s
 
 1. **Notes come first,** as now: grading notes and differences of opinion, in full.
 2. **Each source is a row** with its label and its grade, such as "Muslim 1162b · ṣaḥīḥ".
-3. **Tapping a hadith or Qurʾan row expands it** to show the Arabic excerpt in Amiri, right to left, then the English meaning, the narrator, and "Open on sunnah.com" or "Open on Quran.com".
+3. **Tapping a hadith or Qurʾan row expands it** to show the Arabic excerpt in Amiri, right to left, then the English with its translator's credit, the narrator, and "Open on sunnah.com" or "Open on Quran.com".
 4. **Fatwa and book rows** show the publisher or author, the summary and the link.
 5. **Evidence works offline.** Only the links need a connection.
 
@@ -285,21 +290,21 @@ The check script enforces these, so mistakes fail the build instead of reaching 
 - **Unicode.** Files are UTF-8, normalised to NFC.
 - **Transliteration.** ʿayn is `ʿ` (U+02BF) and hamzah is `ʾ` (U+02BE), with macrons for long vowels. Straight or curly apostrophes inside transliterated words fail the check.
 - **ﷺ** is stored as the single character U+FDFA, after a space. The app keeps it with the word before it and draws it in Amiri.
-- **Arabic.** Duʿāʾ and Qurʾan text have full tashkīl. No tatweel (ـ). Arabic punctuation (، ؛) inside Arabic text.
-- **Never from memory.** The Arabic of a hadith, verse or duʿāʾ is copied from the edition named in `textSource`, never typed from memory or produced by an AI, and a reviewer checks it before publishing.
+- **Arabic** is kept exactly as sunnah.com or Quran.com gives it, apart from NFC normalisation, and the check never corrects it. Quran.com's Uthmani text keeps its own marks, including the tatweel (ـ) it uses, as in verse 2:185.
+- **Never from memory.** The Arabic of a hadith, verse or duʿāʾ is copied by script from sunnah.com or Quran.com, never typed from memory or produced by an AI. The check confirms each excerpt is an exact part of its stored copy, and a reviewer checks it before publishing.
 
 ## Rights and credit
 
 The repository is public, so everything in it is published.
 
-- **Classical Arabic text** of hadith is free to quote, but digital editions can have their own terms. `textSource` records where each excerpt came from.
-- **Qurʾan Arabic** comes from the Tanzil Project's Uthmani text. Its licence allows reuse with credit, and it forbids changes, so verses are copied exactly. About credits Tanzil.
-- **Published English translations** of hadith collections and the Qurʾan are usually under copyright, including those shown on sunnah.com and Quran.com. Don't paste them into the repository. Write Adwam's own English rendering and have it reviewed, or use a translation whose licence allows reuse and record that licence in `textSource`.
-- **sunnah.com, Quran.com and fatwa sites** are linked, not copied. A fatwa's own text isn't stored, only a summary in Adwam's words.
+- **Hadith and Qurʾan text, Arabic and English, is quoted from sunnah.com and Quran.com.** The owner decided this on 21 November 2026. `textSource` records the site, the date and the translator for every excerpt.
+- **Credit.** The detail screen shows each translation's credit under its English, and About credits sunnah.com, Quran.com and the translators.
+- **If a rights holder objects.** Most English translations belong to their translators or publishers. If one objects, the affected entries switch to Adwam's own rendering, reviewed, in a content update.
+- **Fatwa sites** are linked, not copied. A fatwa's own text isn't stored, only a summary in Adwam's words. Sources on neither sunnah.com nor Quran.com, such as al-Bayhaqī on hadithweb.com and al-Shāfiʿī's *al-Umm*, are book entries treated the same way.
 
 ## Review and versions
 
-- **Every published entry names its reviewer and date.** A pull request that changes content needs the reviewer's approval before it merges.
+- **Every published entry names its reviewer and date.** The owner is the reviewer. During development, content changes merge without waiting for review: entries stay in `review`, and test builds show them. Before the production release, the owner reads every entry and the agent marks it published.
 - **The content version** is the release date, such as `2026.11.21`. About and Report a problem show it.
 - **Retired Sunnahs keep their entries** with `status: retired`, so their IDs are never reused.
 
@@ -325,7 +330,7 @@ The build then writes:
 ## Adding a Sunnah
 
 1. **Copy the closest existing entry** into the right section file, with `status: draft` and a new ID.
-2. **Add or reuse evidence and duʿāʾ entries.** Copy the Arabic from a named edition.
+2. **Add or reuse evidence and duʿāʾ entries.** Run the fetch scripts for any new hadith or verse, then cut the excerpt from the stored copy.
 3. **Run the check** and fix what it reports.
 4. **If its timing doesn't fit** the vocabulary, add a rule in `packages/core` with tests.
 5. **Open a pull request.** The reviewer checks the text, the Arabic and the gradings, then sets `status: published` and `reviewed`.

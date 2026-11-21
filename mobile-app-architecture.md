@@ -16,6 +16,7 @@ The owner made these decisions on 21 November 2026:
 | Fasting on Fridays | A fast with its own reason may fall on a Friday: ʿĀshūrāʾ, ʿArafah, a White Day, a Shawwāl fast or a make-up fast. |
 | Crash reports and analytics | Sentry and PostHog. See [Crash reports and analytics](#crash-reports-and-analytics). |
 | Code | The current repository, [MSalman5230/adwam](https://github.com/MSalman5230/adwam), which is public. One developer for now. |
+| Hadith and Qurʾan text | The Arabic and the English are quoted as sunnah.com and Quran.com show them, with credit to each site and translator. For version 1, a script copies the sunnah.com pages once. The sunnah.com API replaces that later. |
 
 This plan makes these architecture decisions:
 
@@ -116,7 +117,7 @@ Rules for this package:
 
 - **One YAML file per calendar section** (weekly, monthly, yearly, weather, disputed) lists its Sunnahs. Each entry holds the text, the timing and the notification wording, and refers to duʿāʾ and evidence by ID.
 - **`duas.yaml`** holds every duʿāʾ: the Arabic with full vowel marks, the transliteration and the meaning.
-- **The evidence files** hold every source's reference, link and gradings. Hadith and Qurʾan sources also hold the relevant Arabic words and an English meaning, so the detail screen can show the evidence offline.
+- **The evidence files** hold every source's reference, link and gradings. Hadith and Qurʾan sources also hold the relevant Arabic words and their English, copied from sunnah.com and Quran.com, so the detail screen can show the evidence offline.
 - **A check runs on every pull request.** It fails on missing Arabic, unknown IDs, unreviewed content and wrong transliteration marks.
 - **The build produces `content.json`** and regenerates the calendar Markdown's tables.
 - **The content is built into the app, not fetched from the server.** A new install has everything offline from its first launch, and fixes arrive as over-the-air updates. The server's Edge Functions get the same file when they're deployed.
@@ -317,7 +318,8 @@ Before launch, check this approach with someone who knows data-protection law.
 |---|---|---|---|
 | Supabase | On the developer's machine, with the Supabase CLI | Staging project | Production project |
 | App build | Development build | Test APK, with the debug screen | Play Store release, without the debug screen |
-| App ID | Ends in `.dev` | Ends in `.preview` | The final ID |
+| How it reaches a phone | Built on this PC, on the emulator or over USB | A download link from EAS | Google Play: internal testing, then closed testing, then production |
+| App ID | `com.msalman5230.adwam.dev` | `com.msalman5230.adwam.preview` | `com.msalman5230.adwam` |
 | Over-the-air update channel | None | `preview` | `production` |
 
 - **Over-the-air updates.** Each build's runtime version comes from a fingerprint of its native code, so an update only reaches builds it is compatible with. Content and JavaScript fixes ship as updates to 10% of users, then 100%. Native changes need a new store build.
@@ -329,7 +331,7 @@ GitHub Actions:
 | Trigger | What runs |
 |---|---|
 | Pull request | Type checks, linting, core tests, content checks, app tests, database access tests and Edge Function checks. A native fingerprint check labels the pull request if it needs a new store build. |
-| Merge to main | Migrations and functions deploy to staging. An update goes to the preview channel. |
+| Merge to master | Migrations and functions deploy to staging. An update goes to the preview channel. |
 | Release tag | Migrations and functions deploy to production. A production build uploads to Play's internal testing track. |
 | Content tag | If the native code hasn't changed, an over-the-air update goes to production. |
 | Daily | Checks that the weather job ran and that Open-Meteo usage is within budget. This also keeps the free Supabase project from pausing. |
@@ -344,7 +346,7 @@ GitHub Actions:
 - **App:** component and screen tests with a fixed clock. Maestro tests on an Android emulator walk through setup, ticking with Undo, reminder choices and the settings sheets.
 - **Server:** database tests prove that one install can't read another's row. Function tests replay recorded Open-Meteo and Expo responses.
 - **Real phones,** as the stack file asks: a Pixel, a Samsung, a Xiaomi and one low-end phone. Test restarts, battery saving, Done and Later while the app is closed, and changes of time zone and daylight saving.
-- **Content review:** a named reviewer approves every content change before it ships.
+- **Content review:** the owner reads all content before it ships to production. During development, content isn't held for review.
 
 ## Costs and upgrade triggers
 
@@ -430,7 +432,7 @@ Once this plan is approved, update these files:
   - The detail screen's Sources rows expand to show the Arabic evidence and its meaning, as [sunnah-content-format.md](sunnah-content-format.md#how-the-detail-screen-shows-evidence) describes.
   - Setup asks once about usage statistics, and Settings gets a Privacy row with the crash report and usage statistics switches.
   - Setup's promise becomes "Your trackers stay on this phone", because some settings now go to the server.
-  - About gets the new privacy text, covering the server, Sentry and PostHog, and credits for GeoNames and Tanzil.
+  - About gets the new privacy text, covering the server, Sentry and PostHog, and credits for GeoNames, sunnah.com, Quran.com and the translators they show.
 
 ## Gaps in the specs
 
@@ -440,9 +442,9 @@ Once this plan is approved, update these files:
 
 ## Open questions
 
-None of these block milestone 0.
+On 21 November 2026 the owner answered some of these and accepted defaults for the rest during development. [plan.md](plan.md) tracks them as decisions D2–D5. The defaults are confirmed or changed before the production release.
 
-1. **App ID and domain.** Suggestion: buy a domain for Adwam, such as `adwam.app` if it's available. It gives a lasting app ID such as `app.adwam`, a home for the privacy policy, and the website an organization account would need later.
-2. **Licences.** Which licence covers the code, and which covers the content?
-3. **Analytics consent.** Should PostHog stay off until the user agrees, as recommended, or be on by default with a switch to turn it off?
-4. **Content reviewer.** Who approves content changes and checks the Arabic before release?
+1. **App ID and domain.** Decided: `com.msalman5230.adwam`, with `.preview` and `.dev` for test builds. No domain for now. The privacy policy and the admin page use GitHub Pages.
+2. **Licences.** Default for development: Apache-2.0 for the code and CC BY-SA 4.0 for Adwam's own text. Quoted sunnah.com and Quran.com text keeps its own terms.
+3. **Analytics consent.** Default for development: PostHog stays off until the user agrees.
+4. **Content reviewer.** Decided: the owner. Content isn't held for review during development, and the owner reads all of it before the production release.

@@ -20,7 +20,7 @@ AI agents write the code, run it, test it and open pull requests. Some steps nee
 | Service | Create by | Used for |
 |---|---|---|
 | Expo (expo.dev) | Milestone 0 | Cloud builds, over-the-air updates, push delivery |
-| Supabase | Milestone 0 for staging, milestone 5 for production | The server. The free tier allows both projects. |
+| Supabase | Milestone 0 for staging, milestone 6 for production, once everything works on staging | The server. The free tier allows both projects. |
 | Firebase, under a Google account | Milestone 5 | Android push delivery through Firebase Cloud Messaging |
 | Sentry, with EU data storage | Milestone 2 | Crash reports |
 | PostHog, on the EU host | Milestone 6 | Usage statistics |
@@ -43,7 +43,7 @@ Open-Meteo needs no account for the free API. The GeoNames city list is a free d
 | `EXPO_PUBLIC_SENTRY_DSN` | Empty, so Sentry is off | Sentry DSN | Sentry DSN | Sentry project settings. One project, tagged by environment. |
 | `EXPO_PUBLIC_POSTHOG_KEY` | Empty | Empty | PostHog project key | PostHog project settings |
 | `EXPO_PUBLIC_POSTHOG_HOST` | — | — | `https://eu.i.posthog.com` | — |
-| `APP_VARIANT` | `development` | `preview` | `production` | Set by each build profile. It picks the app ID and name, so all three can sit on one phone. |
+| `APP_VARIANT` | `development` | `preview` | `production` | Set by each build profile. It picks the app ID (`com.msalman5230.adwam.dev`, `com.msalman5230.adwam.preview` or `com.msalman5230.adwam`) and the name, so all three can sit on one phone. |
 
 The Expo project ID also goes into the app config. `eas init` writes it, and it isn't secret.
 
@@ -83,7 +83,7 @@ Use two GitHub environments, `staging` and `production`. The production environm
 | Secret | Environment | Used for |
 |---|---|---|
 | `EXPO_TOKEN` | Both | Builds, updates and store uploads. Create a robot user in Expo for this. |
-| `SUPABASE_ACCESS_TOKEN` | Both | Deploying migrations and functions |
+| `SUPABASE_ACCESS_TOKEN` | Each its own | Deploying migrations and functions. A scoped token for that environment's project only, with Project Settings, API Keys, API Key Secrets, Migrations and Database on Read, and Edge Functions on Read-write. It expires within a year, so renew it before then. |
 | `SUPABASE_DB_PASSWORD` | Each its own | Running migrations |
 | `SENTRY_AUTH_TOKEN` | Both | Source maps for updates published from CI |
 
@@ -99,7 +99,10 @@ Each environment also holds its Supabase project ID as a plain variable.
 
 - **Type secrets into the services' own secret stores** (EAS, Supabase, GitHub) yourself. Builds and CI read them from there, so the agent rarely needs to see one.
 - **Never paste a secret into a chat.** If an agent needs one, it asks through a secure secret prompt.
-- **Log the command-line tools in once on this PC** with `eas login` and `supabase login`. GitHub's `gh` is already logged in. The tokens stay in each tool's own settings.
+- **Log the command-line tools in once on this PC,** both as **MSalman5230:** `gh` and `eas login`. The tokens stay in each tool's own settings. The agent checks `eas whoami` and `gh auth status` before using them, and stops if either shows another account.
+- **Don't log in the Supabase CLI on this PC.** Local Supabase needs no login, and the CLI's browser login creates a token with full access to every project, production included. CI deploys with its own token, scoped to one project.
+- **Add GitHub secrets from a terminal** with `gh secret set NAME --env staging`. It asks for the value without showing it, so it never lands in a file or a chat.
+- **The local env file holds no secrets.** The root `.env.example` lists the local values. Builds and CI run in the cloud and read their own secret stores, never a file on this PC.
 - **Production deploys run only from GitHub Actions,** after your approval. The agent's instructions forbid production commands.
 
 ## This PC

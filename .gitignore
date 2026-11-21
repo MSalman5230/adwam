@@ -1,0 +1,13 @@
+# The repository is public. Environment files never go into Git,
+# except the example, which holds no values that matter.
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output. M0.3 extends this list.
+node_modules/
+dist/
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db

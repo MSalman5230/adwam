@@ -4,7 +4,7 @@ This is the plan for building Adwam version 1, from an empty workspace to Google
 
 It doesn't repeat the architecture's reasoning. Read the architecture for what each part is and why. Read this for the order, the tasks and the checks.
 
-Written on 21 November 2026. It assumes the owner approves the three draft specs listed below.
+Written on 21 November 2026. The owner approved the three specs below that were drafts the same day.
 
 ## Inputs
 
@@ -14,11 +14,13 @@ Written on 21 November 2026. It assumes the owner approves the three draft specs
 | [mobile-app-screen-story.md](mobile-app-screen-story.md) | Rules the prototype can't show, what it fakes, and what's left out of version 1 | Committed |
 | [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md) | The Sunnahs, their tiers, timings and sources | Committed. Its tables become generated in milestone 1. |
 | [mobile-app-stack.md](mobile-app-stack.md) | The stack | Committed |
-| [mobile-app-architecture.md](mobile-app-architecture.md) | Structure, decisions, milestones, risks | Draft |
-| [sunnah-content-format.md](sunnah-content-format.md) | The content files | Draft |
-| [development-setup.md](development-setup.md) | Accounts, secrets, local tools, who does what | Draft |
+| [mobile-app-architecture.md](mobile-app-architecture.md) | Structure, decisions, milestones, risks | Approved and committed |
+| [sunnah-content-format.md](sunnah-content-format.md) | The content files | Approved and committed |
+| [development-setup.md](development-setup.md) | Accounts, secrets, local tools, who does what | Approved and committed |
 
 **When files disagree,** the owner's decisions in the architecture come first, then the prototype for screens and behaviour, then the other specs. The disagreements found while writing this plan are settled under [Conflicts the plan settles](#conflicts-the-plan-settles). Whoever changes behaviour fixes the losing file in the same pull request, so the specs never drift apart.
+
+**Line numbers** in this plan refer to `mobile-app-ui.html` at commit `c55c11a`. M0.2 edits the prototype, which shifts them. After that, search for the function by name, or read the old file with `git show c55c11a:mobile-app-ui.html`.
 
 ## Version 1 in one paragraph
 
@@ -32,6 +34,7 @@ An Android app, English only but ready for translation, with no account. Setup, 
 - **Before opening a PR,** run `pnpm check` and meet the [definition of done](#definition-of-done).
 - **Ask the owner** when a step needs an account, a payment, a secret, a legal judgement or a judgement about religious content. Secrets go through a secure secret prompt, never the chat.
 - **Never** type Arabic, hadith or Qurʾan text from memory, change a released Sunnah ID, run a production command, or commit a secret.
+- **Staging only until milestone 6.** The owner sets up production once everything works on staging (M6.9). Until then, create nothing for production: no Supabase project, secrets, builds or store uploads. The production build profile and update channel can exist in config, unused.
 
 Task sizes: **S** is one small PR, **M** one or two PRs, **L** several PRs.
 
@@ -40,7 +43,7 @@ Task sizes: **S** is one small PR, **M** one or two PRs, **L** several PRs.
 ```
          +- Core engine M1.1-M1.15 ---+- App shell and Today M2 -- Screens M3 --+
          |                            +- Local notifications M4 ----------------+
-   M0 ---+- Content M1.16-M1.20 -- review by the named reviewer ----------------+- Hardening M6 -- Android release M7 -- iOS M8
+   M0 ---+- Content M1.16-M1.20 -- owner reads it before production ------------+- Hardening M6 -- Android release M7 -- iOS M8
          |                            +- Server M5: server side after M1, ------+
          |                               app side after M2                      |
          +- Owner: accounts, Play Console, testers -----------------------------+
@@ -48,7 +51,7 @@ Task sizes: **S** is one small PR, **M** one or two PRs, **L** several PRs.
 
 Three chains decide the release date. Each depends more on people and outside services than on the agents:
 
-1. **Content review.** Every published Sunnah, duʿāʾ and source needs a named reviewer (decision D5), and agents can't supply the Arabic. Review starts in milestone 1 and must finish before milestone 6 ends.
+1. **Content review.** During development nothing waits for review: test builds show all content. Before production, the owner reads every Sunnah, duʿāʾ and source once (D5, M6.6), and only then is it published. Scripts copy the texts from sunnah.com and Quran.com (M1.17), so it's reading, not typing. Start once M1.17 is done, so it's finished before milestone 6 ends.
 2. **Google Play.** A personal account's identity check takes days. Then a closed test needs at least 12 testers opted in for 14 days in a row, and the production-access review takes more days. Open the account in milestone 4, recruit testers in milestone 5, and start the closed test when milestone 6 is nearly done.
 3. **Notifications on real phones.** The milestone 0 tests can change the notification library, which changes milestone 4.
 
@@ -71,28 +74,31 @@ Three chains decide the release date. Each depends more on people and outside se
 | C13 | Sunnah IDs | The prototype uses camelCase IDs, such as `fridayPrep`. | Content IDs are lowercase with hyphens, such as `friday-prep`, fixed for good at the first release. The prototype-match tool maps between the two. | M1.16 |
 | C14 | Starting values | The prototype starts with Jumuʿah at 1:30 pm, 3 make-up days and notifications allowed. | Jumuʿah at Ẓuhr, the make-up count unset, notifications not yet asked, as the screen story says. | M2.4 |
 | C15 | The uḍḥiyah answer | The prototype keeps one answer forever. | One answer per Hijri year. | M2.4 |
+| C16 | Hadith and Qurʾan text | The content format said not to copy the English translations shown on sunnah.com and Quran.com, and to take the Qurʾan's Arabic from Tanzil. | The owner decided on 21 November 2026 to quote the Arabic and the English as sunnah.com and Quran.com show them, with credit, and to drop Tanzil. For version 1, a script copies the sunnah.com pages once. The sunnah.com API replaces that later. | The drafts, on 21 November 2026. M0.2 for About's credits. |
+| C17 | Tatweel in copied Arabic | The content format banned the tatweel (ـ), but Quran.com's Uthmani text uses it, for example in verse 2:185. | Copied Arabic is kept exactly as the site gives it, apart from NFC normalisation, and the check never corrects it. | The content format, on 21 November 2026 |
 
 ## Decisions for the owner
 
-Each has a default, so no task waits. The agent uses the default and notes it in the PR until the owner answers.
+On 21 November 2026 the owner approved the drafts (D1), chose the app IDs (D2) and took on the content review (D5). For the development phase, the owner accepted every other default below. Each one is confirmed or changed before the production release, in milestone 6.
 
-| # | Question | Needed by | Default until answered |
+| # | Question | Needed by | Answer, or the accepted default |
 |---|---|---|---|
-| D1 | Approve the architecture, content format and development setup | M0 | None. Milestone 0 waits for it. |
-| D2 | App ID and domain (architecture, open question 1) | M5, when Firebase registers the app IDs | `app.adwam`, with `.dev` and `.preview` added for test builds |
-| D3 | Licences for the code and the content (open question 2) | M6 | Suggestion: Apache-2.0 for the code and CC BY-SA 4.0 for Adwam's own text. Tanzil, GeoNames and Open-Meteo data keep their own terms. |
+| D1 | Approve the architecture, content format and development setup | M0 | Approved on 21 November 2026 |
+| D2 | App IDs and domain (architecture, open question 1) | M0.5 | `com.msalman5230.adwam` for production, `com.msalman5230.adwam.preview` and `com.msalman5230.adwam.dev` for test builds. No domain for now: the privacy policy and admin page use GitHub Pages. |
+| D3 | Licences for the code and the content (open question 2) | M6 | Suggestion: Apache-2.0 for the code and CC BY-SA 4.0 for Adwam's own text. Texts quoted from sunnah.com and Quran.com, and GeoNames and Open-Meteo data, keep their own terms. |
 | D4 | Analytics consent (open question 3) | M6 | Off until the user agrees |
-| D5 | Content reviewer (open question 4) | M1. On the critical path. | None. Content stays in review, and only test builds show it. |
+| D5 | Content reviewer (open question 4) | M6.6 | The owner. During development, content isn't held for review: entries stay in `review`, and test builds show them all. Before production, the owner reads every entry once, and only then is it marked published. |
 | D6 | Where the usage-statistics question goes | M0.2 | A one-time notice on Today right after setup, "Share anonymous usage statistics?", with Share and No thanks and neither preselected. Setup stays under a minute, and users who pick In-app only, who skip step 4, still see it. |
-| D7 | Prayer methods offered, and the method suggested for each country | M1.4 | The prototype's five, plus adhan-js's Turkey (Diyanet), Singapore (also suggested for Malaysia and Indonesia), Dubai, Kuwait, Qatar and Moonsighting Committee. The prototype suggests Muslim World League for Türkiye, Malaysia and Indonesia, which local users would likely find wrong. The reviewer approves the country table. |
+| D7 | Prayer methods offered, and the method suggested for each country | M1.4 | The prototype's five, plus adhan-js's Turkey (Diyanet), Singapore (also suggested for Malaysia and Indonesia), Dubai, Kuwait, Qatar and Moonsighting Committee. The prototype suggests Muslim World League for Türkiye, Malaysia and Indonesia, which local users would likely find wrong. The owner checks the country table before production. |
 | D8 | The rule for high latitudes | M1.4 | Angle-based, as in the prototype |
-| D9 | The eclipse cloud-cover flag | M1.16 | Leave it out of version 1, because the phone has no cloud forecast for an eclipse it computed itself. Reword the eclipse note, with the reviewer's approval. |
+| D9 | The eclipse cloud-cover flag | M1.16 | Leave it out of version 1, because the phone has no cloud forecast for an eclipse it computed itself. Reword the eclipse note, and the owner checks the new wording before production. |
 | D10 | Penumbral lunar eclipses (architecture, gap 1) | M1.13 | Leave them out |
 | D11 | Eclipse pushes and the one-weather-push-a-day limit (gap 2) | M1.12 | The limit counts weather only |
 | D12 | Report a problem without a GitHub account (gap 3) | M2.10 | An "Email instead" link once the owner sets up an address. GitHub only until then. |
 | D13 | Where "Delete my data from the server" sits | M0.2 | In a Privacy sheet in Settings, with a confirmation |
 | D14 | Where the admin page is hosted | M5.13 | GitHub Pages, from this repository |
 | D15 | 12- or 24-hour times | M1.10 | Follow the phone's setting, with the prototype's "1:30 pm" style for 12-hour |
+| D16 | Which English translation of the Qurʾan to quote | M1.17 | Quran.com's default English, Dr. Mustafa Khattab's The Clear Quran |
 
 ## Repository additions
 
@@ -105,6 +111,8 @@ adwam/
   docs/
     spikes.md                       milestone 0 test results and the paths chosen
     runbooks/                       release, content release, rollback, corrections, incidents, phone tests
+  packages/content/
+    sources/                        the sunnah.com and Quran.com texts the content quotes, copied once (M1.17)
   tools/
     prototype-match/                runs the prototype's engine in Node next to core
     cities/                         builds the city list from GeoNames
@@ -112,7 +120,7 @@ adwam/
   .github/
     workflows/                      see CI workflows
     ISSUE_TEMPLATE/content-problem.yml
-    CODEOWNERS                      content changes need the reviewer
+    CODEOWNERS                      the owner owns content changes
     pull_request_template.md
   .env.example
 ```
@@ -154,17 +162,17 @@ A PR is done when:
 **Goal:** a workspace, a development build on the emulator talking to local Supabase, checks on every pull request, and an answer for every risk.
 
 **Owner:**
-- Decide D1, and ideally D2 and D5.
-- Create the Expo account. Run `eas login` and `supabase login` on this PC.
+
+- Log in the command-line tools on this PC, once, all as **MSalman5230**. GitHub's `gh` already is. Expo's `eas` is logged in as another account, so run `eas logout`, then `eas login`. Don't log in the Supabase CLI: local Supabase needs no login, and CI uses a scoped token (development-setup.md, "CI secrets").
 - Create the Supabase staging project on the free tier.
-- In GitHub, create the `staging` and `production` environments, with the owner's approval required for production. Add `EXPO_TOKEN` from an Expo robot user, `SUPABASE_ACCESS_TOKEN`, and staging's `SUPABASE_DB_PASSWORD`. Turn on branch protection for `main` once CI exists.
+- In GitHub, create the `staging` environment and add its secrets from development-setup.md, "CI secrets". The `production` environment stays empty until milestone 6. Turn on branch protection for `master` once CI exists.
 - Have Docker Desktop running when the agent needs local Supabase.
 - For the risk tests, find a Samsung and a Xiaomi phone, your own or a tester's.
 
 ### M0.1 Approve and align the specs · S
 
 - **Needs:** D1.
-- **Do:** commit the three drafts. Make the edits the architecture lists under "Changes to existing specs" for the stack file and the calendar, and fix conflicts C2–C6. Link this plan from the architecture's build order.
+- **Do:** commit any spec edits still uncommitted. Make the edits the architecture lists under "Changes to existing specs" for the stack file and the calendar, and fix conflicts C2–C6. Link this plan from the architecture's build order.
 - **Done when:** the Markdown specs agree with each other on every row of the conflicts table, apart from the rows M0.2 handles.
 
 ### M0.2 Update the prototype · M
@@ -173,9 +181,9 @@ The prototype stays the single design reference, so new screens and wording go i
 
 - **Do:** in `mobile-app-ui.html` and the screen story:
   - The Date correction notice says "Ramadan starts on Sunday in the United Kingdom. Your app says Monday." with "Use Sunday", "Keep my dates" and Undo. Setup step 2 and the Hijri date sheet say corrections are offered. The sheet lists accepted corrections, each with Remove. A new Moment shows the offer.
-  - The detail screen's Sources rows show the label and grade, and hadith and Qurʾan rows expand to the excerpt, its meaning, the narrator and the link (C10). Use a visible placeholder such as "[Arabic excerpt from the named edition]", never real Arabic typed from memory.
+  - The detail screen's Sources rows show the label and grade, and hadith and Qurʾan rows expand to the excerpt, its meaning, the narrator, the translator's credit and the link (C10). Use a visible placeholder such as "[Arabic excerpt copied from sunnah.com]" until M1.17 has copied the real text. Never type Arabic from memory.
   - The usage-statistics question (D6). A Privacy row in Settings opening a sheet with the crash-report switch, the usage-statistics switch and "Delete my data from the server" (D13).
-  - Setup's first promise (C9). About's new privacy text, covering the server, Sentry and PostHog, credits for GeoNames and Tanzil, and the real GitHub link.
+  - Setup's first promise (C9). About's new privacy text, covering the server, Sentry and PostHog, credits for GeoNames, sunnah.com, Quran.com and the translators they show, and the real GitHub link.
   - The notification settings mock with six channels (C11).
 - **Done when:** the owner has clicked through it in a browser and approved it.
 
@@ -189,14 +197,14 @@ The prototype stays the single design reference, so new screens and wording go i
 
 ### M0.4 AGENTS.md · S
 
-- **Do:** write it from development-setup.md's "Instructions for the building agent" and this plan: the specs and their order of precedence, the commands, the rules, the task workflow above, and how to ask the owner. Add two rules: the prototype is the only design reference, so don't recreate old mockups; and don't modify files outside the repository.
+- **Do:** write it from development-setup.md's "Instructions for the building agent" and this plan: the specs and their order of precedence, the commands, the rules, the task workflow above, and how to ask the owner. Add three rules: the prototype is the only design reference, so don't recreate old mockups; don't modify files outside the repository; and before any `eas` or `gh` command, check that `eas whoami` and `gh auth status` show MSalman5230, and stop if they don't.
 - **Done when:** an agent with only AGENTS.md can find every command and rule.
 
 ### M0.5 Expo app skeleton · M
 
 - **Do:**
   - Create `apps/mobile` with the latest stable Expo SDK, TypeScript, Expo Router and the New Architecture.
-  - `app.config.ts` reads `APP_VARIANT` for the name ("Adwam", "Adwam Preview", "Adwam Dev"), the Android package (D2 plus a suffix) and the `adwam` link scheme. The runtime version uses the fingerprint policy. Updates are checked at launch without delaying it. `android.blockedPermissions` removes `ACCESS_FINE_LOCATION`, `ACCESS_BACKGROUND_LOCATION`, `SCHEDULE_EXACT_ALARM` and `USE_EXACT_ALARM`.
+  - `app.config.ts` reads `APP_VARIANT` for the name ("Adwam", "Adwam Preview", "Adwam Dev"), the Android package (`com.msalman5230.adwam`, with `.preview` or `.dev` added, as in D2) and the `adwam` link scheme. The runtime version uses the fingerprint policy. Updates are checked at launch without delaying it. `android.blockedPermissions` removes `ACCESS_FINE_LOCATION`, `ACCESS_BACKGROUND_LOCATION`, `SCHEDULE_EXACT_ALARM` and `USE_EXACT_ALARM`.
   - `eas.json` with `development`, `preview` and `production` profiles, the `preview` and `production` update channels, and version codes kept by EAS that increase on their own. Run `eas init`.
   - A config plugin that allows plain HTTP only in development builds.
   - Install the native modules now, so there's one early rebuild: expo-dev-client, expo-notifications, expo-background-task, expo-location, expo-updates, expo-font, expo-localization, expo-intent-launcher, react-native-mmkv, react-native-svg, @gorhom/bottom-sheet with its gesture and animation libraries, and @sentry/react-native, which stays off until M2.11.
@@ -210,8 +218,8 @@ The prototype stays the single design reference, so new screens and wording go i
 
 ### M0.7 Checks on pull requests · S
 
-- **Do:** `.github/workflows/ci.yml` installs with caching and runs `pnpm check`. A second job starts local Supabase and runs the database tests. Add the PR template, and a `CODEOWNERS` file naming the reviewer for `packages/content` once D5 is answered, or the owner if the reviewer doesn't use GitHub.
-- **Done when:** a PR shows green checks, and `main` requires them.
+- **Do:** `.github/workflows/ci.yml` installs with caching and runs `pnpm check`. A second job starts local Supabase and runs the database tests. Add the PR template, and a `CODEOWNERS` file naming the owner for `packages/content`.
+- **Done when:** a PR shows green checks, and `master` requires them.
 
 ### M0.8 Risk tests · L
 
@@ -234,13 +242,13 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 - **Do:** GitHub milestones M0 to M8, one issue per task named with its ID, and labels such as `core`, `content`, `app`, `server`, `owner`, `needs-new-build` and `release-blocker`. Issue forms: `content-problem.yml`, with fields for the item, its ID, the content version, the app version and a description, all fillable from the URL, and a general bug form.
 - **Done when:** every task in this plan has an issue.
 
-**Exit check:** the development build signs in to local Supabase, CI is green on `main`, every risk has a chosen path, and the owner has approved the updated prototype.
+**Exit check:** the development build signs in to local Supabase, CI is green on `master`, every risk has a chosen path, and the owner has approved the updated prototype.
 
 ## Milestone 1: Engine and content
 
 **Goal:** core reproduces the prototype's behaviour from content files, and the content files hold every Sunnah.
 
-**Owner:** name the reviewer (D5). Answer D7–D11. Optionally, request a sunnah.com API key, which lets a script copy hadith Arabic instead of the reviewer pasting it.
+**Owner:** nothing to decide, because D7–D11 and D16 use their accepted defaults. The sunnah.com API key can wait until after version 1, unless sunnah.com blocks the one-time copy in M1.17.
 
 ### Core track
 
@@ -279,7 +287,7 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 - **Do:**
   - `packages/content/schema/` in Zod. It produces `dist/schema.json` and the TypeScript types that core imports, type-only, so the two packages never import each other's code. It includes the fields from C12.
   - The schema lists the named rules, and a core test checks that every listed rule is implemented.
-  - `scripts/check.ts` fails on everything the content format lists. With `--release`, it also fails if any entry that would ship isn't `published`.
+  - `scripts/check.ts` fails on everything the content format lists, including any excerpt or duʿāʾ whose Arabic or English isn't an exact part of its stored source copy (M1.17), comparing both after NFC normalisation. Copied text is never corrected (C17). With `--release`, it also fails if any entry that would ship isn't `published`.
   - `scripts/build.ts` writes `dist/content.json` with the content version (`YYYY.MM.DD`, from the content package's version). Test builds pass `--include-review`, so content waiting for review appears in development and preview builds but never in production.
   - A `yaml-language-server` schema line at the top of each YAML file, so editors check as you type.
 - **Done when:** the check catches a fixture of each kind of failure.
@@ -365,16 +373,18 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 
 #### M1.17 Duʿāʾ and evidence · L
 
-The agent prepares the structure. The reviewer supplies what agents mustn't produce.
+Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobody types Arabic. The owner reads the result before production (D5).
 
-- **Needs:** M1.6.
+- **Needs:** M1.6, D16.
 - **Do:**
-  - `duas.yaml` holds the seven duʿāʾ. A script copies their Arabic from the prototype file byte for byte, never retyped. `textSource` is left for the reviewer, and every entry stays in review.
-  - `collections.yaml` and the evidence files hold an entry for every source in the calendar and the prototype: its label, link, collection and number, and the gradings the calendar states. Narrators, and anything else the specs don't state, are left for the reviewer.
-  - Qurʾan excerpts: a script downloads Tanzil's Uthmani text and copies each verse exactly.
-  - Hadith excerpts: the reviewer copies them from the named edition, or a script fetches them from the sunnah.com API if the owner has a key. Only then does the agent draft Adwam's English rendering of the copied Arabic, for the reviewer to approve.
-  - Fatwas and books: a one-sentence summary in Adwam's words, and an archived copy of each link.
-- **Done when:** the check passes outside release mode, and everything the reviewer must supply is an issue assigned to them.
+  - `scripts/fetch-sunnah.ts` copies, once, the sunnah.com page of every hadith the content cites, about 65 pages for version 1. It waits a few seconds between pages and sends a plain "Adwam content fetch" user agent. For each hadith it saves the Arabic, the English, the translator's credit, the gradings, the references, the URL and the date to `packages/content/sources/sunnah.com/<id>.json`. The copies are committed, so the pages aren't fetched again. Once the owner has an API key, the same script reads the API instead.
+  - `scripts/fetch-quran.ts` does the same for each cited verse on Quran.com: the Uthmani Arabic and the English translation from D16, saved to `sources/quran.com/`.
+  - `collections.yaml` and the evidence files hold an entry for every source: its label, link, collection and number, and the narrator and gradings as sunnah.com shows them. The excerpt is the relevant words, cut from the stored copy in Arabic and English, with `partial: true` when it isn't the whole text.
+  - `duas.yaml` holds the seven duʿāʾ. Each one's Arabic is cut from the stored copy of the hadith it comes from, replacing the prototype's Arabic wherever the two differ. Its meaning comes from sunnah.com's English of those words. The transliteration stays Adwam's.
+  - Where sunnah.com has no English for a hadith, the agent drafts one from the copied Arabic and marks it for the owner's read-through.
+  - Sources on neither site, al-Bayhaqī on hadithweb.com and al-Shāfiʿī's *al-Umm*, become book entries with a reference, a link and a one-sentence summary, like the fatwas. Every fatwa and book gets an archived copy of its link.
+- **Done when:** the check passes outside release mode, every excerpt matches its stored copy exactly, and the owner has a list for the read-through: the words each excerpt quotes, the gradings, and any English the agent drafted.
+- **If sunnah.com blocks the script,** the owner requests the API key now instead of later.
 
 #### M1.18 UI messages · M
 
@@ -462,7 +472,7 @@ The agent prepares the structure. The reviewer supplies what agents mustn't prod
 ### M2.10 Detail · M
 
 - **Needs:** M2.9, M1.17, D12.
-- **Do:** the header and status, What to do, the tick and tracker, the Quran.com button, the duʿāʾ with Copy, Sources with its notes and the expandable evidence, Your reminder, the weather credit, and the item ID and content version. Report a problem opens a sheet, then the GitHub issue form in the browser with the fields filled in.
+- **Do:** the header and status, What to do, the tick and tracker, the Quran.com button, the duʿāʾ with Copy, Sources with its notes and the expandable evidence, each translation credited to its translator and site, Your reminder, the weather credit, and the item ID and content version. Report a problem opens a sheet, then the GitHub issue form in the browser with the fields filled in.
 - **Done when:** every Sunnah's detail screen shows without missing fields, and only links need the network.
 
 ### M2.11 Sentry · S
@@ -558,11 +568,10 @@ The agent prepares the structure. The reviewer supplies what agents mustn't prod
 **Goal:** simulated rain reaches a phone, and a correction is offered and applied.
 
 **Owner:**
-- Create a Firebase project with an Android app for each app ID: development, preview and final (D2). Upload its service account key to EAS's credentials, and store `google-services.json` as an EAS file variable.
+
+- Create a Firebase project with an Android app for each app ID in D2. Upload its service account key to EAS's credentials, and store `google-services.json` as an EAS file variable.
 - Create an Expo access token and turn on Expo's enhanced push security. Add it to Supabase's secrets as `EXPO_ACCESS_TOKEN`, along with the functions' `SENTRY_DSN`.
-- Create the Supabase production project.
 - Name the admins, the owner and the helper, with their email addresses. Supabase's built-in email only reaches members of the Supabase organisation, so invite the helper or set up an email service on its free tier.
-- Answer D14.
 - Start recruiting 15–20 testers, including Samsung and Xiaomi owners.
 
 ### M5.1 Tables and access · M
@@ -603,7 +612,7 @@ The agent prepares the structure. The reviewer supplies what agents mustn't prod
 
 ### M5.10 Cleanup and schedules · S
 
-- The daily cleanup. `pg_cron` starts every job through `pg_net`, with a key from Supabase Vault that a short SQL script sets once per project. The owner runs it on staging and production.
+- The daily cleanup. `pg_cron` starts every job through `pg_net`, with a key from Supabase Vault that a short SQL script sets once per project. The owner runs it on staging now, and on production in M6.9.
 
 ### M5.11 Function tests · M
 
@@ -628,7 +637,7 @@ The agent prepares the structure. The reviewer supplies what agents mustn't prod
 
 ### M5.14 Staging deploys and health check · S
 
-- On merge to `main`, deploy migrations and functions to staging and publish an update to the preview channel. A daily workflow reads the last weather-tick run and the day's Open-Meteo calls on staging and production, and opens an issue if either is wrong. This also stops the free projects from pausing.
+- On merge to `master`, deploy migrations and functions to staging and publish an update to the preview channel. A daily workflow reads the last weather-tick run and the day's Open-Meteo calls on staging, and on production once it exists, and opens an issue if either is wrong. This also stops the free projects from pausing.
 
 **Exit check (architecture):** simulated rain on staging reaches a phone as a push and a card, and a correction published on the admin page is offered on a phone and applied. One install can't read another's data.
 
@@ -636,7 +645,7 @@ The agent prepares the structure. The reviewer supplies what agents mustn't prod
 
 **Goal:** no release blockers.
 
-**Owner:** create PostHog on its EU host, with the project key in EAS for production only. Answer D3 and D4. Arrange a check of the consent approach with someone who knows data-protection law. Approve the privacy policy and the store listing. Make sure the reviewer finishes the content review.
+**Owner:** set up production, now that everything works on staging: the Supabase production project, a second Supabase token scoped to it, and the `production` environment's secrets in GitHub, with yourself as a required reviewer. Create PostHog on its EU host, with the project key in EAS for production only. Confirm or change the accepted defaults, D3 and D4 especially. Arrange a check of the consent approach with someone who knows data-protection law. Approve the privacy policy and the store listing. Read through all the content (M6.6).
 
 ### M6.1 Accessibility · M
 
@@ -660,7 +669,7 @@ The agent prepares the structure. The reviewer supplies what agents mustn't prod
 
 ### M6.6 Content ready to ship · M
 
-- Every entry reviewed and published, so `content:check --release` passes. The calendar regenerated, and the link check clean. The Arabic checked on real phones: Amiri's letter joins and vowel marks intact and not clipped.
+- The owner reads every entry. The agent then marks each one published, with the owner as reviewer, so `content:check --release` passes. The calendar regenerated, and the link check clean. The Arabic checked on real phones: Amiri's letter joins and vowel marks intact and not clipped. Quran.com's Uthmani text uses marks that ordinary Amiri may draw badly; if it does, verses use Amiri Quran instead.
 
 ### M6.7 Privacy and store material · M
 
@@ -712,12 +721,12 @@ The agent prepares the structure. The reviewer supplies what agents mustn't prod
 | Workflow | Trigger | What it runs |
 |---|---|---|
 | `ci.yml` | Pull request | `pnpm check`, database tests, function tests, the calendar up-to-date check, the prototype match when core or content changes, and Expo's fingerprint check, which labels the PR `needs-new-build` |
-| `deploy-staging.yml` | Merge to `main` | `server:prepare`, staging migrations and functions, and an update to the preview channel |
+| `deploy-staging.yml` | Merge to `master` | `server:prepare`, staging migrations and functions, and an update to the preview channel |
 | `preview-build.yml` | By hand, and weekly | A preview APK, with the permission check from M4.7 |
 | `release.yml` | Tag `v*` | After approval: production migrations and functions, a production build, and an upload to internal testing |
 | `content-release.yml` | Tag `content-*` | If the fingerprint is unchanged, an update to production at 10% |
 | `e2e-nightly.yml` | Nightly | The Maestro suite on an emulator, against local Supabase |
-| `daily-health.yml` | Daily | The weather job and the Open-Meteo budget, on staging and production |
+| `daily-health.yml` | Daily | The weather job and the Open-Meteo budget, on staging, and on production from M6.9 |
 | `weekly-links.yml` | Weekly | The source link check |
 | `admin-pages.yml` | Changes in `apps/admin` | Builds and deploys the admin page |
 
@@ -740,8 +749,9 @@ The architecture's milestone 0 risks are covered by M0.8. These are the plan's o
 
 | Risk | Effect | Response |
 |---|---|---|
-| No reviewer, or a slow one | Content can't be published, so there's no release | Answer D5 in milestone 1. Test builds use content in review. Review one section at a time. |
-| Agents can't supply the Arabic | Evidence stays empty | Tanzil by script for the Qurʾan. The sunnah.com API, or the reviewer, for hadith. |
+| The owner's read-through comes late | Content that isn't published can't ship to production | Start once M1.17 is done, one section at a time. Scripts copy the texts, so it's reading, not typing. Development never waits for it. |
+| sunnah.com blocks the one-time copy | Evidence stays empty | The script runs once, slowly, and its copies are committed. If it's blocked, the owner requests the API key early. |
+| A translator or publisher objects to their text being quoted | That text has to come out | Every excerpt records its translator and site, and About credits them. Swapping a text for Adwam's own rendering is a content update. |
 | Approximate notifications arrive late | Short-window reminders miss their window | Measured in M0.8, with options for the owner |
 | Supabase's anonymous sign-in is abused | Fake installs and wasted pushes | Supabase's sign-in rate limits, the cleanup job, install counts in the health check, and CAPTCHA later if needed |
 | A content or app update meets older saved data | Settings or ticks lost or broken | Versioned stores with migrations, fingerprint runtime versions, and snapshot tests of tick keys |
@@ -753,19 +763,20 @@ The architecture's milestone 0 risks are covered by M0.8. These are the plan's o
 
 | When | What | How long it takes |
 |---|---|---|
-| Before M0 | Approve the drafts (D1) and read this plan | — |
-| M0 | Expo account, CLI logins, Supabase staging, GitHub environments and secrets, branch protection, Docker, two phones for the risk tests | About an hour, plus finding phones |
-| M1 | Name the reviewer (D5). Answer D7–D11. Optionally, a sunnah.com API key. | — |
+| Before M0 | Done: drafts approved, app IDs chosen, defaults accepted | — |
+| M0 | Switching `eas` to MSalman5230, Supabase staging, the GitHub environments and staging secrets, branch protection on `master`, Docker, two phones for the risk tests | About an hour, plus finding phones |
+| M1 | Nothing | — |
 | M2 | Sentry, with its DSN and token in EAS. Try the preview build. | Half an hour |
 | M3 | Approve the screens | — |
 | M4 | Google Play Console account, and the four test phones | Days for the identity check |
-| M5 | Firebase, the FCM key and `google-services.json` in EAS, the Expo access token, Supabase secrets, the production project, the admins, D2, D14, testers | Recruiting takes days |
-| M6 | PostHog, D3, D4, the legal check, the privacy policy, the store listing, the content sign-off | The legal check may take weeks |
+| M5 | Firebase, the FCM key and `google-services.json` in EAS, the Expo access token, Supabase secrets on staging, the admins, testers | Recruiting takes days |
+| M6 | The production project and its secrets, PostHog, confirming the defaults, the legal check, the privacy policy, the store listing, the content read-through | The legal check may take weeks |
 | M7 | First upload, closed test, production access, rollout approvals | At least 14 days, plus Google's review |
 | M8 | Apple account, APNs and App Store Connect keys | Days |
 
 ## After version 1
 
+- A sunnah.com API key from the owner. The fetch script then reads new hadith from the API, and compares the API's text with the stored copies.
 - Translations as overlay files, then an Arabic interface written right to left.
 - Home-screen widgets.
 - A month grid on Upcoming.
