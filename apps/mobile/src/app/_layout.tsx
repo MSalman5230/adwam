@@ -2,11 +2,14 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useStore } from 'zustand';
 
+import { startCrashReporting } from '../services/crash-reporting';
 import { settingsStore } from '../state/native';
 import { useForegroundClock } from '../state/useClock';
 import { bundledFonts } from '../theme/fonts';
 import { isTestBuild } from '../theme/isTestBuild';
 import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
+
+startCrashReporting();
 
 export const unstable_settings = { anchor: '(tabs)' };
 
