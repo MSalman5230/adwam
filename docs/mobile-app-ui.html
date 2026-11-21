@@ -334,6 +334,13 @@ button{font:inherit;color:inherit}
 .src:first-child{border-top:0}
 .src .ms{font-size:18px;color:var(--ink-3)}
 .src:hover span:first-child{text-decoration:underline;text-underline-offset:3px}
+.evidence{border-top:1px solid var(--hair)}
+.evidence:first-child{border-top:0}
+.evidence>.src{cursor:pointer;list-style:none}
+.evidence>.src::-webkit-details-marker{display:none}
+.evidence[open]>summary .ms{transform:rotate(180deg)}
+.evidence .grade{display:block;color:var(--ink-3);font-size:12px;margin-top:4px}
+.evidence .excerpt{padding:0 0 12px}
 .cap{font:400 13.5px/1.45 var(--sans);color:var(--ink-2);margin-top:10px}
 .foot-links{margin-top:28px;padding-top:6px;border-top:1px solid var(--hair);display:flex;flex-direction:column;gap:2px}
 .foot-links .btn.text{justify-content:flex-start;padding:0 8px;margin-left:-8px}
@@ -709,7 +716,7 @@ function civil(ms) { const p = tzParts(ms, city().tz); return {iso: `${p.year}-$
    Content (from sunnah-reminder-calendar.md)
    ========================================================= */
 const SN = p => 'https://sunnah.com/' + p;
-const s = (label, url) => ({label, url});
+const s = (label, url, grade) => ({label, url, grade});
 const ITEMS = {
   /* Weekly */
   monthu: {group:'weekly', name:'Monday and Thursday fast', tier:'push', fast:true,
@@ -758,7 +765,7 @@ const ITEMS = {
     dua:{ar:'اللَّهُمَّ أَهْلِلْهُ عَلَيْنَا بِالْيُمْنِ وَالْإِيمَانِ، وَالسَّلَامَةِ وَالْإِسْلَامِ، رَبِّي وَرَبُّكَ اللَّهُ', tr:'Allāhumma ahlilhu ʿalaynā bil-yumni wal-īmān, was-salāmati wal-islām. Rabbī wa rabbuka Allāh.', en:'O Allah, bring it over us with blessing and faith, safety and Islam. My Lord and your Lord is Allah.'},
     notes:['Al-Tirmidhī called the report ḥasan gharīb. The Darussalam edition grades its chain weak.'],
     when:'From Maghrib on the 29th, and the 30th if the month continues.',
-    sources:[s('Tirmidhī 3451', SN('tirmidhi:3451'))]},
+    sources:[s('Tirmidhī 3451', SN('tirmidhi:3451'), 'Ḥasan gharīb (al-Tirmidhī) · Weak (Darussalam)')]},
   whiteDays: {group:'monthly', name:'White Days fast', tier:'push', fast:true,
     short:'Fast the 13th, 14th and 15th.',
     what:['Fast three days. Any three days in the month also fulfill the practice, and a Monday or Thursday fast counts toward them.'],
@@ -927,6 +934,7 @@ const GROUPS = [
   {id:'weather', name:'Weather and eclipses'},
 ];
 const GROUP_LABEL = {weekly:'Weekly', monthly:'Monthly', yearly:'Yearly', weather:'Weather', disputed:'Disputed'};
+const CHANNELS = [...GROUPS, {id:'corrections', name:'Date corrections'}, {id:'corrections-silent', name:'Date corrections (silent)'}];
 const itemsIn = g => Object.keys(ITEMS).filter(id => ITEMS[id].group === g && !ITEMS[id].hidden);
 
 /* =========================================================
@@ -938,7 +946,8 @@ const MOMENTS = [
   {id:'fri-pm', label:'Friday afternoon, rain', sub:'Rain card, last hour of Friday, al-Kahf done', date:'2026-12-18', time:'15:08', rain:true, done:{'kahf:2026-12-17':true}},
   {id:'tue', label:'A quiet Tuesday', sub:'Nothing active, so Coming up moves up', date:'2026-12-01', time:'10:02'},
   {id:'white', label:'White Days', sub:'Fasting tracker at 1 of 3', date:'2026-12-22', time:'10:02', fasts:['2026-12-14']},
-  {id:'shaban', label:'End of Shaʿbān', sub:'Notifications off, a date correction, make-up days', date:'2027-02-06', time:'10:02', notif:'denied', correction:true, makeup:3},
+  {id:'shaban', label:'End of Shaʿbān', sub:'Notifications off and make-up days', date:'2027-02-06', time:'10:02', notif:'denied', makeup:3},
+  {id:'correction', label:'Date correction offer', sub:'An announced Ramadan start in the United Kingdom', date:'2027-02-06', time:'10:02', correction:true},
   {id:'qadr', label:'Last ten nights', sub:'After Maghrib, so the Hijri day has turned', date:'2027-02-27', time:'19:40'},
   {id:'shawwal', label:'Shawwāl, on a Monday', sub:'Six fasts at 3 of 6, three days to make up', date:'2027-03-29', time:'10:02', fasts:['2027-03-15','2027-03-18','2027-03-22'], makeup:3},
   {id:'dq', label:'Mid Dhul-Qaʿdah', sub:'The uḍḥiyah question, White Days 2 of 3', date:'2027-04-22', time:'10:02', fasts:['2027-04-20','2027-04-21'], udhiyah:null},
@@ -949,7 +958,8 @@ function defaults() {
     tab: 'today', stack: [],
     city: 'london', locMode: 'current', method: 'mwl', asr: 'standard', jumuah: {mode: 'fixed', time: '13:30'},
     hijriMethod: 'umalqura', hijriShift: 0, quiet: {start: '22:00', end: '07:00'}, eclipseQuiet: false,
-    udhiyah: null, theme: 'system', notif: 'unset', channels: {weekly: true, monthly: true, yearly: true, weather: true},
+    udhiyah: null, theme: 'system', notif: 'unset', channels: Object.fromEntries(CHANNELS.map(c => [c.id, true])),
+    correctionChoice: null, usagePrompt: false, usageStats: false, crashReports: true,
     choice: {}, groupOn: {weekly: true, monthly: true, yearly: true, weather: true}, expanded: {weekly: true},
     pause: null, done: {}, fastLog: {}, makeup: 3, dismissed: {}, notifGone: {},
     moment: 'fri-am', date: '2026-12-18', minutes: 690, rain: false, rainAt: null, correction: false, filter: 'all',
@@ -968,7 +978,7 @@ function save() { clearTimeout(saveT); saveT = setTimeout(() => { try { localSto
    Calendar engine
    ========================================================= */
 const city = () => CITIES[S.city] || CITIES.london;
-const cfgKey = () => [S.city, S.method, S.asr, S.jumuah.mode, S.jumuah.time, S.hijriMethod, S.hijriShift, S.udhiyah].join('|');
+const cfgKey = () => [S.city, S.method, S.asr, S.jumuah.mode, S.jumuah.time, S.hijriMethod, S.hijriShift, S.udhiyah, S.correctionChoice].join('|');
 let CACHE = {key: '', day: {}, occ: {}};
 function cache() { const k = cfgKey(); if (CACHE.key !== k) CACHE = {key: k, day: {}, occ: {}}; return CACHE; }
 const HFMT = {};
@@ -979,7 +989,16 @@ function hijriRaw(iso) {
   for (const p of f.formatToParts(new Date(Date.UTC(y, m - 1, d, 12)))) o[p.type] = p.value;
   return {hd: parseInt(o.day, 10), hm: parseInt(o.month, 10), hy: parseInt(o.year, 10)};
 }
-const hijriOf = iso => hijriRaw(isoAdd(iso, S.hijriShift));
+const RAMADAN_OFFER = {country:'United Kingdom', start:'2027-02-07', end:'2027-03-09', month:9, year:1448};
+const calculatedHijri = iso => hijriRaw(isoAdd(iso, S.hijriShift));
+const correctionApplies = () => city().country === RAMADAN_OFFER.country;
+function hijriOf(iso) {
+  const {start, end, month, year} = RAMADAN_OFFER;
+  if (S.correctionChoice === 'accepted' && correctionApplies() && iso >= start && iso < end) {
+    return {hd:dayDiff(iso, start) + 1, hm:month, hy:year};
+  }
+  return calculatedHijri(iso);
+}
 function dayInfo(iso) {
   const C = cache(); if (C.day[iso]) return C.day[iso];
   const c = city(), [y, m, d] = isoParts(iso);
@@ -1246,7 +1265,14 @@ function notices() {
   const out = [], h = effHijri();
   const anyPush = Object.keys(ITEMS).some(id => level(id) === 'push');
   if (S.notif !== 'granted' && anyPush) out.push(`<div class="notice"><div class="ic">${I('notifications_off')}</div><div class="tx"><div class="t">Notifications are off</div><div class="s">Push reminders can’t reach you, so check here.</div><div class="acts"><button class="btn outlined sm" data-act="sheet" data-v="android">Open settings</button></div></div></div>`);
-  if (S.correction && !S.dismissed.correction) out.push(`<div class="notice"><div class="ic">${I('event')}</div><div class="tx"><div class="t">Date correction</div><div class="s">Ramadan starts on Sunday in your region, not Monday. Your dates follow the announcement.</div></div><button class="iconbtn x" data-act="dismiss" data-v="correction" aria-label="Dismiss">${I('close')}</button></div>`);
+  if (S.correction && !S.correctionChoice && correctionApplies()) {
+    const dates = [-2, -1, 0, 1, 2].map(offset => isoAdd(RAMADAN_OFFER.start, offset));
+    const ownStart = dates.find(iso => { const h = calculatedHijri(iso); return h.hm === RAMADAN_OFFER.month && h.hd === 1; });
+    if (ownStart && ownStart !== RAMADAN_OFFER.start) {
+      out.push(`<div class="notice"><div class="ic">${I('event')}</div><div class="tx"><div class="t">Date correction</div><div class="s">Ramadan starts on Sunday in the United Kingdom. Your app says ${WD[wdOf(ownStart)]}.</div><div class="acts"><button class="btn tonal sm" data-act="correction-choice" data-v="accepted">Use Sunday</button><button class="btn outlined sm" data-act="correction-choice" data-v="declined">Keep my dates</button></div></div></div>`);
+    }
+  }
+  if (S.usagePrompt) out.push(`<div class="notice"><div class="ic">${I('privacy_tip')}</div><div class="tx"><div class="t">Share anonymous usage statistics?</div><div class="s">Help improve Adwam. You can change this in Privacy.</div><div class="acts"><button class="btn outlined sm" data-act="usage-choice" data-v="share">Share</button><button class="btn outlined sm" data-act="usage-choice" data-v="decline">No thanks</button></div></div></div>`);
   if (h.hm === 11 && h.hd >= 10 && h.hd <= 28 && S.udhiyah === null) out.push(`<div class="notice"><div class="ic">${CRESCENT()}</div><div class="tx"><div class="t">Are you offering an uḍḥiyah this year?</div><div class="s">Only Yes turns on the hair-and-nails reminder before Dhul-Ḥijjah.</div><div class="acts"><button class="btn tonal sm" data-act="udhiyah" data-v="yes">Yes</button><button class="btn outlined sm" data-act="udhiyah" data-v="no">No</button></div></div></div>`);
   if (paused()) out.push(`<div class="notice"><div class="ic">${I('pause_circle')}</div><div class="tx"><div class="t">Fasting reminders paused</div><div class="s">${S.pause.until ? 'Until ' + fmtLong(S.pause.until) + '.' : 'Until you turn them back on.'}</div><div class="acts"><button class="btn outlined sm" data-act="resume">Resume now</button></div></div></div>`);
   return out.join('');
@@ -1421,7 +1447,7 @@ function renderDetail(r) {
   if (r.item === 'makeup') mk = S.makeup ? `<div class="tracker" style="justify-content:space-between"><span><b style="font:650 22px/1 var(--serif);color:var(--ink)">${S.makeup}</b>&nbsp; left to make up</span><button class="btn tonal sm" data-act="logmakeup">${I('check')}Log one</button></div>` : `<p class="cap">${S.makeup === 0 ? 'All made up.' : 'Not set yet.'}</p>`;
   const dua = it.dua ? sec('Duʿāʾ') + `<div class="dua"><div class="ar" lang="ar">${it.dua.ar}</div><div class="tr">${esc(it.dua.tr)}</div><div class="en">${esc(it.dua.en)}</div><div class="acts"><button class="btn outlined sm" data-act="copy" data-v="${esc(it.dua.ar + '\n' + it.dua.tr + '\n' + it.dua.en)}">${I('content_copy')}Copy</button></div></div>` : '';
   const what = it.what.map(p => `<p class="body">${fmt(p)}</p>`).join('');
-  const sources = sec('Sources') + (it.notes || []).map(n => `<p class="note">${fmt(n)}</p>`).join('') + `<div class="srcs" style="margin-top:${it.notes ? 10 : 0}px">${it.sources.map(x => `<a class="src" href="${esc(x.url)}" target="_blank" rel="noopener" data-act="ext"><span>${esc(x.label)}</span>${I('open_in_new')}</a>`).join('')}</div>`;
+  const sources = sec('Sources') + (it.notes || []).map(n => `<p class="note">${fmt(n)}</p>`).join('') + `<div class="srcs" style="margin-top:${it.notes ? 10 : 0}px">${it.sources.map(evidenceRow).join('')}</div>`;
   const reminder = it.hidden ? '' : sec('Your reminder') + seg(reminderOpts(r.item), lv, 'choice', `data-item="${r.item}"`) + `<p class="cap">${
     lv === 'off' ? (it.group !== 'disputed' && !S.groupOn[it.group] ? `The ${GROUP_LABEL[it.group]} group is off in Settings.` : 'Off. No card and no notification.') :
     lv === 'inapp' ? (it.tier === 'push' ? 'Shows on Today during its window, with no notification.' : 'Shows on Today during its window. This one has no push time.') :
@@ -1437,6 +1463,19 @@ function renderDetail(r) {
   </div>`;
 }
 
+function evidenceRow(source) {
+  const host = new URL(source.url).hostname;
+  const link = label => `<a class="src" href="${esc(source.url)}" target="_blank" rel="noopener" data-act="ext"><span>${esc(label)}</span>${I('open_in_new')}</a>`;
+  if (host !== 'sunnah.com' && host !== 'quran.com') return link(source.label);
+  const hadith = host === 'sunnah.com';
+  const grade = hadith ? `<small class="grade">${esc(source.grade || '[Grade, where listed]')}</small>` : '';
+  return `<details class="evidence"><summary class="src"><span>${esc(source.label)}${grade}</span>${I('expand_more')}</summary>
+    <div class="excerpt"><p class="prose" dir="rtl">[Arabic excerpt copied from ${host}]</p>
+    <p class="prose">[English meaning copied from ${host}]</p>
+    ${hadith ? '<p class="note">Narrator: [as listed on Sunnah.com]</p>' : ''}
+    <p class="note">${hadith ? 'Translation: [credit as listed on Sunnah.com]' : 'Translation: The Clear Quran, Dr. Mustafa Khattab'}</p>
+    ${link(hadith ? 'Read on Sunnah.com' : 'Read on Quran.com')}</div></details>`;
+}
 /* Settings */
 function renderSettings() {
   const pz = paused() ? (S.pause.until ? 'Until ' + fmtShort(S.pause.until) : 'Until you turn them on') : 'Off';
@@ -1448,7 +1487,7 @@ function renderSettings() {
   return `<div class="scroll"><header class="hero"><h1 class="page-title">Settings</h1><div class="sub">Saved on this phone. No account needed.</div></header>
     <div class="glabel">Reminders</div><div class="list">
       ${row('tune', 'Reminders', esc(presetSummary()), 'push', 'reminders')}
-      ${row(S.notif === 'granted' ? 'notifications' : 'notifications_off', 'Notifications', S.notif === 'granted' ? 'Allowed · a channel for each group' : 'Off in Android settings', 'sheet', 'android')}
+      ${row(S.notif === 'granted' ? 'notifications' : 'notifications_off', 'Notifications', S.notif === 'granted' ? 'Allowed · manage Android channels' : 'Off in Android settings', 'sheet', 'android')}
       ${row('bedtime', 'Quiet hours', `${fmtHM(toMin(S.quiet.start))} – ${fmtHM(toMin(S.quiet.end))}${S.eclipseQuiet ? ' · eclipses can notify' : ''}`, 'sheet', 'quiet')}
       ${row('pause_circle', 'Pause fasting reminders', pz, 'sheet', 'pause')}
     </div>
@@ -1463,6 +1502,7 @@ function renderSettings() {
     </div>
     <div class="glabel">App</div><div class="list">
       ${row(S.theme === 'dark' ? 'dark_mode' : S.theme === 'light' ? 'light_mode' : 'brightness_auto', 'Appearance', th, 'sheet', 'theme')}
+      ${row('privacy_tip', 'Privacy', 'Crash reports, usage statistics and server data', 'sheet', 'privacy')}
       ${row('info', 'About Adwam', 'Sources, privacy, credits · version 1.0.0', 'push', 'about')}
     </div></div>`;
 }
@@ -1513,9 +1553,13 @@ function renderAbout() {
   return `<header class="appbar"><button class="iconbtn" data-act="back" aria-label="Back">${I('arrow_back')}</button><div class="ab-title">About</div></header>
   <div class="scroll"><div class="about-hero"><div class="app-icon">${CRESCENT()}</div><h1>Adwam</h1><p>Sunnah practices, timed to your Hijri date<br>and prayer times.</p><div class="kv ver"><span>App 1.0.0</span><span>Content ${CONTENT_VERSION}</span></div></div>
     ${sec('Sources')}<p class="prose">Content comes from Sunni hadith and fiqh. Gradings and differences of opinion are shown in full, and every item has a Report a problem link.</p>
-    ${sec('Privacy')}<p class="prose">No account or sign-in. The server knows this phone only by an anonymous install ID, its push token and the settings it needs for weather pushes. Trackers stay on the phone.</p>
-    ${sec('Credits')}<div class="srcs"><a class="src" href="https://open-meteo.com/" target="_blank" rel="noopener" data-act="ext"><span>Weather data by Open-Meteo.com</span>${I('open_in_new')}</a><a class="src" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" data-act="ext"><span>CC BY 4.0 licence</span>${I('open_in_new')}</a></div>
-    ${sec('Open source')}<div class="srcs"><a class="src" href="https://github.com/" target="_blank" rel="noopener" data-act="ext"><span>View the code on GitHub</span>${I('open_in_new')}</a></div>
+    ${sec('Privacy')}<p class="prose">Adwam has no account. Its server receives an anonymous install ID, a push token and the settings it needs for reminders. It receives a rough area only for weather. Your trackers stay on this phone.</p>
+    <p class="prose">Sentry receives crash reports when enabled. PostHog receives anonymous usage statistics if you opt in. Manage both and delete your server data in Settings → Privacy.</p>
+    ${sec('Credits')}<div class="srcs"><a class="src" href="https://open-meteo.com/" target="_blank" rel="noopener" data-act="ext"><span>Weather data by Open-Meteo.com</span>${I('open_in_new')}</a><a class="src" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" data-act="ext"><span>CC BY 4.0 licence</span>${I('open_in_new')}</a>
+    <a class="src" href="https://www.geonames.org/" target="_blank" rel="noopener" data-act="ext"><span>City data by GeoNames</span>${I('open_in_new')}</a>
+    <a class="src" href="https://sunnah.com/" target="_blank" rel="noopener" data-act="ext"><span>Hadith and translations from Sunnah.com</span>${I('open_in_new')}</a>
+    <a class="src" href="https://quran.com/" target="_blank" rel="noopener" data-act="ext"><span>Qurʾan from Quran.com · The Clear Quran, Dr. Mustafa Khattab</span>${I('open_in_new')}</a></div>
+    ${sec('Open source')}<div class="srcs"><a class="src" href="https://github.com/MSalman5230/adwam" target="_blank" rel="noopener" data-act="ext"><span>View the code on GitHub</span>${I('open_in_new')}</a></div>
   </div>`;
 }
 
@@ -1528,7 +1572,7 @@ function renderSetup() {
   if (st === 1) {
     body = `<div class="welcome"><div class="app-icon">${CRESCENT()}</div><div><div class="wm">Adwam</div><div class="tg">Sunnah practices, timed to your Hijri date and prayer times.</div></div></div>
       <div class="over" style="margin-top:22px">Step 1 of 4</div><h1 class="setup-h">Where are you?</h1><p class="setup-p">Prayer times and weather reminders depend on your area.</p>
-      <div class="promise"><div>${I('lock')}<span><b>No account</b><span class="d">Your settings and trackers stay on this phone.</span></span></div>
+      <div class="promise"><div>${I('lock')}<span><b>No account</b><span class="d">Your trackers stay on this phone.</span></span></div>
       <div>${I('location_on')}<span><b>An approximate area</b><span class="d">Only a rough area is sent, and only for weather.</span></span></div>
       <div>${I('notifications')}<span><b>About 4 reminders a week</b><span class="d">You choose which ones, and can change it any time.</span></span></div></div>`;
     actions = `<button class="btn filled" data-act="uselocation" ${UI.locBusy ? 'disabled' : ''}>${I('my_location')}${UI.locBusy ? 'Finding you…' : 'Use my location'}</button><button class="btn outlined" data-act="sheet" data-v="city">${I('search')}Pick a city</button>`;
@@ -1541,7 +1585,7 @@ function renderSetup() {
       <div style="margin-top:10px">${seg([['-1', '−1'], ['0', '0'], ['1', '+1']], String(S.hijriShift), 'shift')}</div>
       ${weekStrip()}
       <div class="promise" style="margin-top:16px"><div>${I('bedtime')}<span><span class="d">${h.after ? `It’s after Maghrib, so the new Hijri day has begun.` : `The Hijri day begins at Maghrib. After ${fmtTime(D.t.maghrib)} today it becomes ${nxt.hd} ${HM[nxt.hm]}.`}</span></span></div>
-      <div>${I('calendar_month')}<span><span class="d">Calculated with Umm al-Qura. Dates announced for your region take priority.</span></span></div></div>`;
+      <div>${I('calendar_month')}<span><span class="d">Calculated with Umm al-Qura. When an announced date differs in your region, Adwam offers a correction.</span></span></div></div>`;
     actions = `<button class="btn filled" data-act="next">Continue</button>`;
   } else if (st === 3) {
     const opt = (v, t, d, k) => `<div class="radio-card ${S.setupPreset === v ? 'on' : ''}" data-act="setpreset" data-v="${v}" role="radio" aria-checked="${S.setupPreset === v}" tabindex="0"><span class="radio"></span><div><div class="t">${t}</div><div class="s">${d}</div>${k ? `<div class="k">${k}</div>` : ''}</div></div>`;
@@ -1653,10 +1697,12 @@ function sheetHTML(id) {
     }
     case 'hijri': {
       const h = effHijri();
-      return `<h2>Hijri date</h2><p class="lead">Dates announced for your region take priority over the calculation.</p>
+      return `<h2>Hijri date</h2><p class="lead">When an announced date differs in your region, Adwam offers a correction. You choose which date to use.</p>
         <div class="glabel" style="margin-top:18px">Calculation</div><div class="opts">${opt(S.hijriMethod === 'umalqura', 'Umm al-Qura', 'The default', 'hmethod', 'umalqura')}${opt(S.hijriMethod === 'civil', 'Tabular', 'A fixed arithmetic calendar', 'hmethod', 'civil')}</div>
         <div class="glabel">Shift for your area</div>${seg([['-1', '−1 day'], ['0', 'None'], ['1', '+1 day']], String(S.hijriShift), 'shift')}
-        <div class="preview-line"><b>${nw(`${h.hd} ${HM[h.hm]} ${h.hy}`)}</b>Today, ${fmtLong(S.date)}</div>`;
+        <div class="preview-line"><b>${nw(`${h.hd} ${HM[h.hm]} ${h.hy}`)}</b>Today, ${fmtLong(S.date)}</div>
+        <div class="glabel">Accepted corrections</div>
+        ${S.correctionChoice === 'accepted' ? `<div class="opt"><div class="tx"><div class="t">Ramadan 1448 · United Kingdom</div><div class="s">Starts ${fmtLong(RAMADAN_OFFER.start, true)}</div></div><button class="btn outlined sm" data-act="correction-remove">Remove</button></div>` : '<p class="cap">No accepted corrections.</p>'}`;
     }
     case 'quiet': {
       const hours = Array.from({length: 24}, (_, i) => pad(i) + ':00');
@@ -1677,6 +1723,14 @@ function sheetHTML(id) {
     case 'theme':
       return `<h2>Appearance</h2><p class="lead">The dark theme is easier on the eyes at night, after ʿIshāʾ or in the last ten nights.</p>
         <div class="opts" style="margin-top:16px">${opt(S.theme === 'system', 'Match the phone', '', 'theme', 'system')}${opt(S.theme === 'light', 'Light', 'Paper and ink', 'theme', 'light')}${opt(S.theme === 'dark', 'Dark', 'Night ink', 'theme', 'dark')}</div>`;
+    case 'privacy':
+      return `<h2>Privacy</h2><div class="opts" style="margin-top:16px">
+        <div class="opt" data-act="crash-reports"><div class="tx"><div class="t">Crash reports</div><div class="s">Send crash reports through Sentry.</div></div>${sw(S.crashReports, 'crash-reports', 'aria-label="Crash reports"')}</div>
+        <div class="opt" data-act="usage-stats"><div class="tx"><div class="t">Anonymous usage statistics</div><div class="s">Share app usage through PostHog.</div></div>${sw(S.usageStats, 'usage-stats', 'aria-label="Anonymous usage statistics"')}</div>
+        </div><button class="btn outlined" style="margin-top:20px" data-act="privacy-delete">Delete my data from the server</button>`;
+    case 'privacy-confirm':
+      return `<h2>Delete server data?</h2><p class="lead">This removes your anonymous install and its reminder settings from the server. Your trackers stay on this phone.</p>
+        <div class="acts"><button class="btn outlined" data-act="sheet" data-v="privacy">Cancel</button><button class="btn filled" data-act="privacy-confirm">Delete</button></div>`;
     case 'report': {
       const it = ITEMS[UI.reportItem] || {};
       return `<h2>Report a problem</h2><p class="lead">This opens an issue form with the item and content version filled in. Fixes ship within days.</p>
@@ -1685,15 +1739,15 @@ function sheetHTML(id) {
         <button class="btn filled" data-act="sendreport">Open the issue form</button>`;
     }
     case 'android':
-      return `<h2 style="font-family:var(--sans);font-weight:500">Adwam notifications</h2><p class="lead">Android settings · one channel for each reminder group</p>
+      return `<h2 style="font-family:var(--sans);font-weight:500">Adwam notifications</h2><p class="lead">Android settings · notification channels</p>
         <div class="opts" style="margin-top:16px"><div class="opt" data-act="notifsw"><div class="tx"><div class="t" style="font-weight:600">All Adwam notifications</div></div>${sw(S.notif === 'granted', 'notifsw')}</div></div>
-        <div class="opts" style="margin-top:12px;${S.notif === 'granted' ? '' : 'opacity:.45;pointer-events:none'}">${GROUPS.map(g => `<div class="opt" data-act="channel" data-v="${g.id}"><div class="tx"><div class="t">${g.name}</div></div>${sw(S.channels[g.id] !== false, 'channel', `data-v="${g.id}"`)}</div>`).join('')}</div>`;
+        <div class="opts" style="margin-top:12px;${S.notif === 'granted' ? '' : 'opacity:.45;pointer-events:none'}" ${S.notif === 'granted' ? '' : 'inert'}>${CHANNELS.map(g => `<div class="opt" data-act="channel" data-v="${g.id}"><div class="tx"><div class="t">${g.name}</div>${g.id === 'corrections-silent' ? '<div class="s">Used during quiet hours</div>' : ''}</div>${sw(S.channels[g.id] !== false, 'channel', `data-v="${g.id}" aria-label="${g.name}"`)}</div>`).join('')}</div>`;
   }
   return '';
 }
 function dialogHTML(id) {
   if (id === 'loc') return `<div class="sysdlg" role="dialog"><div class="sic">${I('location_on', 'fill')}</div><h3>Allow <b>Adwam</b> to access this device’s location?</h3>
-    <div class="loc-opts"><div class="on"><i></i>Precise</div><div class="approx"><i></i>Approximate</div></div>
+    <div class="loc-opts"><div class="approx on"><i></i>Approximate</div></div>
     <div class="sysbtns"><button data-act="locperm" data-v="while">While using the app</button><button data-act="locperm" data-v="once">Only this time</button><button data-act="locperm" data-v="deny">Don’t allow</button></div></div>`;
   if (id === 'notif') return `<div class="sysdlg" role="dialog"><div class="sic">${CRESCENT()}</div><h3>Allow <b>Adwam</b> to send you notifications?</h3>
     <div class="sysbtns"><button data-act="notifperm" data-v="granted">Allow</button><button data-act="notifperm" data-v="denied">Don’t allow</button></div></div>`;
@@ -1822,6 +1876,7 @@ function tick(key, fastDate) {
 }
 function finishSetup() {
   S.setupDone = true; S.tab = 'today'; S.stack = []; UI.anim = 'fade';
+  S.usagePrompt = !S.usageAnswered;
   if (S.setupPreset === 'custom') { applyPreset('recommended'); UI.fromSetup = true; S.stack = [{s: 'reminders'}]; UI.anim = 'push'; }
   render();
   if (S.setupPreset !== 'custom') snack('You’re all set. Change anything in Settings.');
@@ -1860,7 +1915,7 @@ function applyMoment(id) {
   const m = MOMENTS.find(x => x.id === id); if (!m) return;
   S.moment = id; S.date = m.date; S.minutes = toMin(m.time);
   S.rain = !!m.rain; S.rainAt = m.rain ? S.minutes - 8 : null;
-  S.correction = !!m.correction; S.dismissed = {}; S.notifGone = {};
+  S.correction = !!m.correction; S.correctionChoice = null; S.usagePrompt = false; S.dismissed = {}; S.notifGone = {};
   S.notif = m.notif || 'granted';
   S.done = Object.assign({}, m.done || {});
   S.fastLog = {}; for (const d of m.fasts || []) S.fastLog[d] = true;
@@ -1907,6 +1962,20 @@ document.addEventListener('click', e => {
     case 'resume': S.pause = null; closeOverlay(); render(); snack('Fasting reminders are back on'); break;
     case 'filter': S.filter = v; render(); break;
     case 'dismiss': S.dismissed[v] = true; render(); break;
+    case 'correction-choice':
+      S.correctionChoice = v; render();
+      snack(v === 'accepted' ? 'Ramadan now starts on Sunday' : 'Your dates are unchanged', 'Undo', () => { S.correctionChoice = null; render(); });
+      break;
+    case 'correction-remove': S.correctionChoice = 'removed'; render(); snack('Correction removed'); break;
+    case 'usage-choice':
+      S.usageStats = v === 'share'; S.usageAnswered = true; S.usagePrompt = false; render(); break;
+    case 'usage-stats':
+      S.usageStats = !S.usageStats; S.usageAnswered = true; S.usagePrompt = false; render(); break;
+    case 'crash-reports': S.crashReports = !S.crashReports; render(); break;
+    case 'privacy-delete': openSheet('privacy-confirm'); break;
+    case 'privacy-confirm':
+      S.correction = false; S.correctionChoice = null; S.rain = false; S.rainAt = null;
+      openSheet('privacy'); render(); snack('Server data deleted'); break;
     case 'udhiyah': {
       S.udhiyah = v === 'null' ? null : v; render();
       if (v === 'yes') snack('Hair-and-nails reminder is on for 29 Dhul-Qaʿdah');
@@ -1999,7 +2068,7 @@ const REVIEW = [
   {n:'06', f:'06-today-friday.png', t:'Today · Friday', issue:'The reference screen. Bells sat apart from the times they belonged to.', fix:'Kept the layout. Added the day line, a one-tap banner, and a link to all upcoming items.', go:['moment', 'fri-am']},
   {n:'07', f:'07-today-friday-done.png', t:'Today · done card', issue:'Good behaviour, shown as a separate screen.', fix:'Tick any card: it dims, drops below open cards, and the snackbar offers Undo.', go:['moment', 'fri-am']},
   {n:'08', f:'08-today-quiet.png', t:'Today · quiet day', issue:'Lower half empty; “Nothing special right now” was a lone line.', fix:'The empty state names what’s next and when, and the day line keeps the screen anchored.', go:['moment', 'tue']},
-  {n:'09', f:'09-today-notices.png', t:'Today · notices', issue:'Replaced the date with a “Today” title, so the screen lost its context.', fix:'Notices sit under the date on Today. Open settings works, and the correction can be dismissed.', go:['moment', 'shaban']},
+  {n:'09', f:'09-today-notices.png', t:'Today · notices', issue:'Replaced the date with a “Today” title, so the screen lost its context.', fix:'Notices sit under the date on Today. The date correction has Use Sunday, Keep my dates and Undo.', go:['moment', 'correction']},
   {n:'10', f:'10-today-udhiyah.png', t:'Today · uḍḥiyah', issue:'The Yes and No buttons outweighed everything; the date was wrong (22 May 2027 is 16 Dhul-Ḥijjah).', fix:'A compact question notice. Yes adds the hair-and-nails reminder to Upcoming at once. The moment is now 22 April 2027, 15 Dhul-Qaʿdah.', go:['moment', 'dq']},
   {n:'11', f:'11-today-rain.png', t:'Today · rain', issue:'The weather card had its own layout.', fix:'Same card anatomy as the rest, with the duʿāʾ transliteration on the card so it needs no tap.', go:['moment', 'fri-pm']},
   {n:'12–14', f:'12-detail-al-kahf.png', t:'Detail screens', issue:'Three layouts: content in cards on one, bare on another; gold dividers plus green rules; a clipped title in the app bar.', fix:'One template: status, what to do, action, duʿāʾ, sources with grading notes, your reminder, report. The title wraps in the page and moves to the app bar on scroll.', go:['detail', 'kahf']},
@@ -2028,7 +2097,7 @@ function renderRail() {
     <h4>Simulate</h4><div>
       <div class="toggle-row">Rain starting now<button class="pg-switch ${S.rain ? 'on' : ''}" data-pg="rain" aria-label="Rain"></button></div>
       <div class="toggle-row">Notifications allowed<button class="pg-switch ${S.notif === 'granted' ? 'on' : ''}" data-pg="notif" aria-label="Notifications"></button></div>
-      <div class="toggle-row">Date correction notice<button class="pg-switch ${S.correction && !S.dismissed.correction ? 'on' : ''}" data-pg="correction" aria-label="Date correction"></button></div></div>
+      <div class="toggle-row">Date correction offer<button class="pg-switch ${S.correction ? 'on' : ''}" data-pg="correction" aria-label="Date correction"></button></div></div>
     <h4>App theme</h4><div class="pg-seg">${[['light', 'Light'], ['dark', 'Dark'], ['system', 'System']].map(([k, l]) => `<button class="${S.theme === k ? 'on' : ''}" data-pg="theme" data-v="${k}">${l}</button>`).join('')}</div>
     <button class="pg-btn" style="margin-top:22px;width:100%;justify-content:center" data-pg="reset">${I('restart_alt')}Reset the prototype</button>`;
   const t = document.getElementById('pgTime'); if (t && document.activeElement !== t) t.value = S.minutes;
@@ -2078,7 +2147,7 @@ function pageAction(el, e) {
     case 'nextpush': nextPush(); break;
     case 'rain': S.rain = !S.rain; S.rainAt = S.rain ? S.minutes : null; S.moment = 'custom'; render(); break;
     case 'notif': S.notif = S.notif === 'granted' ? 'denied' : 'granted'; render(); break;
-    case 'correction': { const on = S.correction && !S.dismissed.correction; S.correction = !on; S.dismissed.correction = false; render(); break; }
+    case 'correction': S.correction = !S.correction; S.correctionChoice = null; render(); break;
     case 'theme': S.theme = v; render(); break;
     case 'reset': try { localStorage.removeItem(STORE_KEY); } catch (err) {} S = defaults(); UI.scroll = {}; closeOverlay(); closeShade(); UI.anim = 'fade'; render(); break;
     case 'openRight': $('#railRight').classList.add('open'); break;
