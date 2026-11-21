@@ -65,7 +65,7 @@ SUPABASE
 
 ## Repository layout
 
-The repository becomes a pnpm workspace. The spec files and the prototype stay at the root.
+The repository becomes a pnpm workspace. The spec files, the plan and the prototype live in `docs/`.
 
 ```
 adwam/
@@ -80,7 +80,7 @@ adwam/
     functions/           Edge Functions (Deno)
     tests/               Database tests for the access rules
   .github/workflows/     Checks, deploys, release builds
-  mobile-app-*.md, sunnah-*.md, mobile-app-ui.html
+  docs/                  The specs, plan.md and the prototype, mobile-app-ui.html
 ```
 
 **Why a workspace and not a single app folder.** The engine must run in Hermes on the phone, in Deno on Supabase and in Node for tests. As its own package with no React Native dependency, it can't import phone-only code by accident. The server can then bundle it without the app.

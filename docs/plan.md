@@ -4,7 +4,7 @@ This is the plan for building Adwam version 1, from an empty workspace to Google
 
 It doesn't repeat the architecture's reasoning. Read the architecture for what each part is and why. Read this for the order, the tasks and the checks.
 
-Written on 21 November 2026. The owner approved the three specs below that were drafts the same day.
+Written on 21 November 2026. The owner approved the three specs below that were drafts the same day. This plan, the specs and the prototype all live in `docs/`, so the repository root holds only code and the files tools expect there.
 
 ## Inputs
 
@@ -20,7 +20,7 @@ Written on 21 November 2026. The owner approved the three specs below that were 
 
 **When files disagree,** the owner's decisions in the architecture come first, then the prototype for screens and behaviour, then the other specs. The disagreements found while writing this plan are settled under [Conflicts the plan settles](#conflicts-the-plan-settles). Whoever changes behaviour fixes the losing file in the same pull request, so the specs never drift apart.
 
-**Line numbers** in this plan refer to `mobile-app-ui.html` at commit `c55c11a`. M0.2 edits the prototype, which shifts them. After that, search for the function by name, or read the old file with `git show c55c11a:mobile-app-ui.html`.
+**Line numbers** in this plan refer to `mobile-app-ui.html` at commit `c55c11a`. M0.2 edits the prototype, which shifts them. After that, search for the function by name, or read the old file with `git show c55c11a:mobile-app-ui.html`. That commit predates the move to `docs/`, so the file sat at the root.
 
 ## Version 1 in one paragraph
 
@@ -106,9 +106,10 @@ These sit next to the layout in the architecture:
 
 ```
 adwam/
-  AGENTS.md                         rules and commands for agents (M0.4)
-  plan.md                           this file
+  AGENTS.md                         rules and commands for agents (M0.4). It stays at the root, where agents look for it.
   docs/
+    plan.md                         this file
+    *.md, mobile-app-ui.html        the specs and the prototype
     spikes.md                       milestone 0 test results and the paths chosen
     runbooks/                       release, content release, rollback, corrections, incidents, phone tests
   packages/content/
@@ -197,7 +198,7 @@ The prototype stays the single design reference, so new screens and wording go i
 
 ### M0.4 AGENTS.md · S
 
-- **Do:** write it from development-setup.md's "Instructions for the building agent" and this plan: the specs and their order of precedence, the commands, the rules, the task workflow above, and how to ask the owner. Add three rules: the prototype is the only design reference, so don't recreate old mockups; don't modify files outside the repository; and before any `eas` or `gh` command, check that `eas whoami` and `gh auth status` show MSalman5230, and stop if they don't.
+- **Do:** write it at the repository root, pointing to `docs/plan.md` as the place to start, from development-setup.md's "Instructions for the building agent" and this plan: the specs and their order of precedence, the commands, the rules, the task workflow above, and how to ask the owner. Add three rules: the prototype is the only design reference, so don't recreate old mockups; don't modify files outside the repository; and before any `eas` or `gh` command, check that `eas whoami` and `gh auth status` show MSalman5230, and stop if they don't.
 - **Done when:** an agent with only AGENTS.md can find every command and rule.
 
 ### M0.5 Expo app skeleton · M
@@ -354,7 +355,7 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 
 - **Needs:** M1.9, M1.12, M1.16.
 - **Do:**
-  - `tools/prototype-match` loads the prototype's engine, its script from "Basics" to "Rendering helpers", into a Node sandbox, sets its state, and compares `todayState`, `upcomingRows` and the pushes with core's. It covers two Hijri years in London, and a sample of Fridays, Ramadan and Dhul-Ḥijjah in the other cities. It prints every difference. Each accepted difference is explained in `tools/prototype-match/explained.md`.
+  - `tools/prototype-match` loads the prototype's engine from `docs/mobile-app-ui.html`, its script from "Basics" to "Rendering helpers", into a Node sandbox, sets its state, and compares `todayState`, `upcomingRows` and the pushes with core's. It covers two Hijri years in London, and a sample of Fridays, Ramadan and Dhul-Ḥijjah in the other cities. It prints every difference. Each accepted difference is explained in `tools/prototype-match/explained.md`.
   - The prototype's eight Moments become fixed tests of Today.
   - Sweeps from 2026 to 2036 over London, Oslo, Jakarta, Toronto and Cape Town check that no fast falls on the Eids or Tashrīq days, the Ramadan and Friday rules hold, tick keys match their snapshots, and every day has its times in order, including on daylight-saving days.
 - **Done when:** this is milestone 1's exit check, below.
@@ -394,7 +395,7 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 #### M1.19 Generated calendar · M
 
 - **Needs:** M1.16, M1.17.
-- **Do:** `scripts/generate-calendar.ts` rewrites the tables in sunnah-reminder-calendar.md, between marker comments, from the content files. CI fails if the committed file is out of date.
+- **Do:** `scripts/generate-calendar.ts` rewrites the tables in `docs/sunnah-reminder-calendar.md`, between marker comments, from the content files. CI fails if the committed file is out of date.
 - **Done when:** the regenerated calendar lists the same Sunnahs, tiers, timings and sources as today's, and the owner has approved each difference in wording.
 
 #### M1.20 Link check · S
