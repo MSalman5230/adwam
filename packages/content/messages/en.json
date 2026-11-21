@@ -629,6 +629,7 @@
       "dhulQadah": "Mid Dhul-Qaʿdah"
     },
     "gallery": {
+      "openSheet": "Open sample sheet",
       "colors": "Colour tokens",
       "type": "Text styles",
       "sample": "Friday preparation",

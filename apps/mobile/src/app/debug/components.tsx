@@ -1,14 +1,24 @@
+import { day, dayLine, localToMs } from '@adwam/core';
 import { Redirect, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { DayLine, TrackerDots } from '../../components/calendarDisplay';
 import { Banner, Card, ListRow, Notice, OptionRow, RadioCard } from '../../components/cards';
 import { Button, Checkbox, Chip, Segmented, Stepper, Switch, Tag } from '../../components/controls';
+import { AppBar, Hero, PageTitle, SectionHeader, useAppBarScroll } from '../../components/headers';
+import { Sheet, Snackbar } from '../../components/overlays';
 import { t } from '../../language/messages';
 import { isTestBuild } from '../../theme/isTestBuild';
 import { useTheme } from '../../theme/ThemeProvider';
-import { typography } from '../../theme/typography';
+
+const format = { timeZone: 'Europe/London', uses24HourClock: false };
+const friday = '2026-12-18';
+const timeline = dayLine(localToMs(friday, 11 * 60 + 30, format.timeZone), day(friday, {
+  place: { latitude: 51.5074, longitude: -0.1278, countryCode: 'GB', timeZone: format.timeZone },
+  prayer: { method: 'mwl', asr: 'standard' }, hijri: { method: 'umalqura' },
+}));
 
 function Gallery() {
   const router = useRouter();
@@ -17,15 +27,20 @@ function Gallery() {
   const [enabled, setEnabled] = useState(true);
   const [done, setDone] = useState(false);
   const [count, setCount] = useState(2);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [snackOpen, setSnackOpen] = useState(false);
+  const { scrolled, onScroll } = useAppBarScroll();
+  const componentGallery = t('developerTools.componentGallery');
   const reset = () => { setDone(false); setEnabled(true); setCount(2); setLevel('push'); };
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: palette.paper }]}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Button label={t('common.back')} icon="arrow_back" variant="text" onPress={() => router.back()} />
-        <Text accessibilityRole="header" style={[typography.pageTitle, { color: palette.ink }]}>
-          {t('developerTools.componentGallery')}
-        </Text>
+      <AppBar title={componentGallery} scrolled={scrolled}
+        start={{ label: t('common.back'), icon: 'arrow_back', onPress: () => router.back() }} />
+      <ScrollView contentContainerStyle={styles.content} onScroll={onScroll} scrollEventThrottle={16}>
+        <Hero title={componentGallery} />
+        <Button label={t('developerTools.gallery.openSheet')} variant="outlined" onPress={() => setSheetOpen(true)} />
+        <DayLine timeline={timeline} format={format} />
         <Notice
           title={t('today.notice.notifications.title')}
           body={t('today.notice.notifications.body')}
@@ -56,10 +71,20 @@ function Gallery() {
         <Stepper value={count} max={10} onChange={setCount} />
         <RadioCard title={t('reminders.preferred')} subtitle={t('setup.reminders.recommended')} selected={level === 'push'} onPress={() => setLevel('push')} />
         <OptionRow title={t('reminders.inappOnly')} selected={level === 'inapp'} onPress={() => setLevel('inapp')} />
-        <Button label={t('common.continue')} onPress={() => setDone(true)} />
+        <TrackerDots total={3} completed={2} label={t('reminder.tracker.whiteDays', { count: 2, total: 3 })} />
+        <SectionHeader title={t('settings.notifications')} aside={t('reminders.push')} />
+        <PageTitle title={t('settings.prayerTimes')} subtitle={t('settings.section.place')} />
+        <Button label={t('common.continue')} onPress={() => { setDone(true); setSnackOpen(true); }} />
         <Button label={t('common.save')} variant="tonal" icon="check" onPress={() => setDone(true)} />
         <Button label={t('common.reset')} variant="outlined" onPress={reset} />
       </ScrollView>
+      {snackOpen && <View style={styles.snack}>
+        <Snackbar message={t('snackbar.done')} onUndo={() => { setDone(false); setSnackOpen(false); }} />
+      </View>}
+      <Sheet open={sheetOpen} title={t('settings.prayerTimes')} onClose={() => setSheetOpen(false)}>
+        <DayLine timeline={timeline} format={format} />
+        <Button label={t('common.close')} onPress={() => setSheetOpen(false)} />
+      </Sheet>
     </SafeAreaView>
   );
 }
@@ -72,4 +97,5 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   content: { gap: 14, paddingHorizontal: 20, paddingVertical: 16 },
   row: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 },
+  snack: { position: 'absolute', bottom: 60, left: 12, right: 12 },
 });
