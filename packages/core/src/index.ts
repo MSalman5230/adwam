@@ -43,3 +43,11 @@ export type {
 } from './occurrences';
 export { chosenLevel, isDone, level, paused, pushAllowed, reminderOccurrences, visible } from './rules';
 export type { FastingPause, ReminderPreferences, ReminderState, ReminderTracking } from './rules';
+export { decidePushes, defaultWeatherThresholds, detectEvents } from './weather';
+export type {
+  WeatherEvent,
+  WeatherForecast,
+  WeatherInstall,
+  WeatherPush,
+  WeatherThresholds,
+} from './weather';
