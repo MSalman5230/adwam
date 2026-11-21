@@ -212,7 +212,9 @@ The thunder duʿāʾ's source uses `from: companion`, because it records ʿAbdul
 
 ### Qurʾan
 
-An entry in `evidence/quran.yaml`:
+Entries in `evidence/quran.yaml` can use a direct link. Set `ayah` for a verse or range and `label` for a named chapter. A Sunnah’s optional `quran` field supplies the Quran.com button’s label and URL.
+
+An entry with an approved excerpt includes the following fields.
 
 ```yaml
 - id: quran-2-185
@@ -229,6 +231,8 @@ An entry in `evidence/quran.yaml`:
     translator: <the translation's name, such as The Clear Quran by Dr. Mustafa Khattab>
   reviewed: { by: <reviewer's name>, on: <date> }
 ```
+
+To normalize saved verse captures into a private directory, run `node packages/content/scripts/fetch-quran.ts <browser-capture-directory> <private-output-directory>`. It takes the Arabic, English and displayed credit from the browser records. Check any generic translation credit before publishing a quotation.
 
 ### Fatwas and books
 
@@ -248,6 +252,8 @@ Entries in `evidence/other.yaml` have no excerpt. They carry a summary in Adwam'
 
 A `book` entry names the author, the title, a volume and page locator, and a link if one exists. al-Shāfiʿī's *al-Umm*, cited for al-Kahf, is a book.
 
+Use `archive` for an existing public copy. Use `archiveCapture: { file: <filename>.json, fetched: <date> }` for a saved browser copy. The private archive uses those filenames.
+
 ### Collections
 
 ```yaml
@@ -265,7 +271,7 @@ The prototype shows expandable evidence rows with placeholder text. The app fill
 
 1. **Notes come first,** as now: grading notes and differences of opinion, in full.
 2. **Each source is a row** with its label and its grade, such as "Muslim 1162b · ṣaḥīḥ".
-3. **Tapping a hadith or Qurʾan row expands it** to show the Arabic excerpt in Amiri, right to left, then the English with its translator's credit, the narrator, and "Open on sunnah.com" or "Open on Quran.com".
+3. **Sources with an excerpt expand** to show the Arabic in Amiri, right to left, the English and translation credit, the narrator where available, and the source link. A Qurʾan reference with a URL opens Quran.com directly.
 4. **Fatwa and book rows** show the publisher or author, the summary and the link.
 5. **Evidence works offline.** Only the links need a connection.
 

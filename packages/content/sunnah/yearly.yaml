@@ -11,7 +11,9 @@
     - Some jurists encourage extra voluntary fasts in these months. The report that
       specifically calls for it is graded weak.
   evidence:
+    - quran-9-36
     - abudawud-2428
+    - dar-al-ifta-en-22447
   duas: []
   occurrences:
     - key: sacred-months
@@ -71,6 +73,7 @@
   evidence:
     - muslim-1162b
     - muslim-1134a
+    - bin-baz-22819
   duas: []
   occurrences:
     - key: plan
@@ -352,7 +355,8 @@
   what:
     - Say the Eid takbīr from sunset until the prayer, following your school’s timing.
   when: From the Eid announcement until the prayer.
-  evidence: []
+  evidence:
+    - quran-2-185
   duas: []
   occurrences:
     - on:
@@ -422,6 +426,8 @@
     - Scholars differ on whether Ramadan make-up fasts must come first.
   evidence:
     - muslim-1164a
+    - dar-al-ifta-en-6186
+    - bin-baz-12670
   duas: []
   rules:
     - tracker-shawwal
@@ -469,6 +475,7 @@
     - Schools differ on whether this is binding or recommended.
   evidence:
     - muslim-1977g
+    - jordan-iftaa-5997
   duas: []
   rules:
     - requires-udhiyah
@@ -673,7 +680,9 @@
     - 11 to 13 Dhul-Ḥijjah are the Tashrīq days of eating, drinking and remembering Allah.
   when: Fajr 9 Dhul-Ḥijjah to ʿAṣr 13 Dhul-Ḥijjah.
   evidence:
+    - quran-2-203
     - muslim-1141b
+    - dar-al-ifta-ar-14998
   duas: []
   occurrences:
     - key: days

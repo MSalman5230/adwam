@@ -1,8 +1,7 @@
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { z } from 'zod';
 
 import { sourceCopySchema, type SourceCopy } from '../schema/index.ts';
+import { writeBrowserCopies } from './import-browser-copies.ts';
 
 const sourceDirectory = new URL('../sources/sunnah.com/', import.meta.url);
 const browserCapture = z.object({
@@ -34,16 +33,7 @@ export function sourceCopy(capture: unknown): SourceCopy {
 }
 
 export async function importBrowserCopies(directory: string, output = sourceDirectory): Promise<number> {
-  const files = (await readdir(directory)).filter((name) => /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.json$/.test(name)).sort();
-  if (!files.length) throw new Error('The browser capture directory contains no Sunnah records');
-  const entries = await Promise.all(files.map(async (name) => ({
-    name, value: sourceCopy(JSON.parse(await readFile(join(directory, name), 'utf8'))),
-  })));
-  await mkdir(output, { recursive: true });
-  for (const { name, value } of entries) {
-    await writeFile(new URL(name, output), `${JSON.stringify(value, null, 2)}\n`);
-  }
-  return entries.length;
+  return writeBrowserCopies(directory, output, /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.json$/, sourceCopy);
 }
 
 if (import.meta.main) {

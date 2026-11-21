@@ -273,6 +273,7 @@ export async function validateContent(
     }
   }
   for (const entry of [...evidence.hadith, ...evidence.quran]) {
+    if (!('excerpt' in entry)) continue;
     const saved = await stored(entry.textSource.site, entry.id);
     if (!saved) {
       errors.push(

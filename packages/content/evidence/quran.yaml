@@ -1,0 +1,24 @@
+- id: quran-18
+  surah: 18
+  label: Sūrat al-Kahf
+  url: https://quran.com/18
+- id: quran-32
+  surah: 32
+  label: Sūrat al-Sajdah
+  url: https://quran.com/32
+- id: quran-2-185
+  surah: 2
+  ayah: 185
+  url: https://quran.com/2/185
+- id: quran-2-203
+  surah: 2
+  ayah: 203
+  url: https://quran.com/2/203
+- id: quran-9-36
+  surah: 9
+  ayah: 36
+  url: https://quran.com/9/36
+- id: quran-24-61
+  surah: 24
+  ayah: 61
+  url: https://quran.com/24/61
