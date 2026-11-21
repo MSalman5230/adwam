@@ -106,7 +106,7 @@ function seriesKey(occurrence: Occurrence): string {
   const { definition, entry, hijri, key } = occurrence;
   return definition.upcomingGroup
     ? `${entry.id}.${definition.upcomingGroup.key}:${hijri.year}-${hijri.month}`
-    : key;
+    : definition.tickScope && definition.check === 'done' ? occurrence.tickKey : key;
 }
 
 function activeAt(occurrence: Occurrence, now: number): boolean {
