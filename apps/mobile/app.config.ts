@@ -46,6 +46,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-router',
       'expo-localization',
       'expo-notifications',
+      './plugins/with-session-backup.cjs',
       ['./plugins/with-development-http.cjs', { enabled: variant === 'development' }],
     ],
     extra: { ...config.extra, eas: { projectId }, variant },

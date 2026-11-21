@@ -1,8 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { setBackgroundColorAsync } from 'expo-system-ui';
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
 import { Appearance, useColorScheme } from 'react-native';
+import { useStore } from 'zustand';
 
+import { settingsStore } from '../state/native';
 import { colors, type AppearancePreference, type ColorMode, type Palette } from './tokens';
 
 type Theme = {
@@ -14,9 +16,13 @@ type Theme = {
 
 const ThemeContext = createContext<Theme | undefined>(undefined);
 
+function setPreference(appearance: AppearancePreference) {
+  settingsStore.getState().update((value) => ({ ...value, appearance }));
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const systemMode = useColorScheme() === 'dark' ? 'dark' : 'light';
-  const [preference, setPreference] = useState<AppearancePreference>('system');
+  const preference = useStore(settingsStore, ({ value }) => value.appearance);
   const mode = preference === 'system' ? systemMode : preference;
   const palette = colors[mode];
 

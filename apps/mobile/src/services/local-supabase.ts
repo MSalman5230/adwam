@@ -1,6 +1,8 @@
 import 'react-native-url-polyfill/auto';
 import { createClient } from '@supabase/supabase-js';
 
+import { sessionStorage } from '../state/native';
+
 type Connection = 'connected' | 'failed';
 let connection: Promise<Connection> | undefined;
 
@@ -17,8 +19,14 @@ export function checkLocalSupabase(): Promise<Connection> | undefined {
 async function signIn(url: string, key: string): Promise<Connection> {
   try {
     const supabase = createClient(url, key, {
-      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+      auth: { storage: sessionStorage, persistSession: true, autoRefreshToken: false, detectSessionInUrl: false },
     });
+    const session = await supabase.auth.getSession();
+    if (session.error) return 'failed';
+    if (session.data.session) {
+      const existing = await supabase.auth.getUser();
+      return !existing.error && existing.data.user?.is_anonymous ? 'connected' : 'failed';
+    }
     const { data, error } = await supabase.auth.signInAnonymously();
     return !error && data.user?.is_anonymous ? 'connected' : 'failed';
   } catch {

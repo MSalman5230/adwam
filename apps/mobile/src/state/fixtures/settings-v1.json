@@ -1,0 +1,23 @@
+{
+  "state": {
+    "value": {
+      "setupDone": true,
+      "appearance": "dark",
+      "location": {
+        "source": "city",
+        "name": "London",
+        "latitude": 51.5074,
+        "longitude": -0.1278,
+        "countryCode": "GB",
+        "timeZone": "Europe/London"
+      },
+      "reminders": {
+        "choice": { "kahf": "inapp" },
+        "udhiyah": "yes"
+      },
+      "udhiyahYear": 1448,
+      "crashReports": false
+    }
+  },
+  "version": 1
+}
