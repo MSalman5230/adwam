@@ -612,6 +612,7 @@
   },
   "developerTools": {
     "title": "Developer tools",
+    "testCrash": "Trigger Sentry test crash",
     "dateAndTime": "Date and time",
     "moments": "Moments",
     "nextPush": "Next push",

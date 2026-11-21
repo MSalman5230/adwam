@@ -56,6 +56,10 @@ The Expo project ID also goes into the app config. `eas init` writes it, and it 
 
 `SENTRY_ORG` and `SENTRY_PROJECT` sit next to them as plain variables.
 
+For the preview crash check, use the client key from the EU Sentry project. Its ingest host ends in `ingest.de.sentry.io`. The EAS build uploads the JavaScript source map when `SENTRY_AUTH_TOKEN` is set. Open Developer tools → Trigger Sentry test crash on the preview APK and look for **Adwam preview test crash** in the project's issues. Check the decoded stack, `preview` environment, release, and `expo-update-id` tag. JavaScript crash reports carry stack coordinates and build metadata. Crash reports follow the saved privacy preference.
+
+For a staging EAS Update, upload the matching source maps from `apps/mobile` with `pnpm exec sentry-expo-upload-sourcemaps dist` after publishing. Run the upload in the staging runner environment with `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` supplied by its secret store.
+
 ### Credentials EAS keeps
 
 These are uploaded once in expo.dev. They aren't environment variables.
