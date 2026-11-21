@@ -1,16 +1,14 @@
 appId: ${APP_ID}
 ---
 - launchApp:
+    clearState: true
     permissions:
       all: unset
-- extendedWaitUntil:
-    visible: 'Where are you\?|Today'
-    timeout: 45000
 - runFlow:
     when:
-      visible: Today
+      true: ${typeof DEV_LINK !== 'undefined' && DEV_LINK.length > 0}
     commands:
-      - tapOn: Settings
-      - tapOn: Developer tools
-      - tapOn: Show setup again
-- assertVisible: 'Where are you\?'
+      - openLink: ${DEV_LINK}
+- extendedWaitUntil:
+    visible: 'Where are you\?'
+    timeout: 45000

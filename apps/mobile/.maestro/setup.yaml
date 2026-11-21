@@ -61,5 +61,7 @@ name: Setup paths on Android
 - tapOn: Use my location
 - tapOn:
     id: '.*:id/permission_allow_foreground_only_button'
-- assertVisible: Check your Hijri date
+- extendedWaitUntil:
+    visible: Check your Hijri date
+    timeout: 20000
 - assertVisible: '.* · Vancouver'

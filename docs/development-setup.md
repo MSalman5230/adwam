@@ -178,13 +178,13 @@ The agent sets up these commands in milestone 0. Then on real phones, test a pre
 
 ### Android setup flow
 
-Run this against the development app on an English-language emulator. The flow resets Adwam’s runtime permissions and uses Developer tools to restart setup between paths.
+Run this on a disposable English-language Android emulator. Each path starts by clearing the test app’s data and runtime permissions.
 
 ```sh
-maestro test -e APP_ID=com.msalman5230.adwam.dev apps/mobile/.maestro/setup.yaml
+maestro --device emulator-5556 test -e APP_ID=com.msalman5230.adwam.preview apps/mobile/.maestro/setup.yaml
 ```
 
-For a development build, connect to Metro from the development launcher once before running the flow. For an installed preview build, use `-e APP_ID=com.msalman5230.adwam.preview`.
+For a development build, install that variant by itself on the test emulator and connect it to Metro with `adb -s emulator-5556 reverse tcp:8081 tcp:8081`. Pass `-e APP_ID=com.msalman5230.adwam.dev` and `-e 'DEV_LINK=adwam://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081'` to Maestro.
 
 ## Instructions for the building agent
 
