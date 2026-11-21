@@ -1,0 +1,54 @@
+name: Source links
+
+on:
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: weekly-source-links
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: node packages/content/scripts/check-links.ts --json > link-report.json
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const { readFileSync } = require('node:fs');
+            const results = JSON.parse(readFileSync('link-report.json', 'utf8'));
+            const broken = results.filter(item => item.result === 'broken');
+            const unverified = results.filter(item => item.result === 'unverified');
+            await core.summary.addRaw(
+              `Checked ${results.length} source links. ${broken.length} broken and ${unverified.length} unverified.`
+            ).write();
+            for (const item of unverified) {
+              core.warning(`${item.url} could not be verified (${item.status ?? item.reason}).`);
+            }
+            if (!broken.length) return;
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              ...context.repo, state: 'open', labels: 'content',
+            });
+            for (const item of broken) {
+              const marker = `<!-- source-link: ${item.url} -->`;
+              if (issues.some(issue => issue.body?.includes(marker))) continue;
+              await github.rest.issues.create({
+                ...context.repo,
+                title: `Broken source link (${new URL(item.url).hostname})`,
+                body: `The weekly link check received HTTP ${item.status}.\n\n[Open the source](${item.url})\n\n${marker}`,
+                labels: ['content'],
+              });
+            }
