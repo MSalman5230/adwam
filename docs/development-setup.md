@@ -118,7 +118,7 @@ Checked on 21 November 2026:
 | `adb` and `emulator` | In the SDK but not on the PATH. Add `%ANDROID_HOME%\platform-tools` and `%ANDROID_HOME%\emulator`. |
 | Java | JDK 21. React Native has recommended JDK 17, so if the first Android build fails over Java, install JDK 17 and point `JAVA_HOME` at it. |
 | Supabase CLI | Not installed. Add it to the repository as a development dependency, so this PC and CI use the same version. |
-| Maestro | Not installed. Needed for end-to-end tests from milestone 6. |
+| Maestro | The Setup suite ran on this PC with Maestro 2.12.1 and the dedicated Android test emulator. |
 
 ## How local development works
 
@@ -172,9 +172,12 @@ Details:
 | Database access tests | `supabase test db` | Local Supabase |
 | Edge Function tests | `pnpm server:test` | Local Supabase |
 | App screens on the emulator | `pnpm android` | Local Supabase and the emulator |
+| Native component tests | `pnpm --filter @adwam/mobile test:native` | Jest Expo and React Native Testing Library |
 | End-to-end flows | `maestro test` | The app on the emulator |
 
 The agent sets up these commands in milestone 0. Then on real phones, test a preview build that uses the staging server.
+
+Native component tests can set the app's clock to an instant with `setFixedClock` from `apps/mobile/test/fixed-clock.ts`. `pnpm check` runs that suite alongside the existing unit tests.
 
 ### Android setup flow
 
