@@ -2,6 +2,7 @@ import type { ContentGroup, GroupedSunnah } from '@adwam/content/schema';
 
 import type { CivilDate } from './civil';
 import type { DaySettings } from './day';
+import type { QuietHours } from './quiet-hours';
 import {
   occurrencesForDay,
   type Occurrence,
@@ -17,6 +18,8 @@ export type ReminderPreferences = Readonly<{
   pause?: FastingPause | null;
   notifications?: 'unset' | 'denied' | 'granted';
   channels?: Readonly<Partial<Record<ContentGroup, boolean>>>;
+  quietHours?: QuietHours;
+  eclipseQuiet?: boolean;
 }>;
 export type ReminderTracking = Readonly<{
   done?: Readonly<Record<string, boolean>>;
