@@ -2,6 +2,8 @@
 
 This list keeps Sunnah practices tied to a **specific day, date or time of year**, plus events the app can **detect**, such as rain, wind and eclipses. Reminders for leaving and coming home and for journeys are a future plan. Hajj and ʿUmrah rites and most everyday habits are left out. Sources are Sunni hadith and fiqh.
 
+Milestone 1 will generate these tables from the YAML source files described in [sunnah-content-format.md](sunnah-content-format.md).
+
 ## Two tiers
 
 - **Push.** Important and easy to forget. The app sends a push notification and also shows the item in the app.
@@ -53,7 +55,7 @@ The app's home screen shows everything active right now: Push items and In-app i
 
 ## Detected events
 
-These fire when the server detects the event through a weather API or astronomical data, not on a calendar date.
+The server detects weather events from forecasts. The phone calculates local eclipse visibility and timings offline.
 
 | Trigger | Tier | Sunnah | Detection and timing | Sources |
 |---|---|---|---|---|
@@ -62,7 +64,7 @@ These fire when the server detects the event through a weather API or astronomic
 | **Heavy rain** | **Push** | Say *Allāhumma ḥawālaynā wa lā ʿalaynā*, “O Allah, around us and not upon us.” | **Detect:** forecast rain above about 7.6 mm an hour, a common definition of heavy rain. **Push:** when it starts. | [Bukhārī 1014](https://sunnah.com/bukhari:1014) |
 | **Thunder** | In-app | Pause and say *Subḥāna alladhī yusabbiḥu al-raʿdu bi-ḥamdihi wal-malāʾikatu min khīfatih*, “Glory be to the One whom the thunder glorifies with His praise, and the angels out of awe of Him.” This is the practice of the Companion ʿAbdullāh ibn al-Zubayr, not a saying of the Prophet ﷺ. | **Detect:** thunderstorm weather codes (WMO 95–99). **In-app:** during the storm. | [Al-Adab al-Mufrad 723](https://sunnah.com/adab:723), [Muwaṭṭaʾ](https://sunnah.com/malik/56/26) |
 | **Strong wind or an approaching storm** | **Push** for severe gusts. In-app otherwise. | Don’t curse the wind. Say *Allāhumma innī asʾaluka khayrahā wa khayra mā fīhā wa khayra mā ursilat bih, wa aʿūdhu bika min sharrihā wa sharri mā fīhā wa sharri mā ursilat bih*. When a storm cloud approached, the Prophet ﷺ would stop what he was doing and seek refuge from its harm. | **Detect:** forecast wind gusts. **Push:** gusts above about 75 km/h. **In-app:** gusts above about 60 km/h. | [Muslim 899b](https://sunnah.com/muslim:899b), [Abū Dāwūd 5097](https://sunnah.com/abudawud:5097), [Abū Dāwūd 5099](https://sunnah.com/abudawud:5099) |
-| **Solar or lunar eclipse** | **Push** | Pray the eclipse prayer, make duʿāʾ, say takbīr and give charity. | **Detect:** eclipse times from astronomical data, checked against whether the sun or moon is above the user’s horizon. **Push:** at the start. **In-app:** while it lasts. Some scholars tie the prayer to the eclipse being seen, so the app can flag heavy cloud cover. | [Bukhārī 1044](https://sunnah.com/bukhari:1044) |
+| **Solar or lunar eclipse** | **Push** | Pray the eclipse prayer, make duʿāʾ, say takbīr and give charity. | **Calculate on the phone:** when the eclipse is above the local horizon. **Push:** at the start of the visible window. **In-app:** during the visible window. Some scholars tie the prayer to seeing the eclipse. | [Bukhārī 1044](https://sunnah.com/bukhari:1044) |
 
 **Detection notes**
 
@@ -91,7 +93,8 @@ These need background location, which requires Google Play approval the app can�
 
 - **No fasting** on 1 Shawwāl, 10 Dhul-Ḥijjah, or 11–13 Dhul-Ḥijjah. [Bukhārī 1990](https://sunnah.com/bukhari:1990), [Muslim 1141b](https://sunnah.com/muslim:1141b)
 - **White Days in Dhul-Ḥijjah.** The 13th is a Tashrīq day. Prompt the 14th, the 15th and one other day.
-- **Friday.** Don’t prompt a voluntary fast chosen only because it is Friday. Pair it with Thursday or Saturday. ʿĀshūrāʾ, ʿArafah or a White Day that falls on Friday is fine. [Bukhārī 1985](https://sunnah.com/bukhari:1985), [Muslim 1144b](https://sunnah.com/muslim:1144b)
+- **Friday.** Don’t prompt a voluntary fast chosen only because it is Friday. Pair it with Thursday or Saturday. An ʿĀshūrāʾ, ʿArafah, White Day, Shawwāl or make-up fast that falls on Friday is fine. [Bukhārī 1985](https://sunnah.com/bukhari:1985), [Muslim 1144b](https://sunnah.com/muslim:1144b)
+- **Ramadan.** Skip Monday, Thursday and White Days reminders during Ramadan, when the Ramadan fast itself is obligatory.
 - **Last day or two of Shaʿbān.** Don’t prompt a new voluntary fast unless it is a regular habit, such as Monday, or a make-up fast. [Bukhārī 1914](https://sunnah.com/bukhari:1914)
 
 ## Disputed, so off by default

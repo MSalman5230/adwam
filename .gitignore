@@ -4,9 +4,25 @@
 .env.*
 !.env.example
 
-# Dependencies and build output. M0.3 extends this list.
+# Dependencies and build output
 node_modules/
 dist/
+coverage/
+.expo/
+apps/mobile/android/
+apps/mobile/ios/
+*.tsbuildinfo
+*.apk
+*.aab
+
+# Local service state, generated artifacts and credentials
+supabase/.branches/
+supabase/.temp/
+supabase/functions/_shared/
+google-services.json
+credentials.json
+*.keystore
+*.jks
 
 # Operating system and editor files
 .DS_Store

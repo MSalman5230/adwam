@@ -1,0 +1,53 @@
+import type { ConfigContext, ExpoConfig } from 'expo/config';
+
+const packageName = 'com.msalman5230.adwam';
+const projectId = 'c4990a3f-ae86-48d7-9b21-98f73762b49b';
+const variants = {
+  development: { name: 'Adwam Dev', id: `${packageName}.dev` },
+  preview: { name: 'Adwam Preview', id: `${packageName}.preview` },
+  production: { name: 'Adwam', id: packageName },
+};
+
+export default ({ config }: ConfigContext): ExpoConfig => {
+  const variant: string = process.env.APP_VARIANT ?? 'development';
+  if (variant !== 'development' && variant !== 'preview' && variant !== 'production') {
+    throw new Error(`Unknown APP_VARIANT: ${variant}`);
+  }
+  const { name, id } = variants[variant];
+
+  return {
+    ...config,
+    name,
+    slug: 'adwam',
+    owner: 'msalman5230',
+    version: '0.1.0',
+    scheme: 'adwam',
+    platforms: ['android'],
+    userInterfaceStyle: 'automatic',
+    runtimeVersion: { policy: 'fingerprint' },
+    updates: {
+      checkAutomatically: 'ON_LOAD',
+      fallbackToCacheTimeout: 0,
+      url: `https://u.expo.dev/${projectId}`,
+    },
+    android: {
+      package: id,
+      ...(process.env.GOOGLE_SERVICES_JSON && {
+        googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+      }),
+      blockedPermissions: [
+        'android.permission.ACCESS_FINE_LOCATION',
+        'android.permission.ACCESS_BACKGROUND_LOCATION',
+        'android.permission.SCHEDULE_EXACT_ALARM',
+        'android.permission.USE_EXACT_ALARM',
+      ],
+    },
+    plugins: [
+      'expo-router',
+      'expo-localization',
+      'expo-notifications',
+      ['./plugins/with-development-http.cjs', { enabled: variant === 'development' }],
+    ],
+    extra: { ...config.extra, eas: { projectId }, variant },
+  };
+};

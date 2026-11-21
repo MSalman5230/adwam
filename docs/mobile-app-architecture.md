@@ -364,9 +364,11 @@ Free-tier limits change, so check each one when signing up. The server holds not
 
 ## Build order
 
+[Implementation plan](plan.md) lists the tasks, dependencies and checks for each milestone.
+
 | Milestone | What it delivers | Done when |
 |---|---|---|
-| 0. Foundations | The workspace, `AGENTS.md`, local Supabase, a development build on the emulator and real phones, Supabase projects, CI, and tests of the risks below. [development-setup.md](development-setup.md) lists the accounts, secrets and local tools. | Each risk has a result and a chosen fallback. |
+| 0. Foundations | The workspace, local Supabase, a development build on the emulator and real phones, Supabase projects, CI, and tests of the risks below. [development-setup.md](development-setup.md) lists the accounts, secrets and local tools. | Each risk has a result and a chosen fallback. |
 | 1. Engine and content | Core, with adhan-js, the Umm al-Qura table and eclipses. The calendar and the prototype's text and Arabic converted into content files. | The Moment tests pass, and every difference from the prototype is explained. The regenerated calendar matches today's. |
 | 2. App shell and Today | Theme, components, navigation, Setup, Today, the detail screen, saved state, Sentry | Setup through Today works on a phone, offline. |
 | 3. Remaining screens | Upcoming, Settings and its sheets, Reminders, About, the debug screen | Each screen matches the prototype, in light and dark. |
@@ -421,11 +423,7 @@ Free-tier limits change, so check each one when signing up. The server holds not
 
 Once this plan is approved, update these files:
 
-- **mobile-app-stack.md:** the content source of truth, eclipses on the phone, how far ahead notifications are scheduled, approximate location only, the admin page.
-- **sunnah-reminder-calendar.md:**
-  - Eclipses are computed on the phone, not detected by the server.
-  - The Friday line names the Shawwāl and make-up fasts among the fasts allowed on a Friday.
-  - Its tables become generated from the content files.
+- **sunnah-reminder-calendar.md:** generate the tables from the content files in milestone 1.
 - **mobile-app-screen-story.md and mobile-app-ui.html:**
   - The Date correction notice gets "Use" and "Keep my dates" buttons.
   - Setup step 2 and the Hijri date sheet say that corrections are offered, not applied automatically. The sheet also lists accepted corrections.

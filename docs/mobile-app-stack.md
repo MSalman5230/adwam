@@ -4,7 +4,7 @@
 
 The app's screens are simple: lists, cards and settings. The hard parts are scheduled notifications, server-sent weather pushes, and prayer-time and Hijri date calculations. Expo covers the phone side of these with modules it maintains itself. TypeScript also runs on the backend, so the app and the server can share code and data.
 
-The reminder content comes from [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md).
+The YAML files described in [sunnah-content-format.md](sunnah-content-format.md) are the source for reminder content. They generate the app and server's shared JSON and the tables in [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md).
 
 ## Version 1 stack
 
@@ -14,16 +14,18 @@ The reminder content comes from [sunnah-reminder-calendar.md](sunnah-reminder-ca
 | Content fixes | Expo's over-the-air updates | You can correct a hadith grading or citation without waiting for app store review. That matters for a religious app. |
 | Reminders | `expo-notifications` | One module handles both scheduled local notifications and server-sent pushes. |
 | Prayer times | `adhan-js` | A well-tested library that supports the main calculation methods and each school's Asr rule. You need it for timings like "45 minutes before Maghrib" and "after Jumuʿah". |
-| Hijri dates | Umm al-Qura calculation plus the user's ±1 day setting | The server can also send corrections when Ramadan or Eid is announced. |
-| Location | Location while the app is open ("While Using"), or a city the user picks | Enough for prayer times and the weather area. No background location permission is needed. |
-| Backend | Supabase (recommended): Postgres, scheduled jobs and server functions | Stores push tokens, preferences and each user's coarse area. A job every 10–15 minutes checks the weather and sends the rain, wind and eclipse pushes. |
+| Hijri dates | Umm al-Qura or tabular calculation plus the user's ±1 day setting | The server can offer a correction when Ramadan or Eid is announced. The user chooses whether to apply it. |
+| Location | Approximate location while the app is open, or a city the user picks | Enough for prayer times and the weather area. |
+| Backend | Supabase: Postgres, scheduled jobs and Edge Functions | Stores push tokens, preferences and each user's coarse weather area. It checks forecasts for areas that are due and sends weather pushes. |
+| Eclipses | Astronomy Engine on the phone | Computes local visibility and schedules reminders offline. |
+| Date correction admin | A static Vite and TypeScript page on GitHub Pages | Admins sign in by email code to publish or withdraw corrections in Supabase. |
 | Weather | Open-Meteo | Free for non-commercial apps, and this app is open-source and free. It combines forecasts from national weather agencies such as ECMWF, NOAA, DWD and Météo-France. |
-| Shared content | One JSON file generated from the calendar Markdown | The app and the server read the same reminder list. |
+| Shared content | One JSON file generated from the YAML content | The app and the server read the same reminder list. |
 
 ## Location and privacy in version 1
 
-- The app reads location only while it is open, or uses the city the user picked. It updates the user's area each time they open the app.
-- The server receives only a coarse area, about 10 km across, for weather and eclipse visibility. Grouping users by area keeps weather API costs tied to the number of areas, not the number of users.
+- The app reads approximate location only while it is open, or uses the city the user picked. It updates the user's area each time they open the app.
+- The server receives a coarse area, about 10 km across, while weather reminders are enabled. Grouping users by area keeps weather API costs tied to the number of areas, not the number of users.
 - If a user travels without opening the app, their weather pushes use the last saved area.
 
 ## Weather with Open-Meteo
@@ -38,7 +40,7 @@ The reminder content comes from [sunnah-reminder-calendar.md](sunnah-reminder-ca
 
 ## Things to plan for
 
-1. **iOS allows only 64 pending local notifications per app.** Schedule the next 2–3 weeks of reminders, then reschedule each time the app opens and during background refreshes.
+1. **Local scheduling looks 60 days ahead.** Keep the soonest 150 notifications on Android and 60 on iOS. Refresh the schedule when the app opens and during background refreshes.
 2. **Weather pushes must come from the server.** iOS won't let an app check the weather reliably in the background.
 3. **Both platforms ask the user before showing notifications.** Ask at a moment that shows the value, such as right after the user picks their reminders.
 4. **Android's exact alarms are restricted** for apps that aren't calendars or alarm clocks. A few minutes of delay is fine for these reminders, so use inexact scheduling and skip that permission.

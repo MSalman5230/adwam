@@ -178,14 +178,4 @@ The agent sets up these commands in milestone 0. Then on real phones, test a pre
 
 ## Instructions for the building agent
 
-Milestone 0 adds an `AGENTS.md` at the repository root. Coding agents read it before they start. It lists:
-
-- **The specs to follow:** the prototype for screens, [sunnah-content-format.md](sunnah-content-format.md) for content, and the architecture plan for structure.
-- **The commands above.**
-- **The rules:**
-  - Never type Arabic, hadith or Qurʾan text from memory.
-  - Never change a released Sunnah ID.
-  - Never commit secrets or `.env` files.
-  - Run the checks before opening a pull request.
-  - Change production only through CI.
-  - Ask the owner when a step needs an account, a payment or a secret.
+`AGENTS.md` at the repository root holds the few rules an agent can't work out from the code or [plan.md](plan.md), and links to the Expo and Supabase documentation. Keep it short: anything an agent would do anyway doesn't belong there.
