@@ -30,7 +30,7 @@ An Android app, English only but ready for translation, with no account. Setup, 
 
 - **Go milestone by milestone.** Inside a milestone, tasks on different tracks can run in parallel in separate branches or worktrees. A task starts only when the tasks under "Needs", where given, are merged.
 - **One task, one pull request,** unless the task says to split it. Name the branch after the task, such as `m1-hijri`, and start the PR title with the task ID, such as "M1.3 Hijri calendar".
-- **Track progress in GitHub,** not here: a GitHub milestone per plan milestone and an issue per task (task M0.9). Change this file only when the plan itself changes.
+- **Track progress in GitHub,** not here: a GitHub milestone per plan milestone and an issue per task (task M0.8). Change this file only when the plan itself changes.
 - **Before opening a PR,** run `pnpm check` and meet the [definition of done](#definition-of-done).
 - **Ask the owner** when a step needs an account, a payment, a secret, a legal judgement or a judgement about religious content. Secrets go through a secure secret prompt, never the chat.
 - **Never** type Arabic, hadith or Qurʾan text from memory, change a released Sunnah ID, run a production command, or commit a secret.
@@ -84,7 +84,7 @@ On 21 November 2026 the owner approved the drafts (D1), chose the app IDs (D2) a
 | # | Question | Needed by | Answer, or the accepted default |
 |---|---|---|---|
 | D1 | Approve the architecture, content format and development setup | M0 | Approved on 21 November 2026 |
-| D2 | App IDs and domain (architecture, open question 1) | M0.5 | `com.msalman5230.adwam` for production, `com.msalman5230.adwam.preview` and `com.msalman5230.adwam.dev` for test builds. No domain for now: the privacy policy and admin page use GitHub Pages. |
+| D2 | App IDs and domain (architecture, open question 1) | M0.4 | `com.msalman5230.adwam` for production, `com.msalman5230.adwam.preview` and `com.msalman5230.adwam.dev` for test builds. No domain for now: the privacy policy and admin page use GitHub Pages. |
 | D3 | Licences for the code and the content (open question 2) | M6 | Suggestion: Apache-2.0 for the code and CC BY-SA 4.0 for Adwam's own text. Texts quoted from sunnah.com and Quran.com, and GeoNames and Open-Meteo data, keep their own terms. |
 | D4 | Analytics consent (open question 3) | M6 | Off until the user agrees |
 | D5 | Content reviewer (open question 4) | M6.6 | The owner. During development, content isn't held for review: entries stay in `review`, and test builds show them all. Before production, the owner reads every entry once, and only then is it marked published. |
@@ -106,7 +106,6 @@ These sit next to the layout in the architecture:
 
 ```
 adwam/
-  AGENTS.md                         rules and commands for agents (M0.4). It stays at the root, where agents look for it.
   docs/
     plan.md                         this file
     *.md, mobile-app-ui.html        the specs and the prototype
@@ -196,12 +195,7 @@ The prototype stays the single design reference, so new screens and wording go i
   - Root scripts: `check` (everything that needs no Docker or emulator), `test`, `lint`, `typecheck`, `content:check`, `content:build`, `android`, `db:start`, `db:reset`, `db:test`, `server:prepare`, `server:test`, `server:tick` and `server:simulate-rain`. Stubs are fine until their milestone.
 - **Done when:** `pnpm check` passes on a fresh clone, on this PC and in CI.
 
-### M0.4 AGENTS.md · S
-
-- **Do:** write it at the repository root, pointing to `docs/plan.md` as the place to start, from development-setup.md's "Instructions for the building agent" and this plan: the specs and their order of precedence, the commands, the rules, the task workflow above, and how to ask the owner. Add three rules: the prototype is the only design reference, so don't recreate old mockups; don't modify files outside the repository; and before any `eas` or `gh` command, check that `eas whoami` and `gh auth status` show MSalman5230, and stop if they don't.
-- **Done when:** an agent with only AGENTS.md can find every command and rule.
-
-### M0.5 Expo app skeleton · M
+### M0.4 Expo app skeleton · M
 
 - **Do:**
   - Create `apps/mobile` with the latest stable Expo SDK, TypeScript, Expo Router and the New Architecture.
@@ -212,17 +206,17 @@ The prototype stays the single design reference, so new screens and wording go i
   - `.env.example` listing every variable in development-setup.md.
 - **Done when:** `pnpm android` installs the development build on the `Pixel_6` emulator and edits hot-reload, and a cloud `preview` build installs on a real phone.
 
-### M0.6 Local Supabase · S
+### M0.5 Local Supabase · S
 
 - **Do:** run `supabase init`, with anonymous sign-in and email sign-in turned on in `config.toml`. Add a first migration that enables `pg_cron` and `pg_net`, and an empty seed. Add the Supabase CLI as a root development dependency.
 - **Done when:** the development build signs in anonymously at `http://10.0.2.2:54321`, and a first database test passes with `pnpm db:test`.
 
-### M0.7 Checks on pull requests · S
+### M0.6 Checks on pull requests · S
 
 - **Do:** `.github/workflows/ci.yml` installs with caching and runs `pnpm check`. A second job starts local Supabase and runs the database tests. Add the PR template, and a `CODEOWNERS` file naming the owner for `packages/content`.
 - **Done when:** a PR shows green checks, and `master` requires them.
 
-### M0.8 Risk tests · L
+### M0.7 Risk tests · L
 
 Throwaway code on `spike-*` branches. Each result and the chosen path go into `docs/spikes.md`.
 
@@ -238,7 +232,7 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 
 - **Done when:** every row has a result and a chosen path. This is the architecture's exit check for milestone 0.
 
-### M0.9 Tracking · S
+### M0.8 Tracking · S
 
 - **Do:** GitHub milestones M0 to M8, one issue per task named with its ID, and labels such as `core`, `content`, `app`, `server`, `owner`, `needs-new-build` and `release-blocker`. Issue forms: `content-problem.yml`, with fields for the item, its ID, the content version, the app version and a description, all fillable from the URL, and a general bug form.
 - **Done when:** every task in this plan has an issue.
@@ -259,7 +253,7 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 
 #### M1.2 Dates and time zones · M
 
-- **Needs:** M1.1, and the `Intl` result from M0.8.
+- **Needs:** M1.1, and the `Intl` result from M0.7.
 - **Do:** port `isoAdd`, `wdOf` and `dayDiff` (prototype lines 639–644) and `tzParts`, `tzOffset`, `localToMs` and `civil` (lines 700–706), with one cached formatter per zone.
 - **Done when:** tests pass for the start and end of daylight saving in London and Toronto, a local time that's skipped and one that repeats, a half-hour zone (Asia/Kolkata), and the southern hemisphere.
 
@@ -544,11 +538,11 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 ### M4.4 Taps and buttons · M
 
-- A tap opens the item's detail screen, or Today for the combined Friday push, from a cold start too. Done ticks and reschedules in the background, in the way M0.8 chose. Later schedules one copy an hour later, if the window is still open.
+- A tap opens the item's detail screen, or Today for the combined Friday push, from a cold start too. Done ticks and reschedules in the background, in the way M0.7 chose. Later schedules one copy an hour later, if the window is still open.
 
 ### M4.5 Background task · S
 
-- Registered at the interval M0.8 chose. It reschedules, and checks for an update if M0.8 showed that works in the background. From M5 it also refreshes server data and syncs once a day.
+- Registered at the interval M0.7 chose. It reschedules, and checks for an update if M0.7 showed that works in the background. From M5 it also refreshes server data and syncs once a day.
 
 ### M4.6 Permission state · S
 
@@ -746,14 +740,14 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 ## Risks
 
-The architecture's milestone 0 risks are covered by M0.8. These are the plan's own:
+The architecture's milestone 0 risks are covered by M0.7. These are the plan's own:
 
 | Risk | Effect | Response |
 |---|---|---|
 | The owner's read-through comes late | Content that isn't published can't ship to production | Start once M1.17 is done, one section at a time. Scripts copy the texts, so it's reading, not typing. Development never waits for it. |
 | sunnah.com blocks the one-time copy | Evidence stays empty | The script runs once, slowly, and its copies are committed. If it's blocked, the owner requests the API key early. |
 | A translator or publisher objects to their text being quoted | That text has to come out | Every excerpt records its translator and site, and About credits them. Swapping a text for Adwam's own rendering is a content update. |
-| Approximate notifications arrive late | Short-window reminders miss their window | Measured in M0.8, with options for the owner |
+| Approximate notifications arrive late | Short-window reminders miss their window | Measured in M0.7, with options for the owner |
 | Supabase's anonymous sign-in is abused | Fake installs and wasted pushes | Supabase's sign-in rate limits, the cleanup job, install counts in the health check, and CAPTCHA later if needed |
 | A content or app update meets older saved data | Settings or ticks lost or broken | Versioned stores with migrations, fingerprint runtime versions, and snapshot tests of tick keys |
 | A mistake in religious content | Users lose trust | Review before publishing, Report a problem on every item, and fixes within days through updates |
@@ -779,7 +773,6 @@ The architecture's milestone 0 risks are covered by M0.8. These are the plan's o
 
 - A sunnah.com API key from the owner. The fetch script then reads new hadith from the API, and compares the API's text with the stored copies.
 - Translations as overlay files, then an Arabic interface written right to left.
-- Home-screen widgets.
 - A month grid on Upcoming.
 - Location-based reminders, which need background location and Google Play's approval.
 - MET Norway as a weather backup, or a private copy of Open-Meteo.
