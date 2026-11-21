@@ -248,6 +248,8 @@ export async function validateContent(
         occurrence.fast?.also,
         occurrence.push?.title,
         occurrence.push?.body,
+        occurrence.push?.combined?.title,
+        occurrence.push?.combined?.body,
       );
     }
     for (const value of prose) if (value) checkProse(value, entry.id, errors);

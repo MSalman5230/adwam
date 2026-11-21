@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../dist/schema.json#/properties/unshipped
+- id: leaving-home
+  status: future
+  title: Leaving home
+  reason: Location-based reminders need background location and Google Play approval.
+  what:
+    - Say *Bismillāh, tawakkaltu ʿalā Allāh, lā ḥawla wa lā quwwata illā billāh*. The hadith
+      says whoever says it is told, “You are guided, defended and protected.” The Prophet ﷺ
+      also said, on leaving his house, *Allāhumma innī aʿūdhu bika an aḍilla aw uḍalla, aw
+      azilla aw uzalla, aw aẓlima aw uẓlama, aw ajhala aw yujhala ʿalayya*, seeking refuge
+      from going astray, slipping, wronging or being wronged, and acting foolishly.
+  when: "**Detect:** the user leaves the home radius. **Push:** on exit, with a “Starting a
+    journey?” button that opens the travel duʿāʾ."
+- id: coming-home
+  status: future
+  title: Coming home
+  reason: Location-based reminders need background location and Google Play approval.
+  what:
+    - Say *Bismillāh* as you enter, greet your household with salām, and start with siwāk as
+      the Prophet ﷺ did. A specific entering duʿāʾ, *Allāhumma innī asʾaluka khayra al-mawlaji
+      wa khayra al-makhraj, bismillāhi walajnā wa bismillāhi kharajnā wa ʿalā Allāhi rabbinā
+      tawakkalnā*, has a disputed chain. Al-Albānī graded it weak, and Ibn Bāz graded it
+      ḥasan.
+  when: "**Detect:** the user enters the home radius. **Push:** on entry, which happens just
+    before they reach the door."
+- id: starting-a-journey
+  status: future
+  title: Starting a journey
+  reason: Location-based reminders need background location and Google Play approval.
+  what:
+    - Say the travel duʿāʾ.
+  when: "**Detect:** the user goes beyond a travel distance they set, defaulting to 80 km.
+    Schools differ on what distance counts as travel. **In-app:** a journey card. The
+    leaving-home push already offers the duʿāʾ at the door."
+- id: returning-from-a-journey
+  status: future
+  title: Returning from a journey
+  reason: Location-based reminders need background location and Google Play approval.
+  what:
+    - Say *āyibūna tāʾibūna ʿābidūna li-rabbinā ḥāmidūn*, “returning, repenting, worshipping
+      and praising our Lord.” Go first to the mosque and pray two rakʿahs.
+  when: "**Detect:** after a journey, the user comes back within about 10 km of home. **Push:**
+    at that point, before they reach home. The coming-home push follows on arrival."

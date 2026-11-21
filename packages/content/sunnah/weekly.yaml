@@ -1,0 +1,217 @@
+- id: monthu
+  status: review
+  tier: push
+  title: Monday and Thursday fast
+  short: Keep the voluntary fast.
+  what:
+    - Voluntary fast. Deeds are presented on Mondays and Thursdays, and the Prophet ﷺ
+      liked to be fasting when his were presented.
+  when: Every Monday and Thursday, Fajr to Maghrib. The card appears the evening before.
+  pushNote: A push the evening before, after ʿIshāʾ.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: monday
+      on:
+        weekday:
+          - mon
+      window: fast
+      check: fast
+      fast:
+        priority: 1
+        also: a Monday fast
+      startAnchor: from-fajr
+      endAnchor: maghrib
+      push:
+        at:
+          prayer: isha
+          plus: 15m
+          day: -1
+        title: Tomorrow is Monday, a Sunnah fast
+        body: Deeds are presented on Mondays and Thursdays.
+        anchor: after-isha
+        quiet: advance
+      title: Monday fast
+    - key: thursday
+      on:
+        weekday:
+          - thu
+      window: fast
+      check: fast
+      fast:
+        priority: 1
+        also: a Thursday fast
+      startAnchor: from-fajr
+      endAnchor: maghrib
+      push:
+        at:
+          prayer: isha
+          plus: 15m
+          day: -1
+        title: Tomorrow is Thursday, a Sunnah fast
+        body: Deeds are presented on Mondays and Thursdays.
+        anchor: after-isha
+        quiet: advance
+      title: Thursday fast
+- id: kahf
+  status: review
+  tier: push
+  title: Sūrat al-Kahf
+  short: Read al-Kahf and send extra ṣalawāt.
+  what:
+    - Read Sūrat al-Kahf and send extra ṣalawāt on the Prophet ﷺ.
+  when: Thursday Maghrib to Friday Maghrib.
+  pushNote: A push on Friday morning with Friday preparation, or on its own when Friday
+    preparation will not push.
+  notes:
+    - Al-Shāfiʿī placed al-Kahf on Friday night or day.
+    - Scholars differ on the strength of the al-Kahf reports.
+  evidence: []
+  duas: []
+  rules:
+    - combine-into-friday-push
+  occurrences:
+    - on:
+        weekday:
+          - thu
+      window:
+        from:
+          prayer: maghrib
+        to:
+          prayer: maghrib
+          day: 1
+      startAnchor: from-maghrib
+      endAnchor: maghrib
+      check: done
+      push:
+        at:
+          prayer: jumuah
+          minus: 120m
+          day: 1
+        title: Read Sūrat al-Kahf
+        body: Read it before Maghrib and send extra ṣalawāt.
+        anchor: morning
+        quiet: delay
+- id: sajdah
+  status: review
+  tier: inapp
+  title: "Friday Fajr: al-Sajdah and al-Insān"
+  short: Recite them if you lead or pray Fajr yourself.
+  what:
+    - Recite al-Sajdah and al-Insān in Fajr if you lead the prayer or pray it yourself.
+  when: Friday, before Fajr.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weekday:
+          - fri
+      window:
+        from:
+          prayer: isha
+          day: -1
+        to:
+          prayer: sunrise
+      startAnchor: before-fajr
+      endAnchor: sunrise
+      check: done
+      upcoming: false
+- id: friday-prep
+  status: review
+  tier: push
+  title: Friday preparation
+  short: Ghusl, siwāk, clean clothes, arrive early.
+  what:
+    - Ghusl, siwāk, clean clothes and, for men, fragrance. Walk if able, arrive early, and
+      pray voluntary rakʿahs before the khuṭbah.
+  when: Friday morning until Jumuʿah.
+  pushNote: A push about 2 hours before Jumuʿah, combined with al-Kahf.
+  notes:
+    - Most jurists treat the ghusl as an emphasized Sunnah, and some consider it
+      obligatory.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weekday:
+          - fri
+      window:
+        from:
+          prayer: fajr
+        to:
+          prayer: jumuah
+      startAnchor: morning
+      endAnchor: jumuah
+      countdown: jumuah
+      check: done
+      push:
+        at:
+          prayer: jumuah
+          minus: 120m
+        title: Friday preparation
+        body: 2 hours to Jumuʿah. Ghusl, siwāk, clean clothes, arrive early.
+        anchor: morning
+        quiet: delay
+        combined:
+          title: Friday · al-Kahf and preparation
+          body: Ghusl, siwāk, clean clothes, arrive early. Read al-Kahf before Maghrib.
+- id: after-jumuah
+  status: review
+  tier: inapp
+  title: Four rakʿahs after Jumuʿah
+  short: Pray four rakʿahs, or two at home.
+  what:
+    - Pray four rakʿahs, or two at home as the Prophet ﷺ did.
+  when: From Jumuʿah until ʿAṣr.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weekday:
+          - fri
+      window:
+        from:
+          prayer: jumuah
+        to:
+          latest:
+            - prayer: asr
+            - prayer: jumuah
+              plus: 90m
+      startAnchor: time
+      endAnchor: asr
+      check: done
+      upcoming: false
+- id: last-hour
+  status: review
+  tier: push
+  title: Last hour of Friday
+  short: Spend it in duʿāʾ.
+  what:
+    - Spend the last hour before Maghrib on Friday in duʿāʾ.
+  when: Friday, from ʿAṣr to Maghrib.
+  pushNote: A push about 45 minutes before Maghrib.
+  notes:
+    - Another report places the special hour between the imam sitting down and the end of
+      the prayer.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weekday:
+          - fri
+      window:
+        from:
+          prayer: asr
+        to:
+          prayer: maghrib
+      startAnchor: from-asr
+      endAnchor: maghrib
+      check: done
+      push:
+        at:
+          prayer: maghrib
+          minus: 45m
+        title: Last hour of Friday
+        body: About 45 minutes to Maghrib. Spend it in duʿāʾ.
+        anchor: before-maghrib
+        quiet: delay

@@ -1,0 +1,146 @@
+- id: rain
+  status: review
+  tier: push
+  title: Rain starts
+  short: Say the duʿāʾ for beneficial rain.
+  what:
+    - Say the duʿāʾ for beneficial rain.
+    - The Prophet ﷺ also let some rain touch his skin.
+  when: While it rains.
+  pushNote: A push only for the first rain after about 7 dry days.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weather: rain-start
+      window:
+        from:
+          event: start
+        to:
+          event: end
+      check: done
+      push:
+        at:
+          event: start
+        title: Rain is likely starting in your area
+        body: "Say: Allāhumma ṣayyiban nāfiʿan"
+        quiet: drop
+- id: rain-stops
+  status: review
+  tier: inapp
+  title: Rain stops
+  short: Credit the rain to Allah.
+  what:
+    - Credit the rain to Allah rather than to the stars.
+  when: For a few hours after the rain ends.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weather: rain-stop
+      window:
+        from:
+          event: start
+        to:
+          event: end
+- id: heavy-rain
+  status: review
+  tier: push
+  title: Heavy rain
+  short: Ask for it around us, not upon us.
+  what:
+    - Say the duʿāʾ for heavy rain.
+  when: When forecast rain is above about 7.6 mm an hour.
+  pushNote: A push when it starts.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weather: heavy-rain
+      window:
+        from:
+          event: start
+        to:
+          event: end
+      push:
+        at:
+          event: start
+        title: Heavy rain is likely in your area
+        body: Ask for it around us, not upon us.
+        quiet: drop
+- id: thunder
+  status: review
+  tier: inapp
+  title: Thunder
+  short: Pause and glorify Allah.
+  what:
+    - Pause and say the words of ʿAbdullāh ibn al-Zubayr when you hear thunder.
+  when: During a thunderstorm.
+  notes:
+    - This is the practice of the Companion ʿAbdullāh ibn al-Zubayr, not a saying of the
+      Prophet ﷺ.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weather: thunder
+      window:
+        from:
+          event: start
+        to:
+          event: end
+- id: wind
+  status: review
+  tier: push
+  title: Strong wind or a storm
+  short: Don’t curse the wind. Ask for its good.
+  what:
+    - Don’t curse the wind. Ask for its good and seek refuge from its harm.
+    - When a storm cloud approached, the Prophet ﷺ would stop what he was doing and seek
+      refuge from its harm.
+  when: When forecast gusts pass about 60 km/h.
+  pushNote: A push for gusts above about 75 km/h.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        weather: wind
+      window:
+        from:
+          event: start
+        to:
+          event: end
+      push:
+        at:
+          event: start
+        title: Strong wind is likely in your area
+        body: Don’t curse the wind. Ask for its good.
+        quiet: drop
+- id: eclipse
+  status: review
+  tier: push
+  title: Solar or lunar eclipse
+  short: Pray, make duʿāʾ, say takbīr and give charity.
+  what:
+    - Pray the eclipse prayer, make duʿāʾ, say takbīr and give charity.
+  when: While an eclipse is visible from your area.
+  pushNote: A push at the start.
+  notes:
+    - Some scholars tie the prayer to seeing the eclipse. The phone calculates the visible
+      window for your location.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        eclipse: any
+      window:
+        from:
+          event: start
+        to:
+          event: end
+      push:
+        at:
+          event: start
+        title: An eclipse may be visible in your area
+        body: Pray, make duʿāʾ, say takbīr and give charity.
+        quiet: drop

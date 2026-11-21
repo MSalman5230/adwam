@@ -121,6 +121,8 @@ Each occurrence says which days it falls on, when its card shows, and when it pu
 
 A Hijri selector can cover several months and exclude others with `excludeMonths`. Use `nextHijri` for an evening leading into a matching date. A push may have its own `on` selector, for example to notify only on the first day of a range. It can set `quiet` to `advance`, `delay` or `drop`. For weather and eclipses, a time point can name the event's `start` or `end`. Use `if`, `then` and `otherwise` to choose a time point from a calendar selector, such as ending at Eid prayer only on the last day of Ramadan.
 
+Friday preparation has `combined` title and body wording for its joint reminder with al-Kahf.
+
 Window presets:
 
 | Preset | From | To |

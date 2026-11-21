@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=../dist/schema.json#/properties/sunnahs
+- id: shaban15
+  status: review
+  tier: inapp
+  default: off
+  title: Night of 15 Shaʿbān
+  short: Scholars differ on the forgiveness reports.
+  what:
+    - Scholars differ on the forgiveness reports for this night.
+  when: The night of 15 Shaʿbān.
+  notes:
+    - The narration prescribing a special night prayer and daytime fast is graded fabricated.
+      The daytime fast already falls under the White Days.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        hijri:
+          month: shaban
+          day: 14
+      window: night
+      startAnchor: from-maghrib
+- id: ashura-family
+  status: review
+  tier: inapp
+  default: off
+  title: Spending more on family on ʿĀshūrāʾ
+  short: The evidence is disputed.
+  what:
+    - Spend more generously on your family on ʿĀshūrāʾ.
+  when: 10 Muḥarram.
+  notes:
+    - The evidence is disputed.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        hijri:
+          month: muharram
+          day: 10
+      window: hijri-day
+      startAnchor: all-day

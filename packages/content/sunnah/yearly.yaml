@@ -1,0 +1,713 @@
+- id: sacred
+  status: review
+  tier: inapp
+  title: Sacred months
+  short: Increase good deeds and guard against wrongdoing.
+  what:
+    - Increase good deeds and guard against wrongdoing in Muḥarram, Rajab, Dhul-Qaʿdah and
+      Dhul-Ḥijjah.
+  when: All of Muḥarram, Rajab, Dhul-Qaʿdah and Dhul-Ḥijjah, as a banner on Today.
+  notes:
+    - Some jurists encourage extra voluntary fasts in these months. The report that
+      specifically calls for it is graded weak.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: sacred-months
+      on:
+        hijri:
+          month:
+            - muharram
+            - rajab
+            - dhul-qadah
+            - dhul-hijjah
+      window: hijri-day
+      card: false
+      coming: false
+      upcoming: false
+      banner:
+        title: "{{month}} · Sacred month"
+        body: Increase good deeds and guard against wrongdoing.
+        rank: 10
+- id: muharram
+  status: review
+  month: muharram
+  tier: inapp
+  title: Muḥarram
+  short: The best month for voluntary fasting after Ramadan.
+  what:
+    - Fast often. It is the best month for voluntary fasting after Ramadan.
+  when: All of Muḥarram.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: muharram
+      on:
+        hijri:
+          month: muharram
+      window: hijri-day
+      card: false
+      coming: false
+      upcoming: false
+      banner:
+        title: Muḥarram · Sacred month
+        body: The best month for voluntary fasting after Ramadan.
+        rank: 5
+- id: ashura
+  status: review
+  month: muharram
+  tier: push
+  title: ʿĀshūrāʾ fast
+  short: Fast the 9th and 10th of Muḥarram.
+  what:
+    - Fast both the 9th and 10th of Muḥarram. The ʿĀshūrāʾ fast is reported to expiate the
+      previous year.
+  when: 9 and 10 Muḥarram. A planning card shows from 1 Muḥarram.
+  pushNote: Pushes on the evenings of the 8th and 9th.
+  notes:
+    - If the 9th is missed, some jurists accept pairing the 10th with the 11th.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: plan
+      title: ʿĀshūrāʾ is coming
+      short: Plan to fast the 9th and 10th of Muḥarram.
+      on:
+        hijri:
+          month: muharram
+          day: 1-8
+      window: hijri-day
+      startAnchor: all-day
+      upcoming: false
+      upcomingGroup:
+        key: ashura-plan
+    - key: fast
+      on:
+        hijri:
+          month: muharram
+          day: 9-10
+      window: fast
+      check: fast
+      fast:
+        priority: 5
+      startAnchor: from-fajr
+      endAnchor: maghrib
+      push:
+        at:
+          prayer: isha
+          plus: 15m
+          day: -1
+        title: ʿĀshūrāʾ fast
+        body: Fast the 9th and 10th of Muḥarram.
+        anchor: after-isha
+        quiet: advance
+      upcomingGroup:
+        key: ashura
+- id: shaban
+  status: review
+  month: shaban
+  tier: push
+  title: Shaʿbān
+  short: Fast often, and make up missed Ramadan fasts.
+  what:
+    - Fast often. It was the month the Prophet ﷺ fasted most outside Ramadan.
+    - It is also the last chance to make up missed Ramadan fasts, as ʿĀʾishah did.
+  when: All of Shaʿbān, with a make-up tracker.
+  pushNote: A push on 1 Shaʿbān.
+  notes:
+    - The make-up fasts are obligatory.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: season
+      on:
+        hijri:
+          month: shaban
+      window: hijri-day
+      card: false
+      coming: false
+      upcoming: false
+      banner:
+        title: Shaʿbān
+        body: Fast often, and make up missed Ramadan fasts before it ends.
+        rank: 5
+    - key: begins
+      title: Shaʿbān has begun
+      short: Fast often, and make up missed Ramadan fasts.
+      on:
+        hijri:
+          month: shaban
+          day: 1
+      window: daytime
+      card: false
+      startAnchor: morning
+      push:
+        at:
+          prayer: fajr
+          plus: 180m
+        title: Shaʿbān
+        body: Fast often, and make up missed Ramadan fasts.
+        anchor: morning
+        quiet: delay
+- id: ramadan-daily
+  status: review
+  month: ramadan
+  tier: inapp
+  title: Ramadan, daily
+  short: Suḥūr before Fajr, ifṭār at Maghrib.
+  what:
+    - Take suḥūr shortly before Fajr. Break the fast promptly with fresh dates, then dried
+      dates, then water.
+    - Offer ifṭār to someone fasting. Read more Qurʾan and give more charity.
+  when: "Every day of Ramadan: a suḥūr card before Fajr and an ifṭār card at Maghrib."
+  evidence: []
+  duas: []
+  occurrences:
+    - key: season
+      on:
+        hijri:
+          month: ramadan
+      window: hijri-day
+      card: false
+      coming: false
+      upcoming: false
+      banner:
+        title: Ramadan
+        body: Read more Qurʾan and give more charity.
+        rank: 5
+    - key: suhur
+      title: Suḥūr
+      short: Take suḥūr shortly before Fajr.
+      on:
+        hijri:
+          month: ramadan
+      window:
+        from:
+          prayer: fajr
+          minus: 120m
+        to:
+          prayer: fajr
+      startAnchor: before-fajr
+      endAnchor: fajr
+      upcoming: false
+      upcomingGroup:
+        key: suhur
+    - key: iftar
+      title: Ifṭār
+      short: Break the fast promptly with fresh dates, then dried dates, then water.
+      on:
+        hijri:
+          month: ramadan
+      window:
+        from:
+          prayer: maghrib
+        to:
+          prayer: isha
+      startAnchor: at-maghrib
+      endAnchor: isha
+      upcoming: false
+      upcomingGroup:
+        key: iftar
+- id: last-ten
+  status: review
+  month: ramadan
+  tier: push
+  title: Last ten nights
+  short: Seek Laylat al-Qadr every night.
+  what:
+    - Laylat al-Qadr has started. Seek it every night until Ramadan ends.
+    - Increase night prayer, wake your household, and observe iʿtikāf if able.
+  when: From Maghrib on 20 Ramadan until Ramadan ends. An iʿtikāf planning card shows from
+    the 18th.
+  pushNote: A push at Maghrib on the 20th.
+  notes:
+    - The odd nights depend on when Ramadan began locally and how the nights are counted,
+      so the app treats all ten the same.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: season
+      on:
+        hijri:
+          month: ramadan
+          day: 21-last
+      window: hijri-day
+      card: false
+      coming: false
+      upcoming: false
+      banner:
+        title: The last ten nights
+        body: Seek Laylat al-Qadr every night until Ramadan ends.
+        rank: 1
+    - key: plan
+      title: Plan your iʿtikāf
+      short: The last ten nights begin at Maghrib on the 20th.
+      on:
+        hijri:
+          month: ramadan
+          day: 18-20
+      window: hijri-day
+      startAnchor: all-day
+      upcoming: false
+      upcomingGroup:
+        key: itikaf
+    - key: night
+      title: Seek Laylat al-Qadr
+      short: Pray at night and make this duʿāʾ.
+      on:
+        hijri:
+          month: ramadan
+          day: 20-last
+      window: night
+      startAnchor: from-maghrib
+      endAnchor: fajr
+      upcomingGroup:
+        key: qadr
+        title: The last ten nights begin
+      push:
+        at:
+          prayer: maghrib
+        title: The last ten nights have begun
+        body: Seek Laylat al-Qadr every night until Ramadan ends.
+        anchor: at-maghrib
+        quiet: advance
+        on:
+          hijri:
+            month: ramadan
+            day: 20
+- id: zakat
+  status: review
+  month: ramadan
+  tier: push
+  title: Zakāt al-fiṭr
+  short: Pay it before the Eid prayer.
+  what:
+    - Pay zakāt al-fiṭr before the Eid prayer. It is obligatory for those who qualify.
+  when: From 27 Ramadan until the Eid prayer.
+  pushNote: A push around 27 Ramadan.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        hijri:
+          month: ramadan
+          day: 27-last
+      window:
+        from:
+          prayer: maghrib
+          day: -1
+        to:
+          if:
+            nextHijri:
+              month: shawwal
+              day: 1
+          then:
+            prayer: sunrise
+            plus: 45m
+            day: 1
+          otherwise:
+            prayer: maghrib
+      startAnchor: all-day
+      check: done
+      tickScope: hijri-year
+      upcomingGroup:
+        key: zakat
+      push:
+        at:
+          prayer: dhuhr
+        title: Zakāt al-fiṭr
+        body: Pay it before the Eid prayer.
+        anchor: midday
+        quiet: delay
+        on:
+          hijri:
+            month: ramadan
+            day: 27
+- id: eid-fitr-night
+  status: review
+  month: shawwal
+  tier: inapp
+  title: Eid takbīr
+  short: Say the takbīr from sunset until the prayer.
+  what:
+    - Say the Eid takbīr from sunset until the prayer, following your school’s timing.
+  when: From the Eid announcement until the prayer.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        hijri:
+          month: ramadan
+        nextHijri:
+          month: shawwal
+          day: 1
+      window:
+        from:
+          prayer: maghrib
+        to:
+          prayer: sunrise
+          plus: 45m
+          day: 1
+      startAnchor: from-maghrib
+      endAnchor: eid-prayer
+- id: eid-fitr
+  status: review
+  month: shawwal
+  tier: push
+  title: Eid al-Fiṭr
+  short: Ghusl, best clothes, dates before you leave.
+  what:
+    - Ghusl and best clothes. Eat an odd number of dates before leaving.
+    - Walk if practical and return by a different route. No fasting today.
+  when: 1 Shawwāl, Eid morning.
+  pushNote: A push after Fajr.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        hijri:
+          month: shawwal
+          day: 1
+      window:
+        from:
+          prayer: fajr
+        to:
+          prayer: dhuhr
+      startAnchor: after-fajr
+      marker: no-fasting
+      check: done
+      push:
+        at:
+          prayer: fajr
+          plus: 20m
+        title: Eid al-Fiṭr
+        body: Ghusl, best clothes, dates before you leave.
+        anchor: after-fajr
+        quiet: delay
+- id: shawwal6
+  status: review
+  month: shawwal
+  tier: push
+  title: Six Shawwāl fasts
+  short: Fast six days this month, together or spread out.
+  what:
+    - Fast six days in Shawwāl, together or spread out.
+  when: 2 to 30 Shawwāl, with a progress tracker.
+  pushNote: A push on 2 Shawwāl. Reminders stop once you log six.
+  notes:
+    - Scholars differ on whether Ramadan make-up fasts must come first.
+  evidence: []
+  duas: []
+  rules:
+    - tracker-shawwal
+    - stop-after-six
+  occurrences:
+    - key: fast
+      on:
+        hijri:
+          month: shawwal
+          day: 2-last
+      window: fast
+      check: fast
+      fast:
+        priority: 2
+        also: a Shawwāl fast
+      startAnchor: from-fajr
+      endAnchor: maghrib
+      push:
+        at:
+          prayer: fajr
+          plus: 180m
+        title: Six Shawwāl fasts
+        body: Fast six days this month, together or spread out.
+        anchor: morning
+        quiet: delay
+        on:
+          hijri:
+            month: shawwal
+            day: 2
+      upcomingGroup:
+        key: shawwal
+- id: hair-nails
+  status: review
+  month: dhul-qadah
+  tier: push
+  title: Hair and nails, if offering uḍḥiyah
+  short: Trim them before the month changes.
+  what:
+    - If you are offering an uḍḥiyah, trim hair and nails before the month changes, then
+      leave them until your sacrifice.
+  when: 29 Dhul-Qaʿdah, then a reminder from 1 Dhul-Ḥijjah until the sacrifice.
+  pushNote: A push on the morning of the 29th, only if you answered Yes to the uḍḥiyah question.
+  notes:
+    - Schools differ on whether this is binding or recommended.
+  evidence: []
+  duas: []
+  rules:
+    - requires-udhiyah
+  occurrences:
+    - key: trim
+      title: Trim hair and nails today
+      short: Then leave them until your sacrifice.
+      on:
+        hijri:
+          month: dhul-qadah
+          day: 29
+      window: daytime
+      startAnchor: morning
+      check: done
+      push:
+        at:
+          prayer: fajr
+          plus: 180m
+        title: Hair and nails, if offering uḍḥiyah
+        body: Then leave them until your sacrifice.
+        anchor: morning
+        quiet: delay
+    - key: leave
+      title: Leave hair and nails
+      short: Until your sacrifice after the Eid prayer.
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 1-10
+      window:
+        from:
+          prayer: maghrib
+          day: -1
+        to:
+          if:
+            hijri:
+              month: dhul-hijjah
+              day: 10
+          then:
+            prayer: dhuhr
+          otherwise:
+            prayer: maghrib
+      startAnchor: all-day
+      upcoming: false
+      upcomingGroup:
+        key: hair
+- id: dh-ten
+  status: review
+  month: dhul-hijjah
+  tier: push
+  title: First ten days of Dhul-Ḥijjah
+  short: The best days of the year for good deeds.
+  what:
+    - The best days of the year for good deeds. Increase dhikr, takbīr and charity.
+    - Days 1 to 9 are open for voluntary fasting.
+  when: 1 to 10 Dhul-Ḥijjah, as a banner.
+  pushNote: A push on 1 Dhul-Ḥijjah.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: season
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 1-10
+      window: hijri-day
+      card: false
+      coming: false
+      upcoming: false
+      banner:
+        title: The best ten days
+        body: Increase dhikr, takbīr and charity.
+        rank: 2
+    - key: begins
+      title: The best ten days begin
+      short: Increase dhikr, takbīr and charity.
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 1
+      window: hijri-day
+      startAnchor: all-day
+      card: false
+      push:
+        at:
+          prayer: fajr
+          plus: 180m
+        title: First ten days of Dhul-Ḥijjah
+        body: Increase dhikr, takbīr and charity.
+        anchor: morning
+        quiet: delay
+- id: arafah
+  status: review
+  month: dhul-hijjah
+  tier: push
+  title: ʿArafah fast
+  short: Fast, and make long duʿāʾ in the afternoon.
+  what:
+    - Fast. It is reported to expiate the previous and coming year.
+    - Make long duʿāʾ, especially in the afternoon. Pilgrims at ʿArafah do not fast.
+  when: 9 Dhul-Ḥijjah.
+  pushNote: A push on the evening of the 8th for the fast, and mid-afternoon on the 9th for duʿāʾ.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: fast
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 9
+      window: fast
+      check: fast
+      fast:
+        priority: 6
+      startAnchor: from-fajr
+      endAnchor: maghrib
+      push:
+        at:
+          prayer: isha
+          plus: 15m
+          day: -1
+        title: ʿArafah fast
+        body: Fast, and make long duʿāʾ in the afternoon.
+        anchor: after-isha
+        quiet: advance
+    - key: dua
+      title: ʿArafah afternoon
+      short: Make long duʿāʾ this afternoon.
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 9
+      window:
+        from:
+          prayer: dhuhr
+          plus: 120m
+        to:
+          prayer: maghrib
+      card: false
+      upcoming: false
+      push:
+        at:
+          prayer: dhuhr
+          plus: 150m
+        title: ʿArafah fast
+        body: Make long duʿāʾ this afternoon.
+        anchor: afternoon
+        quiet: delay
+- id: eid-adha
+  status: review
+  month: dhul-hijjah
+  tier: push
+  title: Eid al-Aḍḥā
+  short: Eat nothing until after the prayer.
+  what:
+    - Ghusl and best clothes. Eat nothing until after the prayer. Return by a different
+      route.
+    - Offer the uḍḥiyah after the prayer, then eat from it and share it.
+  when: 10 Dhul-Ḥijjah, Eid morning.
+  pushNote: A push after Fajr.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        hijri:
+          month: dhul-hijjah
+          day: 10
+      window:
+        from:
+          prayer: fajr
+        to:
+          prayer: dhuhr
+      startAnchor: after-fajr
+      marker: no-fasting
+      check: done
+      push:
+        at:
+          prayer: fajr
+          plus: 20m
+        title: Eid al-Aḍḥā
+        body: Eat nothing until after the prayer.
+        anchor: after-fajr
+        quiet: delay
+- id: takbir
+  status: review
+  month: dhul-hijjah
+  tier: inapp
+  title: Takbīr after prayers
+  short: Say takbīr after every obligatory prayer.
+  what:
+    - Say takbīr after every obligatory prayer from Fajr on 9 Dhul-Ḥijjah to ʿAṣr on the
+      13th. Timings vary by school.
+    - 11 to 13 Dhul-Ḥijjah are the Tashrīq days of eating, drinking and remembering Allah.
+  when: Fajr 9 Dhul-Ḥijjah to ʿAṣr 13 Dhul-Ḥijjah.
+  evidence: []
+  duas: []
+  occurrences:
+    - key: days
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 9-13
+      window:
+        from:
+          if:
+            hijri:
+              month: dhul-hijjah
+              day: 9
+          then:
+            prayer: fajr
+          otherwise:
+            prayer: maghrib
+            day: -1
+        to:
+          if:
+            hijri:
+              month: dhul-hijjah
+              day: 13
+          then:
+            prayer: asr
+            plus: 30m
+          otherwise:
+            prayer: isha
+            plus: 60m
+      startAnchor: from-fajr
+      upcomingGroup:
+        key: takbir
+    - key: tashriq
+      title: Days of Tashrīq
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 11-13
+      window: hijri-day
+      marker: no-fasting
+      card: false
+      coming: false
+      upcomingGroup:
+        key: tashriq
+      banner:
+        title: Days of Tashrīq
+        body: Days of eating, drinking and remembering Allah. No fasting.
+        rank: 2
+- id: makeup
+  status: review
+  tier: inapp
+  title: Ramadan days to make up
+  short: Log each make-up fast.
+  what:
+    - Missed Ramadan fasts are obligatory to make up. ʿĀʾishah made hers up in Shaʿbān.
+    - Log each one here. At zero, this card leaves Today.
+  when: All through Shaʿbān, and on the Shawwāl card.
+  hidden: true
+  evidence: []
+  duas: []
+  rules:
+    - tracker-makeup
+    - follow-makeup-season
+  occurrences:
+    - on:
+        hijri:
+          month:
+            - shaban
+            - shawwal
+      window: hijri-day
+      coming: false
+      upcoming: false
+      upcomingGroup:
+        key: makeup

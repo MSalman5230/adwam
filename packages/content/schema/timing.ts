@@ -204,6 +204,7 @@ export const occurrenceSchema = z.strictObject({
       body: wording,
       anchor: pushAnchor.optional(),
       quiet: z.enum(['advance', 'delay', 'drop']).optional(),
+      combined: z.strictObject({ title: wording, body: wording }).optional(),
       buttons: z
         .array(z.enum(['done', 'later']))
         .max(2)

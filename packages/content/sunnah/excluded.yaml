@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=../dist/schema.json#/properties/unshipped
+- id: unreliable-events
+  status: excluded
+  title: Events the app cannot detect reliably
+  reason: Drought and the communal rain prayer, the first fruit of the season, and choosing
+    Thursday to travel.
+- id: pilgrimage-and-madinah
+  status: excluded
+  title: Hajj, ʿUmrah and Madinah
+  reason: Pilgrim rites, Ramadan or Dhul-Qaʿdah ʿUmrah, and Saturday visits to Masjid Qubāʾ.
+- id: unsuitable-reminders
+  status: excluded
+  title: Practices left out of reminders
+  reason: Alternate-day fasting, making up iʿtikāf, Shawwāl marriages, Ṣalāt al-Tasbīḥ, the
+    imam’s recitations and the Eid-on-Friday concession.
+- id: commemorations
+  status: excluded
+  title: Commemorations
+  reason: The Mawlid and Isrāʾ and Miʿrāj have no established reminder practice in the calendar.
