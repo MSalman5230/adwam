@@ -15,6 +15,7 @@ jest.mock('expo-router', () => ({
   useLocalSearchParams: () => ({ fromSetup: mockFromSetup }),
   useRouter: () => ({ dismissTo: mockDismiss }),
 }));
+jest.mock('../src/services/notification-schedule', () => ({ syncSchedule: jest.fn() }));
 jest.mock('@adwam/content/catalog', () => {
   const example = { status: 'review', short: 'A practice.', when: 'After prayer.', what: ['A practice.'], evidence: [], duas: [], occurrences: [] };
   return { sunnahs: [

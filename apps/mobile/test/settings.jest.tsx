@@ -17,6 +17,7 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({ push: mockPush, setParams: mockSetParams }),
 }));
 jest.mock('@adwam/content/catalog', () => ({ sunnahs: [] }), { virtual: true });
+jest.mock('../src/services/notification-schedule', () => ({ syncSchedule: jest.fn() }));
 
 const zeroInsets = {
   frame: { x: 0, y: 0, width: 412, height: 915 },

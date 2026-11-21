@@ -1,6 +1,9 @@
-import type { ErrorEvent, StackFrame } from '@sentry/react-native';
+import type { Breadcrumb, ErrorEvent, StackFrame } from '@sentry/react-native';
 
 export const previewTestCrash = 'Adwam preview test crash';
+export const scheduleBreadcrumbCategory = 'reminders.schedule';
+const scheduleKeys = ['planned', 'added', 'cancelled', 'kept', 'failed'] as const;
+export type ScheduleCounts = Record<(typeof scheduleKeys)[number], number>;
 
 type Build = { environment: string; release: string; dist: string; updateId: string };
 
@@ -13,8 +16,20 @@ function safeStackFrame({ filename, abs_path, function: name, lineno, colno, in_
   };
 }
 
+export function scrubBreadcrumb(breadcrumb: Breadcrumb): Breadcrumb | null {
+  if (breadcrumb.category !== scheduleBreadcrumbCategory) return null;
+  const data: Partial<ScheduleCounts> = {};
+  for (const key of scheduleKeys) {
+    const count: unknown = breadcrumb.data?.[key];
+    if (typeof count !== 'number' || !Number.isSafeInteger(count) || count < 0) return null;
+    data[key] = count;
+  }
+  return { category: scheduleBreadcrumbCategory, level: 'info', timestamp: breadcrumb.timestamp, data };
+}
+
 export function scrubCrashEvent(event: ErrorEvent, build: Build): ErrorEvent {
-  const { type, event_id, timestamp, platform, level, debug_meta, exception } = event;
+  const { type, event_id, timestamp, platform, level, debug_meta, exception, breadcrumbs } = event;
+  const safeBreadcrumbs = breadcrumbs?.map(scrubBreadcrumb).filter((row) => row !== null);
   const values = exception?.values?.map((value) => ({
     type: value.type && errorTypes.has(value.type) ? value.type : 'Error',
     value: build.environment === 'preview' && value.value === previewTestCrash ? previewTestCrash : undefined,
@@ -25,6 +40,7 @@ export function scrubCrashEvent(event: ErrorEvent, build: Build): ErrorEvent {
     type, event_id, timestamp, platform, level, debug_meta,
     environment: build.environment, release: build.release, dist: build.dist,
     tags: { 'expo-update-id': build.updateId },
+    breadcrumbs: safeBreadcrumbs?.length ? safeBreadcrumbs : undefined,
     exception: values ? { values } : undefined,
   };
 }
