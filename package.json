@@ -16,8 +16,8 @@
     "content:build": "node scripts/pending.mjs content:build",
     "android": "pnpm --filter @adwam/mobile --fail-if-no-match android",
     "db:start": "supabase start",
-    "db:reset": "supabase db reset --local",
-    "db:test": "supabase test db --local",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
     "server:prepare": "node scripts/pending.mjs server:prepare",
     "server:test": "node scripts/pending.mjs server:test",
     "server:tick": "node scripts/pending.mjs server:tick",
@@ -30,6 +30,7 @@
     "eslint-plugin-i18next": "6.1.5",
     "globals": "^17.0.0",
     "prettier": "3.10.1",
+    "supabase": "3.2.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.73.0",
     "vitest": "4.1.12"

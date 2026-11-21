@@ -2,5 +2,11 @@
   "app": {
     "name": "Adwam",
     "tagline": "Sunnah practices, timed to your Hijri date and prayer times."
+  },
+  "development": {
+    "supabase": {
+      "connected": "Connected to local Supabase.",
+      "failed": "Could not sign in to local Supabase."
+    }
   }
 }
