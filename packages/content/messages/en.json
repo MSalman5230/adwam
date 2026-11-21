@@ -3,6 +3,107 @@
     "name": "Adwam",
     "tagline": "Sunnah practices, timed to your Hijri date and prayer times."
   },
+  "calendar": {
+    "hijriDate": "{{day}} {{month, hijriMonth}} {{year}}",
+    "prayer": {
+      "fajr": "Fajr",
+      "dhuhr": "Ẓuhr",
+      "jumuah": "Jumuʿah",
+      "asr": "ʿAṣr",
+      "maghrib": "Maghrib",
+      "isha": "ʿIshāʾ"
+    }
+  },
+  "today": {
+    "sinceMaghrib": "Since Maghrib",
+    "dayLine": {
+      "beforeFajr": "Fajr at {{time, time}}",
+      "untilMaghrib_one": "Maghrib in {{count}} minute. The Hijri day turns then.",
+      "untilMaghrib_other": "Maghrib in {{count}} minutes. The Hijri day turns then.",
+      "afterMaghrib": "A new Hijri day began at Maghrib, {{time, time}}."
+    },
+    "notice": {
+      "notifications": {
+        "title": "Notifications are off",
+        "body": "Push reminders can’t reach you, so check here.",
+        "openSettings": "Open settings"
+      },
+      "correction": {
+        "title": "Date correction",
+        "body": "{{month, hijriMonth}} starts on {{announced, weekday}} in {{region}}. Your app says {{calculated, weekday}}.",
+        "accept": "Use {{announced, weekday}}",
+        "decline": "Keep my dates"
+      },
+      "usage": {
+        "title": "Share anonymous usage statistics?",
+        "body": "Help improve Adwam. You can change this in Privacy.",
+        "share": "Share",
+        "decline": "No thanks"
+      },
+      "udhiyah": {
+        "title": "Are you offering an uḍḥiyah this year?",
+        "body": "Only Yes turns on the hair-and-nails reminder before Dhul-Ḥijjah.",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "pause": {
+        "title": "Fasting reminders paused",
+        "body": "Until you turn them back on.",
+        "until": "Until {{date, longDate}}.",
+        "resume": "Resume now"
+      }
+    },
+    "planSuhur": "Plan suḥūr before Fajr at {{time, time}}.",
+    "activeCount_one": "{{count}} open",
+    "activeCount_other": "{{count}} open",
+    "empty": {
+      "title": "Nothing special right now",
+      "next": "Next is {{title}}.",
+      "none": "Check Upcoming for the next reminder."
+    }
+  },
+  "reminder": {
+    "tick": {
+      "fast": "Fasting today",
+      "done": "Done"
+    },
+    "tracker": {
+      "makeupUnset": "Not set yet.",
+      "makeupComplete": "All made up.",
+      "makeup_one": "{{count}} fast left to make up",
+      "makeup_other": "{{count}} fasts left to make up",
+      "whiteDays": "White Days this month · {{count}} of {{total}}",
+      "shawwal": "{{count}} of {{total}} this month",
+      "shawwalComplete": "All six done. Shawwāl reminders have stopped."
+    }
+  },
+  "upcoming": {
+    "monthStarts": "{{month, hijriMonth}} begins",
+    "sacredMonthStarts": "{{month, hijriMonth}} begins · a sacred month",
+    "noFasting": "No fasting",
+    "paused": "Paused",
+    "count_one": "{{count}} item",
+    "count_other": "{{count}} items"
+  },
+  "detail": {
+    "reminder": {
+      "groupOff": "The {{group, reminderGroup}} group is off in Settings.",
+      "off": "Off. No card and no notification.",
+      "noPushTime": "Shows on Today during its window. This one has no push time.",
+      "inapp": "Shows on Today during its window, with no notification.",
+      "custom": "{{text}}",
+      "push": "A notification at its push time, and a card on Today."
+    },
+    "status": {
+      "banner": "Active now · on Today as a banner",
+      "outOfSeason": "Not this month",
+      "active": "Active now",
+      "next": "Next at {{time, time}} · {{day}} {{month, hijriMonth}}",
+      "ended": "Ended {{time, relativeDay}}",
+      "eclipse": "Shows when an eclipse is visible from your area",
+      "weather": "Shows when the forecast calls for it"
+    }
+  },
   "development": {
     "supabase": {
       "connected": "Connected to local Supabase.",

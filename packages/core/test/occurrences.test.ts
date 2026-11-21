@@ -50,7 +50,7 @@ describe('occurrences from the review catalog', () => {
       push: { item: 'monthu', at: day(isoAdd(march, -1), settings).times.isha + 15 * MINUTE_MS },
     });
     const loggedDays = Object.fromEntries(Array.from({ length: 6 }, (_, index) => [isoAdd(march, -index - 1), true]));
-    const afterSix = occurrencesForDay(march, settings, sunnahs, { fastLog: loggedDays });
+    const afterSix = occurrencesForDay(march, settings, sunnahs, { fastLog: loggedDays, makeup: 0 });
     expect(afterSix.find(({ definition }) => definition.check === 'fast')?.entry.id).toBe('monthu');
     expect(afterSix.some(({ entry }) => entry.id === 'makeup')).toBe(false);
   });
@@ -60,7 +60,7 @@ describe('occurrences from the review catalog', () => {
     const start = localToMs(date, 720, settings.place.timeZone);
     const end = start + 90 * MINUTE_MS;
     const events: OccurrenceEvent[] = [
-      { weather: 'rain-start', id: 'west-london-rain', start, end },
+      { weather: 'rain-start', id: 'west-london-rain', start, end, pushAt: start },
       { eclipse: 'lunar', id: 'lunar-february', start, end },
     ];
     const occurrences = occurrencesForDay(date, settings, sunnahs, { events });

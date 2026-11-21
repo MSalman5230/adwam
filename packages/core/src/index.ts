@@ -1,16 +1,8 @@
 export { suggestedPrayerMethod, weatherArea } from './places';
 export type { City, Coordinates, Place, PrayerMethod, WeatherArea } from './places';
 
-export type MessageParams = Readonly<Record<string, string | number | boolean>>;
-
-export type Msg = Readonly<{
-  key: string;
-  params?: MessageParams;
-}>;
-
-export function msg(key: string, params?: MessageParams): Msg {
-  return params ? { key, params } : { key };
-}
+export { msg } from './message';
+export type { MessageParams, Msg } from './message';
 
 export {
   DAY_MS,
@@ -55,3 +47,5 @@ export type {
 } from './weather';
 export { eclipsesBetween } from './eclipses';
 export type { VisibleEclipse } from './eclipses';
+export { dayLine, detailState, todayState, upcomingRows } from './views';
+export type { DetailRequest, TodayOptions, UpcomingFilter } from './views';
