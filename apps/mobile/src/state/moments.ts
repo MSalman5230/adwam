@@ -11,3 +11,5 @@ export const moments = [
   { id: 'shawwal', label: 'developerTools.moment.shawwal', date: '2027-03-29', minute: 602 },
   { id: 'dq', label: 'developerTools.moment.dhulQadah', date: '2027-04-22', minute: 602 },
 ] as const satisfies readonly { id: string; label: MessageKey; date: CivilDate; minute: number }[];
+
+export type DebugMoment = (typeof moments)[number];

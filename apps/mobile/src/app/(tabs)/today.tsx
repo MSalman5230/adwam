@@ -16,10 +16,9 @@ import { Icon, type IconName } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { syncSchedule } from '../../services/notification-schedule';
-import { serverCacheStore, settingsStore, trackersStore } from '../../state/native';
 import { selectReminderState, selectToday } from '../../state/selectors';
 import { editMakeup, editTick, type TrackerEdit } from '../../state/tracker-edits';
-import { useClock } from '../../state/useClock';
+import { useClock, useReminderStores } from '../../state/useClock';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
 import { ActiveCard, type ActiveReminder, type MakeupAction } from '../../today/ActiveCard';
@@ -34,6 +33,7 @@ export default function TodayScreen() {
   const { palette } = useTheme();
   const router = useRouter();
   const { setup } = useLocalSearchParams<{ setup?: string }>();
+  const { settings: settingsStore, trackers: trackersStore, serverCache: serverCacheStore } = useReminderStores();
   const settings = useStore(settingsStore, ({ value }) => value);
   const trackers = useStore(trackersStore, ({ value }) => value);
   const cached = useStore(serverCacheStore, ({ value }) => value);
@@ -46,6 +46,7 @@ export default function TodayScreen() {
   const view = state && selectToday(now, state, settings, correction);
   const banner = view?.banner;
   const [snack, setSnack] = useState<Snack>();
+  useEffect(() => { setSnack(undefined); }, [trackersStore]);
   useEffect(() => {
     if (setup !== '1') return;
     setSnack({ message: t('snackbar.setup') });

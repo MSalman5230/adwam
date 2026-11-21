@@ -1,10 +1,13 @@
+import { localToMs } from '@adwam/core';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useStore } from 'zustand';
 
 import { isTestBuild } from '../theme/isTestBuild';
 import { runMinuteClock } from './minute-clock';
-import { clockStore } from './native';
+import { createMomentSession, momentTimeZone } from './moment-session';
+import type { DebugMoment } from './moments';
+import { clockStore, deviceStores } from './native';
 
 export function useForegroundClock() {
   useEffect(() => {
@@ -29,4 +32,18 @@ export function useClock(): number {
 
 export function setDebugTime(instant: number | null) {
   if (isTestBuild && (instant === null || Number.isFinite(instant))) clockStore.getState().setOverride(instant);
+}
+
+export function setDebugMoment(moment: DebugMoment) {
+  if (!isTestBuild) return;
+  const instant = localToMs(moment.date, moment.minute, momentTimeZone);
+  clockStore.getState().setOverride(instant, createMomentSession(moment.id, instant));
+}
+
+export function useMomentSession() {
+  return useStore(clockStore, ({ moment }) => isTestBuild ? moment : null);
+}
+
+export function useReminderStores() {
+  return useMomentSession()?.stores ?? deviceStores;
 }
