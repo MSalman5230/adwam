@@ -1,0 +1,16 @@
+tirmidhi:
+  name: Jāmiʿ al-Tirmidhī
+  short: Tirmidhī
+  url: https://sunnah.com/tirmidhi:{number}
+bukhari:
+  name: Ṣaḥīḥ al-Bukhārī
+  short: Bukhārī
+  url: https://sunnah.com/bukhari:{number}
+adab:
+  name: Al-Adab al-Mufrad
+  short: Al-Adab al-Mufrad
+  url: https://sunnah.com/adab:{number}
+muslim:
+  name: Ṣaḥīḥ Muslim
+  short: Muslim
+  url: https://sunnah.com/muslim:{number}

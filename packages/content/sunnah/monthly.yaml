@@ -9,8 +9,10 @@
   notes:
     - Al-Tirmidhī called the report ḥasan gharīb. The Darussalam edition grades its chain
       weak.
-  evidence: []
-  duas: []
+  evidence:
+    - tirmidhi-3451
+  duas:
+    - crescent
   occurrences:
     - on:
         hijri:
