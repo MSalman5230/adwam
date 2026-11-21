@@ -41,3 +41,11 @@ export type {
   OccurrencePush,
   ReminderLevel,
 } from './occurrences';
+export { decidePushes, defaultWeatherThresholds, detectEvents } from './weather';
+export type {
+  WeatherEvent,
+  WeatherForecast,
+  WeatherInstall,
+  WeatherPush,
+  WeatherThresholds,
+} from './weather';
