@@ -56,7 +56,15 @@ export function createSavedStores(storage: StateStorage) {
 }
 
 export function createClockStore(initial: number) {
-  return createStore<{ now: number; setNow: (now: number) => void }>((set) => ({
-    now: initial, setNow: (now) => set({ now }),
+  return createStore<{
+    now: number;
+    override: number | null;
+    setNow: (now: number) => void;
+    setOverride: (override: number | null) => void;
+  }>((set) => ({
+    now: initial,
+    override: null,
+    setNow: (now) => set({ now }),
+    setOverride: (override) => set({ override }),
   }));
 }

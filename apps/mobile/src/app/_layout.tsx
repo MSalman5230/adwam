@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 
 import { bundledFonts } from '../theme/fonts';
 import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
+import { useForegroundClock } from '../state/useClock';
 
 function Navigator() {
   const { palette } = useTheme();
@@ -12,6 +13,7 @@ function Navigator() {
 }
 
 export default function RootLayout() {
+  useForegroundClock();
   return (
     <ThemeProvider>
       <Navigator />

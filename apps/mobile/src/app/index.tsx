@@ -34,9 +34,14 @@ export default function HomeScreen() {
         </Text>
       )}
       {isTestBuild && (
-        <Link href="/debug/theme" style={[typography.button, styles.tagline, { color: palette.green }]}>
-          {t('developerTools.themeGallery')}
-        </Link>
+        <>
+          <Link href="/debug/theme" style={[typography.button, styles.tagline, { color: palette.green }]}>
+            {t('developerTools.themeGallery')}
+          </Link>
+          <Link href="/debug/clock" style={[typography.button, styles.tagline, { color: palette.green }]}>
+            {t('developerTools.dateAndTime')}
+          </Link>
+        </>
       )}
     </View>
   );

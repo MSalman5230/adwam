@@ -606,6 +606,27 @@
     "fireNext": "Fire the next notification in 10 seconds",
     "reset": "Reset app",
     "themeGallery": "Theme gallery",
+    "clock": {
+      "current": "{{date, longDate}} · {{time, time}}",
+      "date": "Date",
+      "time": "Time",
+      "dateHint": "YYYY-MM-DD",
+      "timeHint": "HH:MM",
+      "invalid": "Enter a valid date and time in 24-hour format.",
+      "apply": "Set date and time",
+      "reset": "Use the phone’s clock"
+    },
+    "moment": {
+      "fridayMorning": "Friday morning",
+      "fridayRain": "Friday afternoon, rain",
+      "quietTuesday": "A quiet Tuesday",
+      "whiteDays": "White Days",
+      "endOfShaban": "End of Shaʿbān",
+      "correction": "Date correction offer",
+      "lastTen": "Last ten nights",
+      "shawwal": "Shawwāl, on a Monday",
+      "dhulQadah": "Mid Dhul-Qaʿdah"
+    },
     "gallery": {
       "colors": "Colour tokens",
       "type": "Text styles",

@@ -56,7 +56,9 @@ it('uses fresh defaults for malformed settings without affecting the tracker sto
 
 it('keeps the clock in memory', () => {
   const clock = createClockStore(0);
+  clock.getState().setOverride(120_000);
   clock.getState().setNow(60_000);
   expect(clock.getState().now).toBe(60_000);
-  expect(createClockStore(0).getState().now).toBe(0);
+  expect(clock.getState().override).toBe(120_000);
+  expect(createClockStore(0).getState()).toMatchObject({ now: 0, override: null });
 });
