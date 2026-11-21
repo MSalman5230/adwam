@@ -11,6 +11,9 @@ const channels = z.object({
 const corrections = z.array(z.object({
   year: z.int().positive(), month: z.int().min(1).max(12), start: date, withdrawn: z.boolean().optional(),
 }));
+const correctionOffer = corrections.element.omit({ withdrawn: true }).extend({
+  id: z.string().min(1), countryCode: z.string().regex(/^[A-Z]{2}$/), region: z.string().min(1),
+});
 
 export const locationSchema = z.object({
   source: z.enum(['current', 'city']),
@@ -71,11 +74,13 @@ export const serverCacheSchema = z.object({
     pushAt: z.number().finite().optional(),
   })).default([]),
   corrections: corrections.default([]),
+  correctionOffer: correctionOffer.nullable().default(null),
 });
 
 export type Settings = z.infer<typeof settingsSchema>;
 export type Trackers = z.infer<typeof trackersSchema>;
 export type ServerCache = z.infer<typeof serverCacheSchema>;
+export type CorrectionOffer = z.infer<typeof correctionOffer>;
 export const defaultSettings = () => settingsSchema.parse({});
 export const defaultTrackers = () => trackersSchema.parse({});
 export const defaultServerCache = () => serverCacheSchema.parse({});

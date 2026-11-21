@@ -119,7 +119,7 @@ function bannerFor(date: CivilDate, state: ReminderState) {
   }).sort((a, b) => a.banner.rank - b.banner.rank);
   const first = ranked[0];
   if (!first || !occurrenceEnabled(first.occurrence, state)) return;
-  return { ...first.banner, item: first.occurrence.entry.id, hijri: first.occurrence.hijri };
+  return { ...first.banner, item: first.occurrence.entry.id, date: first.occurrence.date, hijri: first.occurrence.hijri };
 }
 
 function seriesKey(occurrence: Occurrence): string {
