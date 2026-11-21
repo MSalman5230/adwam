@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   duaSchema,
+  quranSchema,
   sunnahSchema,
   type GroupedSunnah,
   type SourceCopy,
@@ -90,6 +91,14 @@ function arabicFixture(): string {
 }
 
 describe('content validation', () => {
+  it('bundles a Qurʾan reference in review builds using its direct source link', async () => {
+    const reference = quranSchema.parse({ id: 'quran-2-185', surah: 2, ayah: 185, url: 'https://quran.com/2/185' });
+    const data = content([{ ...entry, evidence: [reference.id] }]);
+    data.evidence.quran = [reference];
+    await expect(validateContent(data, noCopies)).resolves.toEqual([]);
+    expect(selectContent(data, true).evidence.quran).toEqual([reference]);
+  });
+
   it('identifies duplicate IDs, unknown references, and transliteration errors', async () => {
     const data = content([
       entry,

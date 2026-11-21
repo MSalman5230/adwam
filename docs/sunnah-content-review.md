@@ -25,3 +25,9 @@ The seven duʿāʾ are in [duas.yaml](../packages/content/duas.yaml), with their
 - Muwaṭṭaʾ Mālik 56/26 records the practice of ʿĀmir ibn ʿAbdullāh ibn al-Zubayr, a Successor. Al-Adab al-Mufrad 723 records the practice of ʿAbdullāh ibn al-Zubayr.
 - Muslim 1141b gives additional wording for the preceding narration. Check its placement and context before using it as a standalone excerpt.
 - Read each Arabic and English excerpt together. Some browser pages render a shorter Arabic body while the English includes surrounding narration. Select corresponding portions from the saved copies before approving those pairs.
+
+## Qurʾan and other sources
+
+[Qurʾan references](../packages/content/evidence/quran.yaml) use direct links in the staging catalog. The private browser archive includes the Uthmani Arabic and displayed English for the four cited verses. Two pages showed a named translation credit. Quran.com requires written consent for public redistribution. [Quran.com terms](https://quran.com/terms-and-conditions)
+
+[Fatwa and book references](../packages/content/evidence/other.yaml) include seven existing Wayback links and four browser copies. The archive filenames in the YAML point to the four private copies. The Bin Bāz reference about ʿĀshūrāʾ uses the full source URL, which opens the relevant fatwa.

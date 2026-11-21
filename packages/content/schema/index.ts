@@ -60,6 +60,7 @@ export const sunnahSchema = z
     notes: z.array(wording).optional(),
     evidence: z.array(id),
     duas: z.array(id),
+    quran: z.strictObject({ label: wording, url: webUrl }).optional(),
     rules: z.array(contentRule).optional(),
     hidden: z.boolean().optional(),
     occurrences: z.array(occurrenceSchema),
@@ -137,43 +138,53 @@ export const hadithSchema = z.strictObject({
   reviewed: reviewed.optional(),
 });
 
-export const quranSchema = z.strictObject({
+const quranAyah = z.union([z.int().positive(), z.string().regex(/^\d+-\d+$/)]);
+const quranReference = z.strictObject({
   id,
   surah: z.int().min(1).max(114),
-  ayah: z.union([z.int().positive(), z.string().regex(/^\d+-\d+$/)]),
+  ayah: quranAyah.optional(),
+  label: wording.optional(),
   url: webUrl,
-  excerpt,
-  textSource: z.strictObject({ site: z.literal('quran.com'), ...sourceCredit }),
   reviewed: reviewed.optional(),
 });
+export const quranSchema = z.union([quranReference, quranReference.extend({
+  ayah: quranAyah,
+  excerpt,
+  textSource: z.strictObject({ site: z.literal('quran.com'), ...sourceCredit }),
+})]);
 
 const otherSourceBase = {
   id,
   title: wording,
   summary: wording,
   reviewed: reviewed.optional(),
+  archive: webUrl.optional(),
+  archiveCapture: z.strictObject({
+    file: z.string().regex(/^[a-z][a-z0-9-]+\.json$/),
+    fetched: z.iso.date(),
+  }).optional(),
 };
 export const otherSourceSchema = z.discriminatedUnion('type', [
-  z.strictObject({
-    type: z.literal('fatwa'),
-    publisher: wording,
-    language: z.enum(['ar', 'en']),
-    url: webUrl,
-    archive: webUrl,
-    ...otherSourceBase,
-  }),
+  z
+    .strictObject({
+      type: z.literal('fatwa'),
+      publisher: wording,
+      language: z.enum(['ar', 'en']),
+      url: webUrl,
+      ...otherSourceBase,
+    })
+    .refine(({ archive, archiveCapture }) => Boolean(archive || archiveCapture), 'A fatwa needs an archived source'),
   z
     .strictObject({
       type: z.literal('book'),
       author: wording,
       location: wording,
       url: webUrl.optional(),
-      archive: webUrl.optional(),
       ...otherSourceBase,
     })
     .refine(
-      ({ url, archive }) => !url || Boolean(archive),
-      'A linked book needs an archive URL',
+      ({ url, archive, archiveCapture }) => !url || Boolean(archive || archiveCapture),
+      'A linked book needs an archived source',
     ),
 ]);
 

@@ -70,8 +70,14 @@
     - Al-Shāfiʿī placed al-Kahf on Friday night or day.
     - Scholars differ on the strength of the al-Kahf reports.
   evidence:
+    - quran-18
+    - bayhaqi-5996
+    - al-umm-friday
     - abudawud-1047
   duas: []
+  quran:
+    label: Read al-Kahf on Quran.com
+    url: https://quran.com/18
   rules:
     - combine-into-friday-push
   occurrences:
@@ -107,6 +113,9 @@
   evidence:
     - muslim-879a
   duas: []
+  quran:
+    label: Open al-Sajdah on Quran.com
+    url: https://quran.com/32
   occurrences:
     - on:
         weekday:

@@ -14,6 +14,7 @@
   evidence:
     - ibnmajah-1388
     - ibnmajah-1390
+    - dar-al-ifta-en-663
   duas: []
   occurrences:
     - on:
@@ -33,7 +34,8 @@
   when: 10 Muḥarram.
   notes:
     - The evidence is disputed.
-  evidence: []
+  evidence:
+    - dar-al-ifta-ar-21973
   duas: []
   occurrences:
     - on:

@@ -1,0 +1,96 @@
+- type: book
+  author: al-Bayhaqī
+  location: 5996, chapter on Friday night and day
+  url: https://hadithweb.com/bayhaqi:5996
+  id: bayhaqi-5996
+  title: Sunan al-Kubrā
+  summary: A report on reciting Sūrat al-Kahf on Friday.
+  archiveCapture:
+    file: bayhaqi-5996.json
+    fetched: 2026-11-21
+- type: book
+  author: al-Shāfiʿī
+  location: Book of Prayer, chapter on Friday night and day
+  url: https://islamweb.net/ar/library/content/31/442/
+  id: al-umm-friday
+  title: Al-Umm
+  summary: Al-Shāfiʿī discusses reciting al-Kahf on Friday night or day.
+  archiveCapture:
+    file: al-umm-friday.json
+    fetched: 2026-11-21
+- type: fatwa
+  publisher: Dār al-Iftāʾ al-Miṣriyyah
+  language: en
+  url: https://www.dar-alifta.org/en/fatwa/details/22447/observing-voluntary-fasts-solely-in-rajab-and-sha%E2%80%98ban
+  id: dar-al-ifta-en-22447
+  title: Observing voluntary fasts solely in Rajab and Shaʿbān
+  summary: Discusses whether voluntary fasting may be observed during Rajab and Shaʿbān alone.
+  archive: https://web.archive.org/web/20260719212320/https://www.dar-alifta.org/en/fatwa/details/22447/observing-voluntary-fasts-solely-in-rajab-and-sha%E2%80%98ban
+- type: fatwa
+  publisher: Office of Shaykh ʿAbd al-ʿAzīz ibn Bāz
+  language: ar
+  url: https://binbaz.org.sa/fatwas/22819/%D9%85%D8%A7-%D8%A7%D9%84%D8%A7%D9%81%D8%B6%D9%84-%D9%81%D9%8A-%D8%A7%D9%84%D8%B5%D9%88%D9%85-%D9%82%D8%A8%D9%84-%D8%B9%D8%A7%D8%B4%D9%88%D8%B1%D8%A7%D8%A1-%D9%88%D8%A8%D8%B9%D8%AF%D9%87
+  id: bin-baz-22819
+  title: Fasting before or after ʿĀshūrāʾ
+  summary: Discusses observing the ʿĀshūrāʾ fast with a fast on a neighbouring day.
+  archiveCapture:
+    file: bin-baz-22819.json
+    fetched: 2026-11-21
+- type: fatwa
+  publisher: Dār al-Iftāʾ al-Miṣriyyah
+  language: en
+  url: https://www.dar-alifta.org/en/fatwa/details/6186/fasting-six-days-of-the-month-of-shawwal
+  id: dar-al-ifta-en-6186
+  title: Fasting six days of Shawwāl
+  summary: Discusses the six Shawwāl fasts, including their timing and combining intentions.
+  archive: https://web.archive.org/web/20260423023459/https://www.dar-alifta.org/en/fatwa/details/6186/fasting-six-days-of-the-month-of-shawwal
+- type: fatwa
+  publisher: Office of Shaykh ʿAbd al-ʿAzīz ibn Bāz
+  language: ar
+  url: https://binbaz.org.sa/fatwas/12670/%D8%A7%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D8%AA%D9%82%D8%AF%D9%8A%D9%85-%D8%A7%D9%84%D9%82%D8%B6%D8%A7%D8%A1-%D8%B9%D9%84%D9%89-%D8%B5%D9%88%D9%85-%D8%A7%D9%84%D8%B3%D8%AA
+  id: bin-baz-12670
+  title: Making up Ramadan fasts before the six of Shawwāl
+  summary: Advises making up missed Ramadan fasts before observing the six voluntary days.
+  archive: https://web.archive.org/web/20260614005900/https://binbaz.org.sa/fatwas/12670/%D8%A7%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D8%AA%D9%82%D8%AF%D9%8A%D9%85-%D8%A7%D9%84%D9%82%D8%B6%D8%A7%D8%A1-%D8%B9%D9%84%D9%89-%D8%B5%D9%88%D9%85-%D8%A7%D9%84%D8%B3%D8%AA
+- type: fatwa
+  publisher: Jordan General Iftaa Department
+  language: en
+  url: https://aliftaa.jo/article-en/5972/Article.aspx?ArticleId=5997
+  id: jordan-iftaa-5997
+  title: Rulings of the uḍḥiyah in Islamic jurisprudence
+  summary: Summarizes uḍḥiyah rulings, including trimming hair and nails.
+  archiveCapture:
+    file: jordan-iftaa-5997.json
+    fetched: 2026-11-21
+- type: fatwa
+  publisher: Dār al-Iftāʾ al-Miṣriyyah
+  language: ar
+  url: https://www.dar-alifta.org/ar/fatwa/details/14998/%D8%A3%D8%B3%D8%A6%D9%84%D8%A9-%D9%85%D8%AA%D9%86%D9%88%D8%B9%D8%A9-%D8%AD%D9%88%D9%84-%D8%A7%D9%84%D8%AA%D9%83%D8%A8%D9%8A%D8%B1-%D9%81%D9%8A-%D8%A7%D9%84%D8%B9%D9%8A%D8%AF%D9%8A%D9%86
+  id: dar-al-ifta-ar-14998
+  title: Questions about the takbīr of the two Eids
+  summary: Discusses the wording and timing of the takbīr for the two Eids.
+  archive: https://web.archive.org/web/20260614063822/https://www.dar-alifta.org/ar/Fatwa/Details/14998/%D8%A3%D8%B3%D8%A6%D9%84%D8%A9-%D9%85%D8%AA%D9%86%D9%88%D8%B9%D8%A9-%D8%AD%D9%88%D9%84-%D8%A7%D9%84%D8%AA%D9%83%D8%A8%D9%8A%D8%B1-%D9%81%D9%8A-%D8%A7%D9%84%D8%B9%D9%8A%D8%AF%D9%8A%D9%86
+- type: fatwa
+  publisher: Dār al-Iftāʾ al-Miṣriyyah
+  language: en
+  url: https://www.dar-alifta.org/en/fatwa/details/663/celebrating-the-night-of-mid-shaban-and-other-religious-occasions
+  id: dar-al-ifta-en-663
+  title: Observing the night of mid-Shaʿbān
+  summary: Presents the institution’s view on observing the night of mid-Shaʿbān.
+  archive: https://web.archive.org/web/20260312104007/https://www.dar-alifta.org/en/fatwa/details/663/celebrating-the-night-of-mid-shaban-and-other-religious-occasions
+- type: fatwa
+  publisher: Dār al-Iftāʾ al-Miṣriyyah
+  language: ar
+  url: https://dar-alifta.org/ar/fatwa/details/21973/%D8%AD%D9%83%D9%85-%D8%A7%D9%84%D8%AA%D9%88%D8%B3%D8%B9%D8%A9-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%A3%D9%87%D9%84-%D9%8A%D9%88%D9%85-%D8%B9%D8%A7%D8%B4%D9%88%D8%B1%D8%A7%D8%A1
+  id: dar-al-ifta-ar-21973
+  title: Spending more on the family on ʿĀshūrāʾ
+  summary: Discusses the reports and views on increasing family spending on ʿĀshūrāʾ.
+  archive: https://web.archive.org/web/20260810075150/https://www.dar-alifta.org/ar/fatwa/details/21973/%D8%AD%D9%83%D9%85-%D8%A7%D9%84%D8%AA%D9%88%D8%B3%D8%B9%D8%A9-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%A3%D9%87%D9%84-%D9%8A%D9%88%D9%85-%D8%B9%D8%A7%D8%B4%D9%88%D8%B1%D8%A7%D8%A1
+- type: fatwa
+  publisher: Islam Question & Answer
+  language: en
+  url: https://islamqa.info/en/answers/222875
+  id: islamqa-222875
+  title: Duʿāʾ for entering the house
+  summary: Discusses the grading of the reported duʿāʾ for entering the house.
+  archive: https://web.archive.org/web/20260609214334/https://islamqa.info/en/answers/222875
