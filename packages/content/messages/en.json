@@ -583,6 +583,7 @@
     "shawwalFastLogged": "Fast logged · Shawwāl {{count}} of 6",
     "whiteDayFastLogged": "Fast logged · White Days {{count}} of 3",
     "done": "Marked done",
+    "doneRemoved": "Unticked",
     "setup": "You’re all set. Change anything in Settings.",
     "notificationsOff": "Notifications are off, so no push would arrive.",
     "noPush": "No push in the next two weeks.",

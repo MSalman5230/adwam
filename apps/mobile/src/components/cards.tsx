@@ -2,13 +2,15 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Crescent, Icon, type IconName } from '../icons';
+import { t } from '../language/messages';
 import { Prose } from '../theme/Text';
 import { useTheme } from '../theme/ThemeProvider';
 import { typography } from '../theme/typography';
 import { Button, type ButtonProps } from './controls';
 
-export function Card({ title, body, meta, icon, onPress, done, children }: {
-  title: string; body?: string; meta?: string; icon?: IconName; onPress?: () => void; done?: boolean; children?: ReactNode;
+export function Card({ title, body, meta, bell, icon, onPress, done, fasting, details, children }: {
+  title: string; body?: string; meta?: string; bell?: boolean; icon?: IconName; onPress?: () => void;
+  done?: boolean; fasting?: boolean; details?: ReactNode; children?: ReactNode;
 }) {
   const { palette } = useTheme();
   const content = (
@@ -16,18 +18,22 @@ export function Card({ title, body, meta, icon, onPress, done, children }: {
       <View style={styles.cardTitle}>
         {icon && <Icon name={icon} color={palette.green} size={20} />}
         <Text style={[typography.cardTitle, styles.grow, { color: palette.ink }]}>{title}</Text>
-        {meta && <Text style={[typography.caption, { color: palette.ink2 }]}>{meta}</Text>}
+        {(meta || bell) && <View style={styles.cardMeta}>
+          {bell && <Icon name="notifications" label={t('reminders.push')} color={palette.gold} size={16} />}
+          {meta && <Text style={[typography.caption, { color: palette.ink2 }]}>{meta}</Text>}
+        </View>}
       </View>
       {body && <Prose style={[typography.supporting, { color: palette.ink2 }]}>{body}</Prose>}
     </>
   );
   return (
-    <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.hair, opacity: done ? 0.68 : 1 }]}>
+    <View style={[styles.card, { backgroundColor: fasting ? palette.sage : palette.surface, borderColor: fasting ? palette.sage : palette.hair }]}>
       {onPress ? (
-        <Pressable accessibilityRole="button" onPress={onPress} style={styles.cardContent}>
+        <Pressable accessibilityRole="button" onPress={onPress} style={[styles.cardContent, done && styles.dimmed]}>
           {content}
         </Pressable>
-      ) : <View style={styles.cardContent}>{content}</View>}
+      ) : <View style={[styles.cardContent, done && styles.dimmed]}>{content}</View>}
+      {details && <View style={[styles.cardDetails, done && styles.dimmed]}>{details}</View>}
       {children && <View style={styles.cardFoot}>{children}</View>}
     </View>
   );
@@ -128,8 +134,11 @@ const styles = StyleSheet.create({
   grow: { flex: 1, minWidth: 0 },
   card: { borderWidth: 1, borderRadius: 16 },
   cardTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  cardMeta: { flexDirection: 'row', alignItems: 'center', flexShrink: 1, gap: 4 },
   cardContent: { minHeight: 44, paddingHorizontal: 16, paddingVertical: 14, gap: 6 },
+  cardDetails: { paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
   cardFoot: { paddingHorizontal: 16, paddingBottom: 10, gap: 6 },
+  dimmed: { opacity: 0.55 },
   listRow: { minHeight: 58, borderBottomWidth: StyleSheet.hairlineWidth, paddingHorizontal: 14, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', gap: 10 },
   radioChoice: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12 },
   radioCard: { padding: 16, borderWidth: 1, borderRadius: 16 },

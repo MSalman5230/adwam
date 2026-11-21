@@ -11,17 +11,19 @@ export type ButtonProps = {
   onPress: () => void;
   variant?: ButtonVariant;
   icon?: IconName;
+  iconPosition?: 'start' | 'end';
   small?: boolean;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
-export function Button({ label, onPress, variant = 'filled', icon, small, disabled, style }: ButtonProps) {
+export function Button({ label, onPress, variant = 'filled', icon, iconPosition = 'start', small, disabled, style }: ButtonProps) {
   const { palette } = useTheme();
   const filled = variant === 'filled';
   const tonal = variant === 'tonal';
   const color = filled ? palette.onGreen : tonal ? palette.onSage : palette.green;
   const backgroundColor = filled ? palette.green : tonal ? palette.sage : 'transparent';
+  const symbol = icon && <Icon name={icon} size={small ? 18 : 20} color={color} />;
   return (
     <Pressable
       accessibilityRole="button"
@@ -37,8 +39,9 @@ export function Button({ label, onPress, variant = 'filled', icon, small, disabl
         style,
       ]}
     >
-      {icon && <Icon name={icon} size={small ? 18 : 20} color={color} />}
+      {iconPosition === 'start' && symbol}
       <Text style={[typography.button, small && typography.supporting, { color, textAlign: 'center' }]}>{label}</Text>
+      {iconPosition === 'end' && symbol}
     </Pressable>
   );
 }
