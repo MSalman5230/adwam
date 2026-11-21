@@ -14,6 +14,9 @@ import { Sheet } from '../../components/overlays';
 import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { openNotificationSettings } from '../../services/notification-settings';
+import { syncSchedule } from '../../services/notification-schedule';
+import { HijriSheet, JumuahSheet, LocationSheet, PrayerSheet } from '../../settings/place-time-sheets';
+import type { Settings } from '../../state/schema';
 import { selectReminderState } from '../../state/selectors';
 import { useClock, useReminderStores } from '../../state/useClock';
 import { isTestBuild } from '../../theme/isTestBuild';
@@ -47,6 +50,12 @@ export default function SettingsScreen() {
   const format = useMessageFormat(location?.timeZone);
   const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
   if (!state || !location) return null;
+  const closeSheet = () => router.setParams({ sheet: undefined });
+  const update = (change: (settings: Settings) => Settings) => {
+    stores.settings.getState().update(change);
+    void syncSchedule();
+  };
+  const sheetProps = { settings, location, now, format, update, onClose: closeSheet };
 
   const today = civil(now, location.timeZone).iso;
   const { year } = effectiveHijri(now, state.calendar);
@@ -107,7 +116,13 @@ export default function SettingsScreen() {
           {isTestBuild && <ListRow serif title={t('developerTools.title')} icon="code" onPress={() => router.push('/debug')} />}
         </Group>
       </ScrollView>
-      {sheet && <Sheet open title={t(`sheet.${sheet}.title`)} lead={summary[sheet]} onClose={() => router.setParams({ sheet: undefined })} />}
+      {sheet === 'city' && <LocationSheet {...sheetProps} />}
+      {sheet === 'prayer' && <PrayerSheet {...sheetProps} />}
+      {sheet === 'jumuah' && <JumuahSheet {...sheetProps} />}
+      {sheet === 'hijri' && <HijriSheet {...sheetProps} />}
+      {sheet && sheet !== 'city' && sheet !== 'prayer' && sheet !== 'jumuah' && sheet !== 'hijri' && (
+        <Sheet open title={t(`sheet.${sheet}.title`)} lead={summary[sheet]} onClose={closeSheet} />
+      )}
     </SafeAreaView>
   );
 }

@@ -11,8 +11,9 @@ import { setFixedClock } from './fixed-clock';
 
 const mockSetParams = jest.fn();
 const mockPush = jest.fn();
+let mockSheet: string | undefined;
 jest.mock('expo-router', () => ({
-  useLocalSearchParams: () => ({}),
+  useLocalSearchParams: () => ({ sheet: mockSheet }),
   useRouter: () => ({ push: mockPush, setParams: mockSetParams }),
 }));
 jest.mock('@adwam/content/catalog', () => ({ sunnahs: [] }), { virtual: true });
@@ -23,8 +24,22 @@ const zeroInsets = {
 };
 
 afterEach(async () => {
+  mockSheet = undefined;
   await setFixedClock(null);
   settingsStore.getState().update(defaultSettings);
+});
+
+it('saves the Hijri method and shift from the calendar sheet', async () => {
+  mockSheet = 'hijri';
+  settingsStore.getState().update((settings) => ({ ...settings, location: {
+    source: 'city', name: 'London', countryCode: 'GB', latitude: 51.5, longitude: -0.12, timeZone: 'Europe/London',
+  } }));
+  await setFixedClock(Date.UTC(2026, 11, 18, 11, 30));
+  await render(<SafeAreaProvider initialMetrics={zeroInsets}><ThemeProvider><SettingsScreen /></ThemeProvider></SafeAreaProvider>);
+
+  await fireEvent.press(screen.getByText(t('sheet.hijri.civil')));
+  await fireEvent.press(screen.getByRole('radio', { name: t('settings.shiftPlus') }));
+  expect(settingsStore.getState().value.hijri).toMatchObject({ method: 'civil', shift: 1 });
 });
 
 it('shows saved settings in the four groups and opens their destinations', async () => {
