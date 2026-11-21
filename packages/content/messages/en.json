@@ -606,6 +606,7 @@
     "fireNext": "Fire the next notification in 10 seconds",
     "reset": "Reset app",
     "themeGallery": "Theme gallery",
+    "componentGallery": "Component gallery",
     "clock": {
       "current": "{{date, longDate}} · {{time, time}}",
       "date": "Date",
