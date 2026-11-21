@@ -1,0 +1,96 @@
+- id: crescent
+  status: review
+  tier: inapp
+  title: Look for the new crescent
+  short: Say the duʿāʾ when you see it.
+  what:
+    - Look for the new crescent after Maghrib and say the duʿāʾ when you see it.
+  when: From Maghrib on the 29th, and the 30th if the month continues.
+  notes:
+    - Al-Tirmidhī called the report ḥasan gharīb. The Darussalam edition grades its chain
+      weak.
+  evidence: []
+  duas: []
+  occurrences:
+    - on:
+        hijri:
+          day: 29-last
+      window:
+        from:
+          prayer: maghrib
+        to:
+          prayer: isha
+          plus: 45m
+      startAnchor: after-maghrib
+      check: done
+      tickScope: hijri-month
+- id: white-days
+  status: review
+  tier: push
+  title: White Days fast
+  short: Fast the 13th, 14th and 15th.
+  what:
+    - Fast three days. Any three days in the month also fulfill the practice, and a Monday
+      or Thursday fast counts toward them.
+  when: The 13th, 14th and 15th of each Hijri month. In Dhul-Ḥijjah the 13th is a Tashrīq
+    day, so the 14th, the 15th and one other day.
+  pushNote: A push on the evening of the 12th.
+  evidence: []
+  duas: []
+  rules:
+    - tracker-white-days
+  occurrences:
+    - key: regular
+      on:
+        hijri:
+          day: 13-15
+          excludeMonths:
+            - dhul-hijjah
+      window: fast
+      check: fast
+      fast:
+        priority: 3
+        also: a White Day
+      startAnchor: from-fajr
+      endAnchor: maghrib
+      push:
+        at:
+          prayer: isha
+          plus: 15m
+          day: -1
+        title: The White Days start tomorrow
+        body: Fast the 13th, 14th and 15th of {{month}}.
+        anchor: after-isha
+        quiet: advance
+        on:
+          hijri:
+            day: 13
+      upcomingGroup:
+        key: white-days
+    - key: dhul-hijjah
+      on:
+        hijri:
+          month: dhul-hijjah
+          day: 14-15
+      window: fast
+      check: fast
+      fast:
+        priority: 3
+        also: a White Day
+      startAnchor: from-fajr
+      endAnchor: maghrib
+      push:
+        at:
+          prayer: isha
+          plus: 15m
+          day: -1
+        title: The White Days start tomorrow
+        body: Fast the 14th, 15th and one other day.
+        anchor: after-isha
+        quiet: advance
+        on:
+          hijri:
+            month: dhul-hijjah
+            day: 14
+      upcomingGroup:
+        key: white-days
