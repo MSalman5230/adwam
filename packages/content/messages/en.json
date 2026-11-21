@@ -265,7 +265,9 @@
   "navigation": {
     "today": "Today",
     "upcoming": "Upcoming",
-    "settings": "Settings"
+    "settings": "Settings",
+    "reminder": "Reminder",
+    "itemDate": "{{date, longDate}}"
   },
   "setup": {
     "step": "Step {{step}} of {{total}}",
@@ -607,6 +609,8 @@
     "reset": "Reset app",
     "themeGallery": "Theme gallery",
     "componentGallery": "Component gallery",
+    "skipSetup": "Skip setup for testing",
+    "showSetup": "Show setup again",
     "clock": {
       "current": "{{date, longDate}} · {{time, time}}",
       "date": "Date",
