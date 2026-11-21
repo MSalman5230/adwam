@@ -2,6 +2,7 @@ import type { WeatherKind } from '@adwam/content/schema';
 
 import { civil, DAY_MS, MINUTE_MS, type CivilDate } from './civil';
 import type { WeatherArea } from './places';
+import { quietInterval, type QuietHours } from './quiet-hours';
 
 type ForecastSeries = Readonly<{
   /** Open-Meteo with timeformat=unixtime, precipitation_unit=mm and wind_speed_unit=kmh. */
@@ -183,7 +184,7 @@ export type WeatherInstall = Readonly<{
   timeZone: string;
   notificationsAllowed: boolean;
   pushKinds: readonly WeatherKind[];
-  quietHours?: { start: number; end: number };
+  quietHours?: QuietHours;
   lastWeatherPushDay?: CivilDate;
   sentEventIds?: readonly string[];
 }>;
@@ -193,12 +194,6 @@ export type WeatherPush = Readonly<{
   eventId: string;
   localDay: CivilDate;
 }>;
-
-function isQuiet(minute: number, quietHours: WeatherInstall['quietHours']) {
-  if (!quietHours) return false;
-  const { start, end } = quietHours;
-  return start <= end ? minute >= start && minute < end : minute >= start || minute < end;
-}
 
 export function decidePushes(
   events: readonly WeatherEvent[],
@@ -213,12 +208,12 @@ export function decidePushes(
   for (const install of installs) {
     if (!install.notificationsAllowed || decisions.has(install.id)) continue;
     const local = civil(now, install.timeZone);
-    if (local.iso === install.lastWeatherPushDay || isQuiet(local.min, install.quietHours)) continue;
+    if (local.iso === install.lastWeatherPushDay || quietInterval(now, install.timeZone, install.quietHours)) continue;
     const match = candidates.find(({ event, at }) => {
       if (event.areaId !== install.areaId || !install.pushKinds.includes(event.weather) ||
           install.sentEventIds?.includes(event.id)) return false;
       const occurred = civil(at, install.timeZone);
-      return occurred.iso === local.iso && !isQuiet(occurred.min, install.quietHours);
+      return occurred.iso === local.iso && !quietInterval(at, install.timeZone, install.quietHours);
     });
     if (match) decisions.set(install.id, { installId: install.id, eventId: match.event.id, localDay: local.iso });
   }
