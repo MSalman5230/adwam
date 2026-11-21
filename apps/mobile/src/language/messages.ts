@@ -11,6 +11,9 @@ const defaults: MessageFormat = { timeZone: 'UTC', uses24HourClock: false };
 const weekdays: Intl.DateTimeFormatOptions = { weekday: 'long', timeZone: 'UTC' };
 const dates: Record<string, Intl.DateTimeFormatOptions> = {
   weekday: weekdays,
+  shortWeekday: { weekday: 'short', timeZone: 'UTC' },
+  shortMonth: { month: 'short', timeZone: 'UTC' },
+  shortDayMonth: { day: 'numeric', month: 'short', timeZone: 'UTC' },
   shortDate: { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' },
   longDate: { ...weekdays, day: 'numeric', month: 'long' },
   dayMonth: { day: 'numeric', month: 'long', timeZone: 'UTC' },
