@@ -4,6 +4,7 @@ import { scheduleNotificationAsync, SchedulableTriggerInputTypes, type Notificat
 import { notificationCategory } from './notification-presentation';
 
 export const calendarNotification = 'adwam-calendar';
+export const snoozeSuffix = '|later';
 
 export function scheduledTime(trigger: NotificationRequest['trigger']): number | undefined {
   if (trigger && 'value' in trigger && typeof trigger.value === 'number') return trigger.value;

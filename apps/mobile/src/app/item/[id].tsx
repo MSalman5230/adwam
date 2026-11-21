@@ -45,7 +45,7 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
   const now = useClock();
   const format = useMessageFormat(settings.location?.timeZone);
   const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
-  const view = state && selectDetail(now, state, item.id, item.date);
+  const view = state && selectDetail(now, state, item.id, item.date, item.occurrenceKey);
   const [snack, setSnack] = useState<Snack>();
   const [reportOpen, setReportOpen] = useState(false);
   useEffect(() => {

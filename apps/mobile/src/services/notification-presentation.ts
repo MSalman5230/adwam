@@ -8,10 +8,11 @@ import { t } from '../language/messages';
 
 export const reminderChannels = ['weekly', 'monthly', 'yearly', 'weather', 'corrections', 'corrections-silent'] as const;
 const doneAndLater = 'adwam-done-and-later';
+const doneOnly = 'adwam-done';
 const laterOnly = 'adwam-later';
 
 export function notificationCategory(buttons: PlannedNotification['buttons']): string | undefined {
-  if (!buttons.includes('later')) return undefined;
+  if (!buttons.includes('later')) return buttons.includes('done') ? doneOnly : undefined;
   return buttons.includes('done') ? doneAndLater : laterOnly;
 }
 
@@ -38,6 +39,7 @@ async function register() {
   const later: NotificationAction = { identifier: 'later', buttonTitle: t('common.later'), options: { opensAppToForeground: false } };
   await Promise.all([
     setNotificationCategoryAsync(doneAndLater, [done, later]),
+    setNotificationCategoryAsync(doneOnly, [done]),
     setNotificationCategoryAsync(laterOnly, [later]),
   ]);
 }

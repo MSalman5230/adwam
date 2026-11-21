@@ -38,4 +38,6 @@ export const selectToday = memoizeLast((now: number, state: ReminderState, setti
 
 export const selectUpcoming = memoizeLast((now: number, state: ReminderState, filter: UpcomingFilter) => upcomingRows(now, state, filter));
 
-export const selectDetail = memoizeLast((now: number, state: ReminderState, item: string, date?: CivilDate) => detailState(now, state, { item, date }));
+export const selectDetail = memoizeLast((
+  now: number, state: ReminderState, item: string, date?: CivilDate, occurrenceKey?: string,
+) => detailState(now, state, { item, date, occurrenceKey }));

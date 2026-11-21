@@ -1,5 +1,5 @@
 import catalog from '@adwam/content/catalog';
-import { planNotifications, type PlannedNotification } from '@adwam/core';
+import { laterFor, MINUTE_MS, planNotifications, type PlannedNotification } from '@adwam/core';
 import { cancelScheduledNotificationAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
 
 import { deviceStores } from '../state/native';
@@ -7,7 +7,7 @@ import { selectReminderState } from '../state/selectors';
 import { recordScheduleCounts } from './crash-reporting';
 import type { ScheduleCounts } from './crash-event';
 import { registerNotificationPresentation } from './notification-presentation';
-import { calendarNotification, scheduleCalendarNotification, scheduledTime } from './notification-request';
+import { calendarNotification, scheduleCalendarNotification, scheduledTime, snoozeSuffix } from './notification-request';
 
 let pending = false;
 let running: Promise<void> | undefined;
@@ -35,15 +35,24 @@ async function reconcile() {
     const { settings, trackers, serverCache } = deviceStores;
     const saved = settings.getState().value;
     const state = saved.setupDone && selectReminderState(saved, trackers.getState().value, serverCache.getState().value, catalog.sunnahs);
-    const plan = state ? planNotifications(Date.now(), state) : [];
+    const now = Date.now();
+    const plan = state ? planNotifications(now, state) : [];
     const missing = new Map<string, PlannedNotification>(plan.map((push) => [push.id, push]));
     counts.planned = missing.size;
 
     for (const request of scheduled) {
       if (request.content.data?.kind !== calendarNotification) continue;
       const { identifier } = request;
+      const at = scheduledTime(request.trigger);
+      if (identifier.endsWith(snoozeSuffix) && at !== undefined && at > now && state) {
+        const snooze = laterFor(identifier.slice(0, -snoozeSuffix.length), at - 60 * MINUTE_MS, state);
+        if (snooze) {
+          missing.set(identifier, snooze);
+          counts.planned += 1;
+        }
+      }
       const expected = missing.get(identifier);
-      if (expected && expected.hash === request.content.data.hash && expected.at === scheduledTime(request.trigger)) {
+      if (expected && expected.hash === request.content.data.hash && expected.at === at) {
         counts.kept += 1;
         missing.delete(identifier);
         continue;

@@ -8,6 +8,7 @@ import { settingsStore, trackersStore } from '../src/state/native';
 import { defaultSettings, defaultTrackers } from '../src/state/schema';
 
 jest.mock('../src/services/notification-schedule', () => ({ syncSchedule: jest.fn() }));
+jest.mock('../src/services/notification-action-task', () => ({ registerNotificationActionTask: async () => {} }));
 
 afterEach(() => {
   jest.restoreAllMocks();
