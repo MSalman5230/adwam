@@ -54,8 +54,9 @@ export function Segmented<Value extends string>({ options, value, onChange, labe
   const { palette } = useTheme();
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={label} style={[styles.segmented, { backgroundColor: palette.surface, borderColor: palette.hair2 }]}>
-      {options.map((option) => {
+      {options.map((option, index) => {
         const checked = value === option.value;
+        const color = checked ? palette.onSage : palette.ink2;
         return (
           <Pressable
             key={option.value}
@@ -64,9 +65,11 @@ export function Segmented<Value extends string>({ options, value, onChange, labe
             accessibilityState={{ checked, disabled: Boolean(option.disabled) }}
             disabled={option.disabled}
             onPress={() => onChange(option.value)}
-            style={[styles.segment, { backgroundColor: checked ? palette.sage : palette.surface, opacity: option.disabled ? 0.45 : 1 }]}
+            style={[styles.segment, { backgroundColor: checked ? palette.sage : palette.surface, opacity: option.disabled ? 0.45 : 1 },
+              index > 0 && { borderLeftWidth: StyleSheet.hairlineWidth, borderColor: palette.hair2 }]}
           >
-            <Text style={[typography.button, { color: checked ? palette.onSage : palette.ink2, textAlign: 'center' }]}>{option.label}</Text>
+            {checked && <Icon name="check" color={color} size={16} />}
+            <Text style={[typography.button, styles.segmentText, { color }]}>{option.label}</Text>
           </Pressable>
         );
       })}
@@ -160,7 +163,8 @@ const styles = StyleSheet.create({
   button: { minHeight: 48, borderRadius: 24, paddingHorizontal: 22, paddingVertical: 6, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
   shortButton: { alignSelf: 'flex-start', minHeight: 44, paddingHorizontal: 12 },
   segmented: { flexDirection: 'row', borderWidth: 1, borderRadius: 20, overflow: 'hidden' },
-  segment: { flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, paddingVertical: 4 },
+  segment: { flex: 1, minHeight: 44, flexDirection: 'row', gap: 5, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, paddingVertical: 4 },
+  segmentText: { flexShrink: 1, textAlign: 'center' },
   toggleTarget: { minHeight: 44, justifyContent: 'center' },
   toggle: { width: 46, height: 26, borderRadius: 13, justifyContent: 'center', paddingHorizontal: 3 },
   thumb: { width: 20, height: 20, borderRadius: 10 },

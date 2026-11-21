@@ -8,6 +8,7 @@ import { t } from '../language/messages';
 import { appVersion } from '../services/app-version';
 import { Prose } from '../theme/Text';
 import { useTheme } from '../theme/ThemeProvider';
+import { brandCrescent } from '../theme/tokens';
 import { typography } from '../theme/typography';
 
 const credits = [
@@ -44,7 +45,7 @@ function AboutHeading() {
   const { palette } = useTheme();
   const versions = [t('about.appVersion', { version: appVersion }), t('about.contentVersion', { version: catalog.version })];
   return <View style={[styles.heading, { borderColor: palette.goldLine }]}>
-    <View style={[styles.mark, { backgroundColor: palette.green }]}><Crescent color="#D9B66E" size={38} /></View>
+    <View style={[styles.mark, { backgroundColor: palette.green }]}><Crescent color={brandCrescent} size={38} /></View>
     <Prose accessibilityRole="header" style={[typography.detailTitle, styles.name]}>{t('app.name')}</Prose>
     <Prose style={[typography.detailSubtitle, styles.tagline, { color: palette.ink2 }]}>{t('app.tagline')}</Prose>
     <View style={styles.versions}>

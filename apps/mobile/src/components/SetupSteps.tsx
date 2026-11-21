@@ -1,10 +1,12 @@
 import { civil, day, effectiveHijri, isoAdd, isoParts, localToMs, type DaySettings } from '@adwam/core';
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Crescent, Icon, type IconName } from '../icons';
 import { t } from '../language/messages';
 import { useMessageFormat } from '../language/useMessageFormat';
 import { useTheme } from '../theme/ThemeProvider';
+import { brandCrescent } from '../theme/tokens';
 import { typography } from '../theme/typography';
 import { RadioCard } from './cards';
 import { Segmented } from './controls';
@@ -12,11 +14,16 @@ import { Segmented } from './controls';
 export type SetupPreset = 'recommended' | 'inapp' | 'custom';
 export type DateShift = -1 | 0 | 1;
 
-function PromiseRow({ icon, title, body }: { icon: IconName; title?: string; body: string }) {
+function PromiseList({ children }: { children: ReactNode }) {
+  const { palette } = useTheme();
+  return <View style={[styles.promise, { backgroundColor: palette.surface, borderColor: palette.hair }]}>{children}</View>;
+}
+
+function PromiseRow({ icon, title, body, divided }: { icon: IconName; title?: string; body: string; divided?: boolean }) {
   const { palette } = useTheme();
   return (
-    <View style={styles.promiseRow}>
-      <Icon name={icon} size={20} color={palette.green} />
+    <View style={[styles.promiseRow, divided && { borderTopWidth: StyleSheet.hairlineWidth, borderColor: palette.hair }]}>
+      <Icon name={icon} size={22} color={palette.gold} />
       <View style={styles.grow}>
         {title && <Text style={[typography.listTitle, { color: palette.ink }]}>{title}</Text>}
         <Text style={[typography.supporting, { color: palette.ink2 }]}>{body}</Text>
@@ -29,7 +36,7 @@ export function SetupWelcome() {
   const { palette } = useTheme();
   return (
     <View style={[styles.welcome, { borderColor: palette.goldLine }]}>
-      <View style={[styles.welcomeIcon, { backgroundColor: palette.green }]}><Crescent color={palette.onGreen} size={30} /></View>
+      <View style={[styles.welcomeIcon, { backgroundColor: palette.green }]}><Crescent color={brandCrescent} size={30} /></View>
       <View style={styles.grow}>
         <Text style={[typography.sheetTitle, { color: palette.ink }]}>{t('app.name')}</Text>
         <Text style={[typography.sheetLead, { color: palette.ink2 }]}>{t('app.tagline')}</Text>
@@ -41,10 +48,12 @@ export function SetupWelcome() {
 export function SetupLocationDetails({ placeName }: { placeName?: string }) {
   const { palette } = useTheme();
   return (
-    <View style={styles.details}>
-      <PromiseRow icon="lock" title={t('setup.location.noAccount')} body={t('setup.location.trackers')} />
-      <PromiseRow icon="location_on" title={t('setup.location.roughArea')} body={t('setup.location.areaUse')} />
-      <PromiseRow icon="notifications" title={t('setup.location.reminders')} body={t('setup.location.reminderChoice')} />
+    <View style={[styles.details, styles.location]}>
+      <PromiseList>
+        <PromiseRow icon="lock" title={t('setup.location.noAccount')} body={t('setup.location.trackers')} />
+        <PromiseRow icon="location_on" title={t('setup.location.roughArea')} body={t('setup.location.areaUse')} divided />
+        <PromiseRow icon="notifications" title={t('setup.location.reminders')} body={t('setup.location.reminderChoice')} divided />
+      </PromiseList>
       {placeName && <Text accessibilityLiveRegion="polite" style={[typography.listTitle, { color: palette.ink }]}>{placeName}</Text>}
     </View>
   );
@@ -100,9 +109,11 @@ export function SetupHijriDate({ calendar, city, now, shift, onShift }: {
           <Text style={[typography.prayerTime, { color: palette.gold }]}>{t('setup.hijri.weekEnd', { month: monthSpan, year: last.year })}</Text>
         </View>
       </View>
-      <PromiseRow icon="bedtime" body={hijri.sinceMaghrib ? t('setup.hijri.afterMaghrib')
-        : t('setup.hijri.beforeMaghrib', { time: today.times.maghrib, day: tomorrow.day, month: tomorrow.month }, format)} />
-      <PromiseRow icon="calendar_month" body={t('setup.hijri.calculated')} />
+      <PromiseList>
+        <PromiseRow icon="bedtime" body={hijri.sinceMaghrib ? t('setup.hijri.afterMaghrib')
+          : t('setup.hijri.beforeMaghrib', { time: today.times.maghrib, day: tomorrow.day, month: tomorrow.month }, format)} />
+        <PromiseRow icon="calendar_month" body={t('setup.hijri.calculated')} divided />
+      </PromiseList>
     </View>
   );
 }
@@ -110,11 +121,11 @@ export function SetupHijriDate({ calendar, city, now, shift, onShift }: {
 export function SetupReminderChoices({ preset, onChoose }: { preset: SetupPreset; onChoose: (preset: SetupPreset) => void }) {
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={t('setup.reminders.title')} style={styles.choices}>
-      <RadioCard title={t('reminders.preferred')} subtitle={t('setup.reminders.recommended')} detail={t('setup.reminders.estimated')}
+      <RadioCard title={t('reminders.preferred')} subtitle={t('setup.reminders.recommended')} detail={t('setup.reminders.estimated')} detailIcon="notifications"
         selected={preset === 'recommended'} onPress={() => onChoose('recommended')} />
-      <RadioCard title={t('reminders.inappOnly')} subtitle={t('setup.reminders.inapp')} detail={t('reminders.noPushes')}
+      <RadioCard title={t('reminders.inappOnly')} subtitle={t('setup.reminders.inapp')} detail={t('reminders.noPushes')} detailIcon="notifications_off"
         selected={preset === 'inapp'} onPress={() => onChoose('inapp')} />
-      <RadioCard title={t('setup.reminders.choose')} subtitle={t('setup.reminders.chooseBody')} detail={t('setup.reminders.chooseHint')}
+      <RadioCard title={t('setup.reminders.choose')} subtitle={t('setup.reminders.chooseBody')} detail={t('setup.reminders.chooseHint')} detailIcon="tune"
         selected={preset === 'custom'} onPress={() => onChoose('custom')} />
     </View>
   );
@@ -141,9 +152,11 @@ export function SetupNotificationPreview({ now, timeZone, quiet }: { now: number
           <Text style={[typography.button, styles.previewAction, { color: palette.green }]}>{t('common.later')}</Text>
         </View>
       </View>
-      <PromiseRow icon="event" title={t('setup.notifications.fasts')} body={t('setup.notifications.fastTime')} />
-      <PromiseRow icon="mosque" title={t('setup.notifications.friday')} body={t('setup.notifications.fridayTime')} />
-      <PromiseRow icon="rainy" title={t('setup.notifications.weather')} body={t('setup.notifications.weatherTime')} />
+      <PromiseList>
+        <PromiseRow icon="event" title={t('setup.notifications.fasts')} body={t('setup.notifications.fastTime')} />
+        <PromiseRow icon="mosque" title={t('setup.notifications.friday')} body={t('setup.notifications.fridayTime')} divided />
+        <PromiseRow icon="rainy" title={t('setup.notifications.weather')} body={t('setup.notifications.weatherTime')} divided />
+      </PromiseList>
     </View>
   );
 }
@@ -152,8 +165,10 @@ const styles = StyleSheet.create({
   grow: { flex: 1 },
   welcome: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingTop: 8, paddingBottom: 20, borderBottomWidth: 1 },
   welcomeIcon: { width: 56, height: 56, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  promiseRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  promise: { borderWidth: StyleSheet.hairlineWidth, borderRadius: 16, paddingVertical: 4, paddingHorizontal: 16 },
+  promiseRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 14, paddingVertical: 13 },
   details: { gap: 14, marginTop: 14 },
+  location: { marginTop: 26 },
   hijriDate: { gap: 6, marginTop: 4, marginBottom: 6 },
   dateText: { fontSize: 36, lineHeight: 40 },
   week: { flexDirection: 'row', borderRadius: 16, borderWidth: 1, padding: 6 },
