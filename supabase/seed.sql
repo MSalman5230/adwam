@@ -1,1 +1,1 @@
--- Milestone 0 has no seed data.
+update public.app_config set debug_tools_enabled = true where singleton;
