@@ -7,8 +7,8 @@ import { t } from '../language/messages';
 import { useTheme } from '../theme/ThemeProvider';
 import { AppBar, PageTitle, useAppBarScroll } from './headers';
 
-export function Subpage({ title, subtitle, overline, children }: {
-  title: string; subtitle?: string; overline?: string; children?: ReactNode;
+export function Subpage({ title, subtitle, overline, titleDetails, overlay, children }: {
+  title: string; subtitle?: string; overline?: string; titleDetails?: ReactNode; overlay?: ReactNode; children?: ReactNode;
 }) {
   const router = useRouter();
   const { palette } = useTheme();
@@ -20,9 +20,10 @@ export function Subpage({ title, subtitle, overline, children }: {
         else router.replace('/');
       } }} />
       <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled" onScroll={onScroll} scrollEventThrottle={16}>
-        <PageTitle title={title} subtitle={subtitle} overline={overline} />
+        <PageTitle title={title} subtitle={subtitle} overline={overline}>{titleDetails}</PageTitle>
         {children}
       </ScrollView>
+      {overlay}
     </SafeAreaView>
   );
 }

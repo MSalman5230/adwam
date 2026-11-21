@@ -60,13 +60,16 @@ export function Hero({ title, subtitle, date = false }: { title: string; subtitl
   );
 }
 
-export function PageTitle({ title, overline, subtitle }: { title: string; overline?: string; subtitle?: string }) {
+export function PageTitle({ title, overline, subtitle, children }: {
+  title: string; overline?: string; subtitle?: string; children?: ReactNode;
+}) {
   const { palette } = useTheme();
   return (
     <View style={[styles.pageTitle, { borderColor: palette.goldLine }]}>
       {overline && <Text style={[typography.overline, { color: palette.gold }]}>{overline}</Text>}
       <Text accessibilityRole="header" style={[typography.detailTitle, { color: palette.ink }]}>{title}</Text>
       {subtitle && <Text style={[typography.detailSubtitle, { color: palette.ink2 }]}>{subtitle}</Text>}
+      {children}
     </View>
   );
 }
