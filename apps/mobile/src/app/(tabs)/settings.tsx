@@ -1,7 +1,5 @@
 import catalog from '@adwam/content/catalog';
 import { civil, effectiveHijri, MINUTE_MS, paused, presetOf, pushEstimate } from '@adwam/core';
-import { nativeApplicationVersion } from 'expo-application';
-import Constants from 'expo-constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -12,6 +10,7 @@ import { ListRow } from '../../components/cards';
 import { Hero } from '../../components/headers';
 import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
+import { appVersion } from '../../services/app-version';
 import { openNotificationSettings } from '../../services/notification-settings';
 import { syncSchedule } from '../../services/notification-schedule';
 import { HijriSheet, JumuahSheet, LocationSheet, PrayerSheet } from '../../settings/place-time-sheets';
@@ -23,7 +22,6 @@ import { isTestBuild } from '../../theme/isTestBuild';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
 
-const version = nativeApplicationVersion ?? Constants.expoConfig?.version ?? '';
 const sheetIds = ['quiet', 'pause', 'city', 'prayer', 'jumuah', 'hijri', 'udhiyah', 'theme', 'privacy'] as const;
 type SheetId = (typeof sheetIds)[number];
 
@@ -112,7 +110,7 @@ export default function SettingsScreen() {
           <ListRow serif title={t('settings.appearance')} subtitle={summary.theme} onPress={() => openSheet('theme')}
             icon={preference === 'system' ? 'brightness_auto' : preference === 'light' ? 'light_mode' : 'dark_mode'} />
           <ListRow serif title={t('settings.privacy')} subtitle={summary.privacy} icon="privacy_tip" onPress={() => openSheet('privacy')} />
-          <ListRow serif title={t('settings.about')} subtitle={t('settings.aboutSummary', { version })} icon="info" onPress={() => router.push('/about')} />
+          <ListRow serif title={t('settings.about')} subtitle={t('settings.aboutSummary', { version: appVersion })} icon="info" onPress={() => router.push('/about')} />
           {isTestBuild && <ListRow serif title={t('developerTools.title')} icon="code" onPress={() => router.push('/debug')} />}
         </Group>
       </ScrollView>

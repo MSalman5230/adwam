@@ -1,11 +1,11 @@
 import type { GroupedSunnah } from '@adwam/content/schema';
-import Constants from 'expo-constants';
 import { useState } from 'react';
 import { Linking, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '../components/controls';
 import { Sheet } from '../components/overlays';
 import { t } from '../language/messages';
+import { appVersion } from '../services/app-version';
 import { Prose } from '../theme/Text';
 import { useTheme } from '../theme/ThemeProvider';
 import { typography } from '../theme/typography';
@@ -17,7 +17,6 @@ export function ReportSheet({ entry, version, open, onClose }: {
   const { palette } = useTheme();
   const [description, setDescription] = useState('');
   const [failed, setFailed] = useState(false);
-  const appVersion = Constants.expoConfig?.version ?? '';
   const close = () => { setFailed(false); onClose(); };
   const openIssue = async () => {
     try {
