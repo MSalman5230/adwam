@@ -7,4 +7,4 @@ const args = [contentBuild, '--mobile'];
 if (process.env.APP_VARIANT !== 'production') args.push('--include-review');
 execFileSync(process.execPath, args, { stdio: 'inherit' });
 
-module.exports = getSentryExpoConfig(__dirname, { includeWebReplay: false, includeWebFeedback: false });
+module.exports = getSentryExpoConfig(__dirname);
