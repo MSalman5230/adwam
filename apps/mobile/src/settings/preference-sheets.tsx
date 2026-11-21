@@ -1,17 +1,18 @@
-import { dayDiff, MINUTE_MS, paused, type CivilDate } from '@adwam/core';
+import { MINUTE_MS, type CivilDate } from '@adwam/core';
 import DateTimePicker from '@expo/ui/community/datetime-picker';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { OptionRow } from '../components/cards';
-import { Button, Chip, Switch } from '../components/controls';
+import { Button, Switch } from '../components/controls';
 import { Sheet } from '../components/overlays';
 import { t, type MessageFormat } from '../language/messages';
 import type { Settings } from '../state/schema';
 import { Prose } from '../theme/Text';
 import { useTheme } from '../theme/ThemeProvider';
 import { typography } from '../theme/typography';
-import { pauseDurations, pauseFor } from './fasting-pause';
+import { activePauseDuration, pauseFor } from './fasting-pause';
+import { PauseDurationChips } from './PauseDurationChips';
 
 type CloseProps = { onClose: () => void };
 type SettingsProps = CloseProps & { settings: Settings; update: (change: (value: Settings) => Settings) => void };
@@ -70,16 +71,15 @@ export function QuietSheet({ settings, format, update, onClose }: SettingsProps 
 }
 
 export function PauseSheet({ settings, today, update, onClose }: SettingsProps & { today: CivilDate }) {
-  const pause = settings.reminders.pause;
-  const active = paused(pause, today);
-  const selected = active ? pause?.until ? pause.days ?? dayDiff(pause.until, today) + 1 : 0 : undefined;
+  const selected = activePauseDuration(settings.reminders.pause, today);
   return (
     <Sheet open title={t('sheet.pause.title')} lead={t('sheet.pause.body')} onClose={onClose}>
       <View style={styles.chips}>
-        {pauseDurations.map((days) => <Chip key={days} label={days ? t('reminders.pauseDays', { count: days }) : t('reminders.pauseUntilOff')}
-          selected={selected === days} onPress={() => update((value) => ({ ...value, reminders: { ...value.reminders, pause: pauseFor(today, days) } }))} />)}
+        <PauseDurationChips selected={selected} onChange={(days) => update((value) => ({
+          ...value, reminders: { ...value.reminders, pause: pauseFor(today, days) },
+        }))} />
       </View>
-      {active && <Button label={t('sheet.pause.resume')} variant="outlined" style={styles.action} onPress={() => {
+      {selected !== undefined && <Button label={t('sheet.pause.resume')} variant="outlined" style={styles.action} onPress={() => {
         update((value) => ({ ...value, reminders: { ...value.reminders, pause: null } }));
         onClose();
       }} />}

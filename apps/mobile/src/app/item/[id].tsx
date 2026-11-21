@@ -20,7 +20,7 @@ import { useMessageFormat } from '../../language/useMessageFormat';
 import { readItemParams } from '../../navigation/item-params';
 import { syncSchedule } from '../../services/notification-schedule';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
-import { setReminderChoice } from '../../state/reminder-choices';
+import { reminderOptions, setReminderChoice } from '../../state/reminder-choices';
 import { selectDetail, selectReminderState } from '../../state/selectors';
 import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
 import { useClock, useReminderStores } from '../../state/useClock';
@@ -29,7 +29,6 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
 
 type Snack = { message: string; undo?: () => void };
-const levels: readonly ReminderLevel[] = ['push', 'inapp', 'off'];
 const duasById = new Map(catalog.duas.map((dua) => [dua.id, dua]));
 
 export default function ItemScreen() {
@@ -136,9 +135,7 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
       <Sources entry={entry} openLink={openLink} />
       {reminder && <>
         <SectionHeader title={t('detail.reminderTitle')} />
-        <Segmented label={t('detail.reminderTitle')} value={view.level} onChange={changeLevel}
-          options={levels.filter((level) => level !== 'push' || entry.tier === 'push')
-            .map((level) => ({ label: t(`reminders.${level}`), value: level }))} />
+        <Segmented label={t('detail.reminderTitle')} value={view.level} onChange={changeLevel} options={reminderOptions(entry)} />
         <Prose style={[typography.caption, styles.caption, { color: palette.ink2 }]}>
           {[renderMessage(reminder, format), udhiyahPending && t('detail.onlyWithUdhiyah')].filter(Boolean).join(' ')}
         </Prose>
