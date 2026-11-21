@@ -1,0 +1,594 @@
+{
+  "options": {
+    "year": "numeric",
+    "month": "2-digit",
+    "day": "2-digit",
+    "hour": "2-digit",
+    "minute": "2-digit",
+    "hourCycle": "h23"
+  },
+  "dates": [
+    {
+      "timeZone": "Europe/London",
+      "instant": "2026-03-29T00:59Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "29"
+        },
+        {
+          "type": "month",
+          "value": "03"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "00"
+        },
+        {
+          "type": "minute",
+          "value": "59"
+        }
+      ]
+    },
+    {
+      "timeZone": "Europe/London",
+      "instant": "2026-03-29T01:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "29"
+        },
+        {
+          "type": "month",
+          "value": "03"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "02"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Europe/London",
+      "instant": "2026-10-25T00:59Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "25"
+        },
+        {
+          "type": "month",
+          "value": "10"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "59"
+        }
+      ]
+    },
+    {
+      "timeZone": "Europe/London",
+      "instant": "2026-10-25T01:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "25"
+        },
+        {
+          "type": "month",
+          "value": "10"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "America/Toronto",
+      "instant": "2026-03-08T06:59Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "08"
+        },
+        {
+          "type": "month",
+          "value": "03"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "59"
+        }
+      ]
+    },
+    {
+      "timeZone": "America/Toronto",
+      "instant": "2026-03-08T07:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "08"
+        },
+        {
+          "type": "month",
+          "value": "03"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "03"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "America/Toronto",
+      "instant": "2026-11-01T05:59Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "01"
+        },
+        {
+          "type": "month",
+          "value": "11"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "59"
+        }
+      ]
+    },
+    {
+      "timeZone": "America/Toronto",
+      "instant": "2026-11-01T06:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "01"
+        },
+        {
+          "type": "month",
+          "value": "11"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Australia/Sydney",
+      "instant": "2026-04-04T15:59Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "05"
+        },
+        {
+          "type": "month",
+          "value": "04"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "02"
+        },
+        {
+          "type": "minute",
+          "value": "59"
+        }
+      ]
+    },
+    {
+      "timeZone": "Australia/Sydney",
+      "instant": "2026-04-04T16:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "05"
+        },
+        {
+          "type": "month",
+          "value": "04"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "02"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Australia/Sydney",
+      "instant": "2026-10-03T15:59Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "04"
+        },
+        {
+          "type": "month",
+          "value": "10"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "59"
+        }
+      ]
+    },
+    {
+      "timeZone": "Australia/Sydney",
+      "instant": "2026-10-03T16:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "04"
+        },
+        {
+          "type": "month",
+          "value": "10"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "03"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Australia/Lord_Howe",
+      "instant": "2026-04-04T14:59Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "05"
+        },
+        {
+          "type": "month",
+          "value": "04"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "59"
+        }
+      ]
+    },
+    {
+      "timeZone": "Australia/Lord_Howe",
+      "instant": "2026-04-04T15:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "05"
+        },
+        {
+          "type": "month",
+          "value": "04"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "01"
+        },
+        {
+          "type": "minute",
+          "value": "31"
+        }
+      ]
+    },
+    {
+      "timeZone": "Asia/Kolkata",
+      "instant": "2026-12-31T18:31Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "01"
+        },
+        {
+          "type": "month",
+          "value": "01"
+        },
+        {
+          "type": "year",
+          "value": "2027"
+        },
+        {
+          "type": "hour",
+          "value": "00"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Asia/Jakarta",
+      "instant": "2026-12-31T17:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "01"
+        },
+        {
+          "type": "month",
+          "value": "01"
+        },
+        {
+          "type": "year",
+          "value": "2027"
+        },
+        {
+          "type": "hour",
+          "value": "00"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Africa/Johannesburg",
+      "instant": "2026-12-31T22:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "01"
+        },
+        {
+          "type": "month",
+          "value": "01"
+        },
+        {
+          "type": "year",
+          "value": "2027"
+        },
+        {
+          "type": "hour",
+          "value": "00"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Europe/Oslo",
+      "instant": "2026-03-29T01:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "29"
+        },
+        {
+          "type": "month",
+          "value": "03"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "03"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "America/St_Johns",
+      "instant": "2026-03-08T05:31Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "08"
+        },
+        {
+          "type": "month",
+          "value": "03"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "03"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    },
+    {
+      "timeZone": "Pacific/Auckland",
+      "instant": "2026-09-26T14:01Z",
+      "expected": [
+        {
+          "type": "day",
+          "value": "27"
+        },
+        {
+          "type": "month",
+          "value": "09"
+        },
+        {
+          "type": "year",
+          "value": "2026"
+        },
+        {
+          "type": "hour",
+          "value": "03"
+        },
+        {
+          "type": "minute",
+          "value": "01"
+        }
+      ]
+    }
+  ],
+  "plurals": [
+    {
+      "locale": "en",
+      "value": 0,
+      "expected": "other"
+    },
+    {
+      "locale": "en",
+      "value": 1,
+      "expected": "one"
+    },
+    {
+      "locale": "en",
+      "value": 2,
+      "expected": "other"
+    },
+    {
+      "locale": "en",
+      "value": 5,
+      "expected": "other"
+    },
+    {
+      "locale": "en",
+      "value": 11,
+      "expected": "other"
+    },
+    {
+      "locale": "en",
+      "value": 100,
+      "expected": "other"
+    },
+    {
+      "locale": "ar",
+      "value": 0,
+      "expected": "zero"
+    },
+    {
+      "locale": "ar",
+      "value": 1,
+      "expected": "one"
+    },
+    {
+      "locale": "ar",
+      "value": 2,
+      "expected": "two"
+    },
+    {
+      "locale": "ar",
+      "value": 5,
+      "expected": "few"
+    },
+    {
+      "locale": "ar",
+      "value": 11,
+      "expected": "many"
+    },
+    {
+      "locale": "ar",
+      "value": 100,
+      "expected": "other"
+    }
+  ]
+}

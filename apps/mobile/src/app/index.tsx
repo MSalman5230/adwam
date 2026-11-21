@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { useEffect, useState } from 'react';
+import { Link } from 'expo-router';
 
 import messages from '@adwam/content/messages/en.json';
 
@@ -21,15 +22,26 @@ export default function HomeScreen() {
 
   return (
     <View style={[styles.screen, dark && styles.darkScreen]}>
-      <Text accessibilityRole="header" style={[styles.title, dark && styles.darkTitle]}>
+      <Text
+        accessibilityRole="header"
+        style={[styles.title, dark && styles.darkTitle]}
+      >
         {messages.app.name}
       </Text>
-      <Text style={[styles.tagline, dark && styles.darkTitle]}>{messages.app.tagline}</Text>
+      <Text style={[styles.tagline, dark && styles.darkTitle]}>
+        {messages.app.tagline}
+      </Text>
       {connection && (
-        <Text accessibilityLiveRegion="polite" style={[styles.tagline, dark && styles.darkTitle]}>
+        <Text
+          accessibilityLiveRegion="polite"
+          style={[styles.tagline, dark && styles.darkTitle]}
+        >
           {messages.development.supabase[connection]}
         </Text>
       )}
+      <Link href="/spike" style={[styles.tagline, dark && styles.darkTitle]}>
+        {messages.spike.title}
+      </Link>
     </View>
   );
 }
@@ -43,7 +55,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7f5ed',
   },
   darkScreen: { backgroundColor: '#171c18' },
-  title: { color: '#19231e', fontSize: 36, fontWeight: '600', textAlign: 'center' },
+  title: {
+    color: '#19231e',
+    fontSize: 36,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
   darkTitle: { color: '#f2f0e6' },
-  tagline: { color: '#19231e', fontSize: 16, textAlign: 'center', marginTop: 8 },
+  tagline: {
+    color: '#19231e',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 8,
+  },
 });

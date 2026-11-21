@@ -3,6 +3,19 @@
     "name": "Adwam",
     "tagline": "Sunnah practices, timed to your Hijri date and prayer times."
   },
+  "spike": {
+    "title": "Android risk tests",
+    "permission": "Allow notifications to run this test.",
+    "done": "Done",
+    "later": "Later",
+    "actions": "Schedule Done and Later tests",
+    "overnight": "Schedule 20 overnight samples",
+    "capacity": "Schedule 150 over 60 days",
+    "background": "Register background task",
+    "inspect": "Inspect pending and posted notifications",
+    "intl": "Compare Intl with Node",
+    "intlPassed": "Intl matches Node across 10 zones and 12 plural cases."
+  },
   "development": {
     "supabase": {
       "connected": "Connected to local Supabase.",
