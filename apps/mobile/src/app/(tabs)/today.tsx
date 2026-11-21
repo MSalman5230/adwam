@@ -1,5 +1,5 @@
 import catalog from '@adwam/content/catalog';
-import { countMonthFasts, type CivilDate } from '@adwam/core';
+import type { CivilDate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { LayoutAnimation, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -16,8 +16,9 @@ import { Icon, type IconName } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { syncSchedule } from '../../services/notification-schedule';
+import { editOccurrenceTick } from '../../state/occurrence-tracking';
 import { selectReminderState, selectToday } from '../../state/selectors';
-import { editMakeup, editTick, type TrackerEdit } from '../../state/tracker-edits';
+import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
 import { useClock, useReminderStores } from '../../state/useClock';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
@@ -78,22 +79,8 @@ export default function TodayScreen() {
   };
   const toggle = ({ tick, occurrence }: ActiveReminder, checked: boolean) => {
     if (!tick) return;
-    const previous = trackersStore.getState().value;
-    if (tick.type === 'done') {
-      commitEdit(editTick(previous, { kind: 'done', key: tick.key }, checked), t(checked ? 'snackbar.done' : 'snackbar.doneRemoved'), true);
-      return;
-    }
-    const edit = editTick(previous, { kind: 'fastLog', key: occurrence.date }, checked);
-    const { day, month, year } = occurrence.hijri;
-    let message = t(checked ? 'snackbar.fastLogged' : 'snackbar.fastRemoved');
-    if (checked && month === 10 && day >= 2) {
-      const count = Math.min(6, countMonthFasts(edit.next.fastLog, settings.hijri, year, month, 2));
-      message = t('snackbar.shawwalFastLogged', { count });
-    } else if (checked && day >= 13 && day <= 15) {
-      const count = Math.min(3, countMonthFasts(edit.next.fastLog, settings.hijri, year, month));
-      message = t('snackbar.whiteDayFastLogged', { count });
-    }
-    commitEdit(edit, message);
+    const { edit, message } = editOccurrenceTick(trackersStore.getState().value, occurrence, tick, settings.hijri, checked);
+    commitEdit(edit, renderMessage(message, format), tick.type === 'done');
   };
   const updateMakeup = (action: MakeupAction) => {
     const previous = trackersStore.getState().value;

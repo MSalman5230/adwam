@@ -1,5 +1,5 @@
 import type { GroupedSunnah } from '@adwam/content/schema';
-import { todayState, upcomingRows, type ReminderState, type UpcomingFilter } from '@adwam/core';
+import { detailState, todayState, upcomingRows, type CivilDate, type ReminderState, type UpcomingFilter } from '@adwam/core';
 
 import type { CorrectionOffer, ServerCache, Settings, Trackers } from './schema';
 
@@ -37,3 +37,5 @@ export const selectToday = memoizeLast((now: number, state: ReminderState, setti
 }));
 
 export const selectUpcoming = memoizeLast((now: number, state: ReminderState, filter: UpcomingFilter) => upcomingRows(now, state, filter));
+
+export const selectDetail = memoizeLast((now: number, state: ReminderState, item: string, date?: CivilDate) => detailState(now, state, { item, date }));
