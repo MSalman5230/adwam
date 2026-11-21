@@ -36,7 +36,10 @@ const reminderPreferences = z.object({
   choice: z.record(z.string(), choice).default({}),
   groupOn: channels.default({ weekly: true, monthly: true, yearly: true, weather: true }),
   udhiyah: z.record(z.string().regex(/^\d{4,}$/), answer.nullable()).default({}),
-  pause: z.object({ until: date.nullable().optional() }).nullable().default(null),
+  pause: z.object({
+    until: date.nullable().optional(),
+    days: z.union([z.literal(3), z.literal(7), z.literal(14)]).optional(),
+  }).nullable().default(null),
   notifications: z.enum(['unset', 'denied', 'granted']).default('unset'),
   channels: channels.default({ weekly: true, monthly: true, yearly: true, weather: true }),
   quietHours: z.object({ start: minute, end: minute }).default({ start: 22 * 60, end: 7 * 60 }),

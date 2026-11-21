@@ -42,6 +42,33 @@ it('saves the Hijri method and shift from the calendar sheet', async () => {
   expect(settingsStore.getState().value.hijri).toMatchObject({ method: 'civil', shift: 1 });
 });
 
+it('pauses fasting reminders across the selected dates and resumes them', async () => {
+  mockSheet = 'pause';
+  settingsStore.getState().update((settings) => ({ ...settings, location: {
+    source: 'city', name: 'London', countryCode: 'GB', latitude: 51.5, longitude: -0.12, timeZone: 'Europe/London',
+  } }));
+  await setFixedClock(Date.UTC(2026, 11, 18, 11, 30));
+  await render(<SafeAreaProvider initialMetrics={zeroInsets}><ThemeProvider><SettingsScreen /></ThemeProvider></SafeAreaProvider>);
+
+  await fireEvent.press(screen.getByRole('button', { name: t('reminders.pauseDays', { count: 7 }) }));
+  expect(settingsStore.getState().value.reminders.pause).toEqual({ until: '2026-12-24', days: 7 });
+  await fireEvent.press(screen.getByRole('button', { name: t('sheet.pause.resume') }));
+  expect(settingsStore.getState().value.reminders.pause).toBeNull();
+});
+
+it('lets the user toggle crash reports by tapping the row label', async () => {
+  mockSheet = 'privacy';
+  settingsStore.getState().update((settings) => ({ ...settings, location: {
+    source: 'city', name: 'London', countryCode: 'GB', latitude: 51.5, longitude: -0.12, timeZone: 'Europe/London',
+  } }));
+  await setFixedClock(Date.UTC(2026, 11, 18, 11, 30));
+  await render(<SafeAreaProvider initialMetrics={zeroInsets}><ThemeProvider><SettingsScreen /></ThemeProvider></SafeAreaProvider>);
+
+  await fireEvent.press(screen.getByText(t('sheet.privacy.crash')));
+  expect(settingsStore.getState().value.crashReports).toBe(false);
+  expect(screen.getByRole('switch', { name: t('sheet.privacy.crash') })).not.toBeChecked();
+});
+
 it('shows saved settings in the four groups and opens their destinations', async () => {
   settingsStore.getState().update((settings) => ({ ...settings, location: {
     source: 'city', name: 'London', countryCode: 'GB', latitude: 51.5, longitude: -0.12, timeZone: 'Europe/London',
