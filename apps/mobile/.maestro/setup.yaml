@@ -56,12 +56,17 @@ name: Setup paths on Android
 
 - runFlow: setup/start.yaml
 - setLocation:
-    latitude: 49.2497
-    longitude: -123.1193
+    latitude: 62.4541
+    longitude: -114.3725
 - tapOn: Use my location
 - tapOn:
     id: '.*:id/permission_allow_foreground_only_button'
 - extendedWaitUntil:
     visible: Check your Hijri date
     timeout: 20000
-- assertVisible: '.* · Vancouver'
+- assertVisible: '.* · Yellowknife'
+- tapOn: Continue
+- assertVisible: Choose your reminders
+- tapOn: In-app only
+- tapOn: Continue
+- assertVisible: Today
