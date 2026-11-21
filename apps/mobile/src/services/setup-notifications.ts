@@ -1,10 +1,9 @@
 import { requestPermissionsAsync } from 'expo-notifications';
 
+import { notificationPermission } from './notification-permissions';
 import { registerNotificationPresentation } from './notification-presentation';
 
 export async function requestSetupNotifications(): Promise<'granted' | 'denied' | 'unset'> {
   await registerNotificationPresentation();
-  const response = await requestPermissionsAsync();
-  if (response.granted) return 'granted';
-  return response.status === 'denied' ? 'denied' : 'unset';
+  return notificationPermission(await requestPermissionsAsync());
 }

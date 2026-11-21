@@ -6,6 +6,7 @@ import { deviceStores } from '../state/native';
 import { selectReminderState } from '../state/selectors';
 import { recordScheduleCounts } from './crash-reporting';
 import type { ScheduleCounts } from './crash-event';
+import { refreshNotificationPermissions } from './notification-permissions';
 import { registerNotificationPresentation } from './notification-presentation';
 import { calendarNotification, scheduleCalendarNotification, scheduledTime, snoozeSuffix } from './notification-request';
 
@@ -31,6 +32,7 @@ async function reconcile() {
   const counts: ScheduleCounts = { planned: 0, added: 0, cancelled: 0, kept: 0, failed: 0 };
   try {
     await registerNotificationPresentation();
+    await refreshNotificationPermissions();
     const scheduled = await getAllScheduledNotificationsAsync();
     const { settings, trackers, serverCache } = deviceStores;
     const saved = settings.getState().value;
