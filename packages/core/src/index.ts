@@ -2,7 +2,7 @@ export { suggestedPrayerMethod, weatherArea } from './places';
 export type { City, Coordinates, Place, PrayerMethod, WeatherArea } from './places';
 
 export { msg } from './message';
-export type { MessageParams, Msg } from './message';
+export type { MessageKey, MessageParams, Msg } from './message';
 
 export {
   DAY_MS,
