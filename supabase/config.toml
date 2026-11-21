@@ -29,3 +29,6 @@ enable_anonymous_sign_ins = true
 
 [auth.email]
 enabled = true
+
+[functions.weather-tick]
+verify_jwt = false
