@@ -2,7 +2,7 @@ import catalog from '@adwam/content/catalog';
 import type { CivilDate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
-import { LayoutAnimation, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { LayoutAnimation, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore } from 'zustand';
@@ -16,6 +16,7 @@ import { Icon, type IconName } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { syncSchedule } from '../../services/notification-schedule';
+import { openNotificationSettings } from '../../services/notification-settings';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
 import { selectReminderState, selectToday } from '../../state/selectors';
 import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
@@ -93,7 +94,7 @@ export default function TodayScreen() {
   };
   const answerNotice = (id: string, action: string, year: number) => {
     if (id === 'notifications') {
-      void Linking.openSettings().catch(() => {});
+      void openNotificationSettings().catch(() => {});
       return;
     }
     const previous = settingsStore.getState().value;
