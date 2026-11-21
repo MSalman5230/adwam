@@ -76,7 +76,7 @@ export function ReminderGroup({ group, state, year, onToggle, onChoice, onOpen, 
   group: ContentGroup; state: ReminderState; year: number; onToggle: (enabled: boolean) => void;
 }) {
   const { palette } = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(group === 'weekly');
   const entries = groupEntries.get(group) ?? [];
   const choices = entries.map((entry) => ({ entry, choice: level(state, entry.id, year) }));
   const disputed = group === 'disputed';

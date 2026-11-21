@@ -132,7 +132,7 @@ export default function SetupScreen() {
             else if (step === 3) setStep(4);
             else void askNotifications();
           }} />
-          {step === 4 && <Button label={t('common.notNow')} variant="text" disabled={requesting} onPress={() => finish('unset')} />}
+          {step === 4 && <Button label={t('common.notNow')} variant="text" style={styles.skip} disabled={requesting} onPress={() => finish('unset')} />}
         </>}
       </View>
       <CityPicker open={pickerOpen} onClose={() => setPickerOpen(false)} onPick={(city) => choose(city, 'city')} />
@@ -150,5 +150,6 @@ const styles = StyleSheet.create({
   overline: { marginTop: 22, marginBottom: 12 },
   title: { marginBottom: 8 },
   debug: { marginTop: 14 },
+  skip: { alignSelf: 'center' },
   actions: { gap: 10, paddingHorizontal: 20, paddingVertical: 12 },
 });

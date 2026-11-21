@@ -17,6 +17,7 @@ const dates: Record<string, Intl.DateTimeFormatOptions> = {
   shortDate: { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' },
   longDate: { ...weekdays, day: 'numeric', month: 'long' },
   dayMonth: { day: 'numeric', month: 'long', timeZone: 'UTC' },
+  monthYear: { month: 'long', year: 'numeric', timeZone: 'UTC' },
 };
 const i18n = createInstance();
 void i18n.init({

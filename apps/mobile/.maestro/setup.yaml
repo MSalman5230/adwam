@@ -26,6 +26,9 @@ name: Setup paths on Android
 - assertVisible: 'Allow notifications\?'
 - tapOn: Not now
 - assertVisible: Each reminder can push.*
+- scrollUntilVisible:
+    element: Done
+    direction: DOWN
 - tapOn: Done
 - assertVisible: Today
 

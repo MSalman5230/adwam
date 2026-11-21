@@ -304,7 +304,7 @@
       "weekday": "{{date, weekday}}",
       "monthName": "{{month, hijriMonth}}",
       "monthSpan": "{{first, hijriMonth}} – {{last, hijriMonth}}",
-      "weekStart": "{{date, dayMonth}}",
+      "weekStart": "{{date, monthYear}}",
       "weekEnd": "{{month}} {{year}}",
       "afterMaghrib": "It’s after Maghrib, so the new Hijri day has begun.",
       "beforeMaghrib": "The Hijri day begins at Maghrib. After {{time, time}} today it becomes {{day}} {{month, hijriMonth}}.",

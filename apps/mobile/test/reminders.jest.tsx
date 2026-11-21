@@ -53,7 +53,6 @@ it('restores saved choices, re-enables an off group when edited, and resets the 
   expect(screen.getByText(t('reminders.noPushes'))).toBeOnTheScreen();
 
   const name = t('reminders.group.weekly');
-  await fireEvent.press(screen.getByRole('button', { name }));
   expect(screen.queryByText('Hidden item')).toBeNull();
   const switchForWeekly = () => screen.getByRole('switch', { name });
   const inApp = () => screen.getByRole('radio', { name: t('reminders.inapp') });
@@ -91,6 +90,7 @@ it('undoes a pause and preserves the setup Done action', async () => {
 
 it('gates hair and nails by the yearly answer and offers no Push for disputed items', async () => {
   await renderReminders();
+  await fireEvent.press(screen.getByRole('button', { name: t('reminders.group.weekly') }));
   const yearly = () => screen.getByRole('button', { name: t('reminders.group.yearly') });
   const push = () => screen.queryByRole('radio', { name: t('reminders.push') });
   await fireEvent.press(yearly());
