@@ -77,10 +77,13 @@ export function pushAllowed(occurrence: Occurrence, state: ReminderState, date =
 }
 
 export function visible(occurrence: Occurrence, state: ReminderState, date = occurrence.date): boolean {
-  return occurrence.definition.card !== false &&
-    level(state, occurrence.entry.id, occurrence.hijri.year) !== 'off' &&
-    !requiresUdhiyah(occurrence, state.preferences) &&
+  return occurrence.definition.card !== false && occurrenceEnabled(occurrence, state) &&
     !(fastingOccurrence(occurrence) && paused(state.preferences.pause, date));
+}
+
+export function occurrenceEnabled(occurrence: Occurrence, state: ReminderState): boolean {
+  return level(state, occurrence.entry.id, occurrence.hijri.year) !== 'off' &&
+    !requiresUdhiyah(occurrence, state.preferences);
 }
 
 export function isDone(occurrence: Occurrence, tracking?: ReminderTracking): boolean {

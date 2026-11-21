@@ -24,7 +24,7 @@ export type OccurrenceEvent = Readonly<{
   id: string;
   start: number;
   end: number;
-} & ({ weather: WeatherKind } | { eclipse: 'solar' | 'lunar' })>;
+} & ({ weather: WeatherKind; pushAt?: number } | { eclipse: 'solar' | 'lunar' })>;
 
 type PushDefinition = NonNullable<OccurrenceDefinition['push']>;
 export type OccurrencePush = Readonly<Omit<PushDefinition, 'at' | 'on'> & {
@@ -167,8 +167,8 @@ function resolveOccurrence(
   if (definition.push) {
     const { on, at, ...wording } = definition.push;
     if (!on || matchesCalendar(on, calendar)) {
-      const instant = timeOf(at, calendar, event);
-      if (Number.isFinite(instant)) {
+      const instant = event && 'weather' in event ? event.pushAt : timeOf(at, calendar, event);
+      if (instant !== undefined && Number.isFinite(instant)) {
         push = { ...wording, at: instant, item: entry.id, group: entry.group, tickKey };
       }
     }
@@ -222,7 +222,7 @@ export function occurrencesForDay(
       if (!matches.length) continue;
 
       const rules = [...(entry.rules ?? []), ...(definition.rules ?? [])];
-      if (rules.includes('tracker-makeup') && !options.makeup) continue;
+      if (rules.includes('tracker-makeup') && options.makeup === 0) continue;
       const fast = definition.check === 'fast' || definition.fast !== undefined;
       if (fast) {
         if (level === 'off' || !fastingAllowed(hijri, weekday, definition.fast?.reason)) continue;
