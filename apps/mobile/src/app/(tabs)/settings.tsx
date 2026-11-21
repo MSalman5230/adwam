@@ -12,10 +12,8 @@ import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { appVersion } from '../../services/app-version';
 import { openNotificationSettings } from '../../services/notification-settings';
-import { syncSchedule } from '../../services/notification-schedule';
 import { HijriSheet, JumuahSheet, LocationSheet, PrayerSheet } from '../../settings/place-time-sheets';
 import { AppearanceSheet, PauseSheet, PrivacySheet, QuietSheet, UdhiyahSheet } from '../../settings/preference-sheets';
-import type { Settings } from '../../state/schema';
 import { selectReminderState } from '../../state/selectors';
 import { useClock, useReminderStores } from '../../state/useClock';
 import { isTestBuild } from '../../theme/isTestBuild';
@@ -49,10 +47,7 @@ export default function SettingsScreen() {
   const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
   if (!state || !location) return null;
   const closeSheet = () => router.setParams({ sheet: undefined });
-  const update = (change: (settings: Settings) => Settings) => {
-    stores.settings.getState().update(change);
-    void syncSchedule();
-  };
+  const { update } = stores.settings.getState();
   const sheetProps = { settings, location, now, format, update, onClose: closeSheet };
 
   const today = civil(now, location.timeZone).iso;

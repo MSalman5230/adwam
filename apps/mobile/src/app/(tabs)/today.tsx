@@ -15,7 +15,6 @@ import { Snackbar } from '../../components/overlays';
 import { Icon, type IconName } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
-import { syncSchedule } from '../../services/notification-schedule';
 import { openNotificationSettings } from '../../services/notification-settings';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
 import { selectReminderState, selectToday } from '../../state/selectors';
@@ -71,11 +70,9 @@ export default function TodayScreen() {
   const commitEdit = (edit: TrackerEdit, message?: string, animate = false) => {
     if (animate) animateLayout();
     trackersStore.getState().update(() => edit.next);
-    void syncSchedule();
     if (message) setSnack({ message, undo: () => {
       if (animate) animateLayout();
       trackersStore.getState().update(edit.undo);
-      void syncSchedule();
     } });
   };
   const toggle = ({ tick, occurrence }: ActiveReminder, checked: boolean) => {
@@ -99,7 +96,6 @@ export default function TodayScreen() {
     }
     const previous = settingsStore.getState().value;
     settingsStore.getState().update((value) => answerTodayNotice(value, id, action, year, correction));
-    void syncSchedule();
     if (id === 'pause') setSnack({ message: t('snackbar.resumed') });
     if (id === 'udhiyah') setSnack({ message: t(action === 'yes' ? 'snackbar.udhiyahOn' : 'snackbar.udhiyahOff') });
     if (id === 'correction' && correction) {
@@ -108,7 +104,6 @@ export default function TodayScreen() {
         message: accepted ? t('snackbar.dateAccepted', { month: correction.month, date: correction.start }) : t('snackbar.dateUnchanged'),
         undo: () => {
           settingsStore.getState().update((current) => undoTodayCorrection(current, previous, correction, accepted));
-          void syncSchedule();
         },
       });
     }

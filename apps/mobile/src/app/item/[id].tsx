@@ -18,7 +18,6 @@ import { Icon } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { readItemParams } from '../../navigation/item-params';
-import { syncSchedule } from '../../services/notification-schedule';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
 import { reminderOptions, setReminderChoice } from '../../state/reminder-choices';
 import { selectDetail, selectReminderState } from '../../state/selectors';
@@ -67,10 +66,8 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
 
   const commitEdit = (edit: TrackerEdit, message: string) => {
     trackersStore.getState().update(() => edit.next);
-    void syncSchedule();
     setSnack({ message, undo: () => {
       trackersStore.getState().update(edit.undo);
-      void syncSchedule();
     } });
   };
   const toggleTick = (checked: boolean) => {
@@ -86,7 +83,6 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
   };
   const changeLevel = (level: ReminderLevel) => {
     settingsStore.getState().update((previous) => setReminderChoice(previous, entry, level));
-    void syncSchedule();
   };
   const openLink = (url: string) => {
     void Linking.openURL(url).catch(() => setSnack({ message: t('detail.linkUnavailable') }));

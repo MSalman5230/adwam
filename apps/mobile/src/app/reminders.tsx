@@ -10,7 +10,6 @@ import { Snackbar } from '../components/overlays';
 import { Subpage } from '../components/Subpage';
 import { t } from '../language/messages';
 import { FastingPauseCard, PresetCard, ReminderGroup, groupOrder } from '../reminders/controls';
-import { syncSchedule } from '../services/notification-schedule';
 import { activePauseDuration, pauseFor } from '../settings/fasting-pause';
 import { UdhiyahSheet } from '../settings/preference-sheets';
 import { setReminderChoice } from '../state/reminder-choices';
@@ -40,10 +39,7 @@ export default function RemindersScreen() {
   const { year } = effectiveHijri(now, state.calendar);
   const pause = settings.reminders.pause;
   const duration = activePauseDuration(pause, today);
-  const update = (change: (value: Settings) => Settings) => {
-    settingsStore.getState().update(change);
-    void syncSchedule();
-  };
+  const { update } = settingsStore.getState();
   const choosePreset = (preset: Preset) => update((value) => ({
     ...value, reminders: { ...value.reminders, ...applyPreset({ ...state, preferences: value.reminders }, preset) },
   }));

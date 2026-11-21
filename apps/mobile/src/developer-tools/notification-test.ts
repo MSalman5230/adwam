@@ -1,7 +1,7 @@
 import type { PlannedNotification } from '@adwam/core';
 import {
   cancelScheduledNotificationAsync, getPermissionsAsync, scheduleNotificationAsync,
-  SchedulableTriggerInputTypes, setNotificationHandler,
+  SchedulableTriggerInputTypes,
 } from 'expo-notifications';
 
 import { notificationCategory, registerNotificationPresentation } from '../services/notification-presentation';
@@ -12,11 +12,6 @@ export async function scheduleDebugPush(push: PlannedNotification): Promise<'sch
 
   const identifier = 'debug-next-push';
   await registerNotificationPresentation();
-  setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false,
-    }),
-  });
   await cancelScheduledNotificationAsync(identifier);
   await scheduleNotificationAsync({
     identifier,
