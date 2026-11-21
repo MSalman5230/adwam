@@ -1,9 +1,10 @@
 import type { GroupedSunnah } from '@adwam/content/schema';
 
-import { civil, isoAdd, MINUTE_MS, type CivilDate } from './civil';
+import { civil, isoAdd, type CivilDate } from './civil';
 import { day, type Day } from './day';
 import { withEclipses } from './events';
 import { hijriMonthStart, type HijriDate } from './hijri';
+import { activeMeta, comingLabel, fmtDur, nextSentence, relDay } from './labels';
 import { msg, type Msg } from './message';
 import { countMonthFasts, type Occurrence } from './occurrences';
 import {
@@ -86,7 +87,7 @@ export function dayLine(now: number, current: Day) {
     }
   }
   const caption = now < times.fajr ? msg('today.dayLine.beforeFajr', { time: times.fajr })
-    : now < times.maghrib ? msg('today.dayLine.untilMaghrib', { count: Math.max(1, Math.round((times.maghrib - now) / MINUTE_MS)) })
+    : now < times.maghrib ? msg('today.dayLine.untilMaghrib', { duration: fmtDur(times.maghrib - now) })
       : msg('today.dayLine.afterMaghrib', { time: times.maghrib });
   return { marks, position, caption };
 }
@@ -169,6 +170,7 @@ export function todayState(now: number, state: ReminderState, options: TodayOpti
     return true;
   }).map((occurrence) => ({
     occurrence,
+    meta: activeMeta(occurrence, now, place.timeZone),
     done: occurrence.definition.check === 'done' && isDone(occurrence, state.tracking),
     tick: tick(occurrence, now, state),
     tracker: tracker(occurrence, state),
@@ -185,7 +187,8 @@ export function todayState(now: number, state: ReminderState, options: TodayOpti
         !occurrenceEnabled(occurrence, state) || activeSeries.has(key) ||
         (occurrence.definition.check === 'fast' && paused(state.preferences.pause, date))) continue;
     activeSeries.add(key);
-    coming.push({ occurrence, push: futurePush(occurrence, now, state) });
+    const push = futurePush(occurrence, now, state);
+    coming.push({ occurrence, push, label: comingLabel(occurrence, now, place.timeZone, push) });
     if (coming.length === 3) break;
   }
 
@@ -198,7 +201,7 @@ export function todayState(now: number, state: ReminderState, options: TodayOpti
     active, activeCount: msg('today.activeCount', { count: active.filter(({ done }) => !done).length }),
     coming, empty: active.length ? undefined : {
       title: msg('today.empty.title'),
-      body: first ? msg('today.empty.next', { title: first.occurrence.title }) : msg('today.empty.none'),
+      body: first ? nextSentence(first.occurrence, now, place.timeZone, first.push) : msg('today.empty.none'),
     },
   };
 }
@@ -275,7 +278,8 @@ function reminderCaption(entry: GroupedSunnah, state: ReminderState, year: numbe
 export function detailState(now: number, state: ReminderState, request: DetailRequest) {
   const entry = state.catalog.find(({ id }) => id === request.item);
   if (!entry) return;
-  const { iso: date } = civil(now, state.calendar.place.timeZone);
+  const { timeZone } = state.calendar.place;
+  const { iso: date } = civil(now, timeZone);
   const today = day(date, state.calendar);
   const current = now >= today.times.maghrib ? day(isoAdd(date, 1), state.calendar) : today;
   const eclipse = entry.occurrences.some(({ on }) => 'eclipse' in on);
@@ -292,9 +296,12 @@ export function detailState(now: number, state: ReminderState, request: DetailRe
   if (banner && (!occurrence || occurrence.definition.banner)) {
     status = msg(bannerFor(current.iso, state)?.item === entry.id ? 'detail.status.banner' : 'detail.status.outOfSeason');
   } else if (occurrence) {
-    status = active ? msg('detail.status.active') : occurrence.start > now
-      ? msg('detail.status.next', { time: occurrence.start, day: occurrence.hijri.day, month: occurrence.hijri.month })
-      : occurrence.end <= now ? msg('detail.status.ended', { time: occurrence.end }) : undefined;
+    status = active ? msg('detail.status.active', { meta: activeMeta(occurrence, now, timeZone) })
+      : occurrence.start > now ? msg('detail.status.next', {
+          when: comingLabel(occurrence, now, timeZone), day: occurrence.hijri.day, month: occurrence.hijri.month,
+        })
+        : occurrence.end <= now ? msg('detail.status.ended', { when: relDay(occurrence.end, now, timeZone, { sentence: true }) })
+          : undefined;
   } else if (entry.group === 'weather') {
     status = msg(eclipse ? 'detail.status.eclipse' : 'detail.status.weather');
   }

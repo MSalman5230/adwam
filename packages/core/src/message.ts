@@ -1,4 +1,4 @@
-export type MessageParams = Readonly<Record<string, string | number | boolean>>;
+export type MessageParams = Readonly<Record<string, string | number | boolean | Msg>>;
 
 export type Msg = Readonly<{
   key: string;

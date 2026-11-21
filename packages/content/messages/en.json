@@ -7,19 +7,20 @@
     "hijriDate": "{{day}} {{month, hijriMonth}} {{year}}",
     "prayer": {
       "fajr": "Fajr",
+      "sunrise": "sunrise",
       "dhuhr": "Ẓuhr",
       "jumuah": "Jumuʿah",
       "asr": "ʿAṣr",
       "maghrib": "Maghrib",
-      "isha": "ʿIshāʾ"
+      "isha": "ʿIshāʾ",
+      "eid-prayer": "the Eid prayer"
     }
   },
   "today": {
     "sinceMaghrib": "Since Maghrib",
     "dayLine": {
       "beforeFajr": "Fajr at {{time, time}}",
-      "untilMaghrib_one": "Maghrib in {{count}} minute. The Hijri day turns then.",
-      "untilMaghrib_other": "Maghrib in {{count}} minutes. The Hijri day turns then.",
+      "untilMaghrib": "Maghrib in {{duration}}. The Hijri day turns then.",
       "afterMaghrib": "A new Hijri day began at Maghrib, {{time, time}}."
     },
     "notice": {
@@ -58,7 +59,6 @@
     "activeCount_other": "{{count}} open",
     "empty": {
       "title": "Nothing special right now",
-      "next": "Next is {{title}}.",
       "none": "Check Upcoming for the next reminder."
     }
   },
@@ -97,11 +97,76 @@
     "status": {
       "banner": "Active now · on Today as a banner",
       "outOfSeason": "Not this month",
-      "active": "Active now",
-      "next": "Next at {{time, time}} · {{day}} {{month, hijriMonth}}",
-      "ended": "Ended {{time, relativeDay}}",
+      "active": "Active now · {{meta}}",
+      "next": "Next: {{when}} · {{day}} {{month, hijriMonth}}",
+      "ended": "Ended {{when}}",
       "eclipse": "Shows when an eclipse is visible from your area",
       "weather": "Shows when the forecast calls for it"
+    }
+  },
+  "timing": {
+    "duration": {
+      "minutes": "{{minutes}} min",
+      "hours": "{{hours}} h",
+      "hoursMinutes": "{{hours}} h {{minutes}} min"
+    },
+    "relative": {
+      "standalone": {
+        "today": "Today",
+        "tonight": "Tonight",
+        "tomorrow": "Tomorrow",
+        "tomorrowEvening": "Tomorrow evening",
+        "yesterday": "Yesterday"
+      },
+      "sentence": {
+        "today": "today",
+        "tonight": "tonight",
+        "tomorrow": "tomorrow",
+        "tomorrowEvening": "tomorrow evening",
+        "yesterday": "yesterday"
+      },
+      "weekday": "{{date, weekday}}",
+      "shortDate": "{{date, shortDate}}"
+    },
+    "anchor": {
+      "morning": "morning",
+      "before-fajr": "before Fajr",
+      "from-fajr": "from Fajr",
+      "after-fajr": "after Fajr",
+      "from-asr": "from ʿAṣr",
+      "from-maghrib": "from Maghrib",
+      "after-maghrib": "after Maghrib",
+      "at-maghrib": "at Maghrib",
+      "after-isha": "after ʿIshāʾ",
+      "before-maghrib": "before Maghrib",
+      "midday": "at midday",
+      "afternoon": "in the afternoon"
+    },
+    "active": {
+      "fromFajr": "from Fajr",
+      "toJumuah": "{{duration}} to Jumuʿah",
+      "timeLeft": "{{duration}} left",
+      "untilPrayer": "until {{prayer}}",
+      "untilTime": "until {{time, time}}",
+      "event": {
+        "rain-start": "while it rains",
+        "rain-stop": "after the rain",
+        "heavy-rain": "while it rains heavily",
+        "thunder": "during the storm",
+        "wind": "while the wind is strong",
+        "eclipse": "while the eclipse is visible"
+      }
+    },
+    "coming": {
+      "time": "{{time, time}}",
+      "dayAndTime": "{{day}} {{time, time}}",
+      "dayAndAnchor": "{{day}} {{anchor}}",
+      "capitalize": "{{anchor, capitalize}}",
+      "reminder": "Reminder {{when}}"
+    },
+    "next": {
+      "starts": "Next is {{title}}, {{when}}.",
+      "reminder": "Next is the {{title}}. You’ll get a reminder {{when}}."
     }
   },
   "development": {
