@@ -102,6 +102,7 @@ export const unshippedSunnahSchema = z.strictObject({
   status: z.enum(['future', 'excluded']),
   title: wording,
   reason: wording,
+  tier: tier.optional(),
   what: z.array(wording).optional(),
   when: wording.optional(),
   evidence: z.array(id).optional(),

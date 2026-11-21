@@ -25,7 +25,7 @@ export { dailyAnchors, prayerTimes } from './prayer';
 export type { Jumuah, PrayerAnchor, PrayerSettings, PrayerTimes } from './prayer';
 export { day, effectiveHijri } from './day';
 export type { Day, DaySettings } from './day';
-export { countMonthFasts, fastingAllowed, occurrencesForDay } from './occurrences';
+export { countMonthFasts, fastingAllowed, hijriMonths, occurrencesForDay } from './occurrences';
 export type {
   Occurrence,
   OccurrenceEvent,

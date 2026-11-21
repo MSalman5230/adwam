@@ -13,7 +13,7 @@ import { day, type Day, type DaySettings } from './day';
 import { hijriOf, type HijriDate, type HijriSettings } from './hijri';
 
 const weekdays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const;
-const months = [
+export const hijriMonths = [
   'muharram', 'safar', 'rabi-al-awwal', 'rabi-al-thani', 'jumada-al-ula',
   'jumada-al-akhirah', 'rajab', 'shaban', 'ramadan', 'shawwal', 'dhul-qadah',
   'dhul-hijjah',
@@ -67,7 +67,7 @@ type Calendar = {
 };
 
 function matchesHijri(selector: NonNullable<CalendarSelector['hijri']>, date: HijriDate) {
-  const month = months[date.month - 1];
+  const month = hijriMonths[date.month - 1];
   if (!month) return false;
   const included = Array.isArray(selector.month) ? selector.month : [selector.month];
   if (selector.month && !included.includes(month)) return false;

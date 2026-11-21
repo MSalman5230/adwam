@@ -2,6 +2,7 @@
 - id: leaving-home
   status: future
   title: Leaving home
+  tier: push
   reason: Location-based reminders need background location and Google Play approval.
   what:
     - Say *Bismillāh, tawakkaltu ʿalā Allāh, lā ḥawla wa lā quwwata illā billāh*. The hadith
@@ -18,6 +19,7 @@
 - id: coming-home
   status: future
   title: Coming home
+  tier: push
   reason: Location-based reminders need background location and Google Play approval.
   what:
     - Say *Bismillāh* as you enter, greet your household with salām, and start with siwāk as
@@ -36,6 +38,7 @@
 - id: starting-a-journey
   status: future
   title: Starting a journey
+  tier: inapp
   reason: Location-based reminders need background location and Google Play approval.
   what:
     - Say the travel duʿāʾ.
@@ -47,6 +50,7 @@
 - id: returning-from-a-journey
   status: future
   title: Returning from a journey
+  tier: push
   reason: Location-based reminders need background location and Google Play approval.
   what:
     - Say *āyibūna tāʾibūna ʿābidūna li-rabbinā ḥāmidūn*, “returning, repenting, worshipping
