@@ -27,3 +27,5 @@ export {
   wdOf,
 } from './civil';
 export type { CivilDate, CivilTime, DateParts, ZonedParts } from './civil';
+export { hijriMonthStart, hijriOf } from './hijri';
+export type { HijriCorrection, HijriDate, HijriMethod, HijriSettings } from './hijri';
