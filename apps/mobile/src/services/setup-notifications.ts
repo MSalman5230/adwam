@@ -1,12 +1,9 @@
-import { AndroidImportance, requestPermissionsAsync, setNotificationChannelAsync } from 'expo-notifications';
-import { Platform } from 'react-native';
+import { requestPermissionsAsync } from 'expo-notifications';
 
-import { t } from '../language/messages';
+import { registerNotificationPresentation } from './notification-presentation';
 
 export async function requestSetupNotifications(): Promise<'granted' | 'denied' | 'unset'> {
-  if (Platform.OS === 'android') {
-    await setNotificationChannelAsync('weekly', { name: t('notification.channel.weekly'), importance: AndroidImportance.DEFAULT });
-  }
+  await registerNotificationPresentation();
   const response = await requestPermissionsAsync();
   if (response.granted) return 'granted';
   return response.status === 'denied' ? 'denied' : 'unset';
