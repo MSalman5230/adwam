@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import { isEmbeddedLaunch, updateId } from 'expo-updates';
 
 import { settingsStore } from '../state/native';
-import { isEuSentryDsn, previewTestCrash, scrubCrashEvent } from './crash-event';
+import { isEuSentryDsn, previewTestCrash, scheduleBreadcrumbCategory, scrubBreadcrumb, scrubCrashEvent, type ScheduleCounts } from './crash-event';
 
 const dsn = process.env.EXPO_PUBLIC_SENTRY_DSN;
 const environment: unknown = Constants.expoConfig?.extra?.variant;
@@ -30,7 +30,7 @@ export function startCrashReporting() {
       // The JavaScript transport sends only events that pass the data allowlist.
       enableNative: false,
       enableAutoSessionTracking: false,
-      beforeBreadcrumb: () => null,
+      beforeBreadcrumb: scrubBreadcrumb,
       beforeSend: (event, hint) => {
         hint.attachments = [];
         return shouldReport() ? scrubCrashEvent(event, build) : null;
@@ -41,6 +41,10 @@ export function startCrashReporting() {
   settingsStore.subscribe(({ value }, previous) => {
     if (value.crashReports && !previous.value.crashReports) initialize();
   });
+}
+
+export function recordScheduleCounts(data: ScheduleCounts) {
+  if (shouldReport() && Sentry.getClient()) Sentry.addBreadcrumb({ category: scheduleBreadcrumbCategory, data });
 }
 
 export function triggerPreviewTestCrash() {

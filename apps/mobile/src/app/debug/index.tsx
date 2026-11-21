@@ -19,6 +19,7 @@ import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { canTestCrashReporting, triggerPreviewTestCrash } from '../../services/crash-reporting';
 import { checkLocalSupabase, resetLocalSupabaseSession } from '../../services/local-supabase';
+import { scheduledTime } from '../../services/notification-request';
 import { deviceStores, settingsStore } from '../../state/native';
 import { moments } from '../../state/moments';
 import { defaultServerCache, defaultSettings, defaultTrackers } from '../../state/schema';
@@ -111,7 +112,7 @@ export default function DebugScreen() {
   };
   const pending = scheduled.map(({ identifier, content, trigger }) => ({
     id: identifier, title: content.title ?? identifier,
-    at: trigger && 'value' in trigger && typeof trigger.value === 'number' ? trigger.value : undefined,
+    at: scheduledTime(trigger),
   })).sort((first, second) => (first.at ?? Infinity) - (second.at ?? Infinity));
 
   return (
