@@ -51,3 +51,5 @@ export type {
   WeatherPush,
   WeatherThresholds,
 } from './weather';
+export { eclipsesBetween } from './eclipses';
+export type { VisibleEclipse } from './eclipses';
