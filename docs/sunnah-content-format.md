@@ -117,6 +117,7 @@ Each occurrence says which days it falls on, when its card shows, and when it pu
 | `marker` | Marks a day in Upcoming. Set `card: false` to show the marker without a Today card. | `no-fasting` |
 | `startAnchor`, `endAnchor`, `countdown` | Wording for a start, an end, or the time left until Jumuʿah. | `startAnchor: all-day`, `endAnchor: maghrib`, `countdown: jumuah` |
 | `coming` | Set to `false` to leave an occurrence out of Coming up. | The make-up tracker |
+| `fast.reason` | `specific`, `habit`, or `makeup`. Leaving it blank means a voluntary fast with no separate reason. | `habit` for Monday and Thursday |
 | `fast.borrowPush` | Allows a winning fast without its own push to borrow one from a lower-priority fast. Defaults to allowed. | White Days |
 
 A Hijri selector can cover several months and exclude others with `excludeMonths`. Use `nextHijri` for an evening leading into a matching date. A push may have its own `on` selector, for example to notify only on the first day of a range. It can set `quiet` to `advance`, `delay` or `drop`. For weather and eclipses, a time point can name the event's `start` or `end`. Use `if`, `then` and `otherwise` to choose a time point from a calendar selector, such as ending at Eid prayer only on the last day of Ramadan.

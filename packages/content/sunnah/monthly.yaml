@@ -50,6 +50,7 @@
       check: fast
       fast:
         priority: 3
+        reason: specific
         also: a White Day
       startAnchor: from-fajr
       endAnchor: maghrib
@@ -76,6 +77,7 @@
       check: fast
       fast:
         priority: 3
+        reason: specific
         also: a White Day
       startAnchor: from-fajr
       endAnchor: maghrib
