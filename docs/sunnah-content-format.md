@@ -174,7 +174,7 @@ Each entry in `duas.yaml` looks like this:
 
 Every source a Sunnah cites gets an entry. Hadith and Qurʾan entries hold the relevant words in Arabic and English, as sunnah.com and Quran.com show them, so the detail screen can show the evidence itself, not only a link.
 
-**Where the text comes from.** `scripts/fetch-sunnah.ts` and `scripts/fetch-quran.ts` copy each cited hadith and verse into `sources/`, with its URL, the date and the translator's name. For version 1 the sunnah.com script reads the pages once, slowly. Once there's an API key, it reads the API. The copies are committed, and an excerpt is always cut from them, never typed.
+**Where the text comes from.** Source copies keep the Arabic and English, the URL, the date and the translator's name when the page credits one. For the initial Sunnah.com collection, the owner requested a one-time browser capture. Run `node packages/content/scripts/fetch-sunnah.ts <capture-directory>` from the repository root to import those saved JSON records. It validates the input before writing and preserves the captured words in NFC. When a page omits an individual translator, use “English translation via Sunnah.com” as attribution to the source. The excerpts and duʿāʾ are cut from these copies. An API key will allow later updates through the Sunnah.com API.
 
 ### Hadith
 

@@ -224,8 +224,10 @@
   notes:
     - The odd nights depend on when Ramadan began locally and how the nights are counted,
       so the app treats all ten the same.
-  evidence: []
-  duas: []
+  evidence:
+    - tirmidhi-3513
+  duas:
+    - laylat-al-qadr
   occurrences:
     - key: season
       on:
@@ -276,6 +278,7 @@
           hijri:
             month: ramadan
             day: 20
+      inlineDua: laylat-al-qadr
 - id: zakat
   status: review
   month: ramadan

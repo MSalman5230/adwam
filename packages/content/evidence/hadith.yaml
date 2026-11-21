@@ -1,0 +1,117 @@
+- id: tirmidhi-3451
+  collection: tirmidhi
+  number: "3451"
+  url: https://sunnah.com/tirmidhi:3451
+  from: prophet
+  narrator: "Bilal bin Yahya bin Talhah bin `Ubaidullah narrated :"
+  grading:
+    - by: Darussalam
+      grade: Da’if
+  excerpt:
+    ar: اللَّهُمَّ أَهْلِلْهُ عَلَيْنَا بِالْيُمْنِ وَالإِيمَانِ وَالسَّلاَمَةِ وَالإِسْلاَمِ
+      رَبِّي وَرَبُّكَ اللَّهُ
+    en: O Allah, bring it over us with blessing and faith, and security and Islam. My Lord and
+      your Lord is Allah
+    partial: true
+  textSource:
+    site: sunnah.com
+    fetched: 2026-11-21
+    translator: English translation via Sunnah.com
+- id: tirmidhi-3513
+  collection: tirmidhi
+  number: "3513"
+  url: https://sunnah.com/tirmidhi:3513
+  from: prophet
+  narrator: "Aishah narrated:"
+  grading:
+    - by: Darussalam
+      grade: Sahih
+  excerpt:
+    ar: اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي
+    en: O Allah, indeed You are Pardoning, [Generous,] You love pardon, so pardon me
+    partial: true
+  textSource:
+    site: sunnah.com
+    fetched: 2026-11-21
+    translator: English translation via Sunnah.com
+- id: bukhari-1032
+  collection: bukhari
+  number: "1032"
+  url: https://sunnah.com/bukhari:1032
+  from: prophet
+  narrator: "Narrated Aisha:"
+  grading: []
+  excerpt:
+    ar: صَيِّبًا نَافِعًا
+    en: O Allah! Let it be a strong fruitful rain.
+    partial: true
+  textSource:
+    site: sunnah.com
+    fetched: 2026-11-21
+    translator: English translation via Sunnah.com
+- id: bukhari-846
+  collection: bukhari
+  number: "846"
+  url: https://sunnah.com/bukhari:846
+  from: prophet
+  narrator: "Narrated Zaid bin Khalid Al-Juhani:"
+  grading: []
+  excerpt:
+    ar: مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ
+    en: the rain was due to the Blessings and the Mercy of Allah
+    partial: true
+  textSource:
+    site: sunnah.com
+    fetched: 2026-11-21
+    translator: English translation via Sunnah.com
+- id: bukhari-1014
+  collection: bukhari
+  number: "1014"
+  url: https://sunnah.com/bukhari:1014
+  from: prophet
+  narrator: "Narrated Sharik:"
+  grading: []
+  excerpt:
+    ar: اللَّهُمَّ حَوَالَيْنَا وَلاَ عَلَيْنَا
+    en: O Allah! Round about us and not on us.
+    partial: true
+  textSource:
+    site: sunnah.com
+    fetched: 2026-11-21
+    translator: English translation via Sunnah.com
+- id: adab-723
+  collection: adab
+  number: "723"
+  url: https://sunnah.com/adab:723
+  from: companion
+  narrator: "Abdullah bin al-Zubayr (ra) stopped speaking when he heard a thunder-clap and said:"
+  grading: []
+  excerpt:
+    ar: سُبْحَانَ الَّذِي ‏{‏يُسَبِّحُ الرَّعْدُ بِحَمْدِهِ وَالْمَلاَئِكَةُ مِنْ خِيفَتِهِ‏}
+    en: Glory be to him whose praise the thunderclap sings and the angels glorify in awe of
+      him
+    partial: true
+  textSource:
+    site: sunnah.com
+    fetched: 2026-11-21
+    translator: English translation via Sunnah.com
+- id: muslim-899b
+  collection: muslim
+  number: 899b
+  url: https://sunnah.com/muslim:899b
+  from: prophet
+  narrator: "'Ata' b. Rabah reported on the authority of 'A'isha, the wife of the Messenger
+    of Allah (way peace be upon him), who said:"
+  grading: []
+  excerpt:
+    ar: اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَخَيْرَ مَا فِيهَا وَخَيْرَ مَا أُرْسِلَتْ
+      بِهِ وَأَعُوذُ بِكَ مِنْ شَرِّهَا وَشَرِّ مَا فِيهَا وَشَرِّ مَا أُرْسِلَتْ بِهِ ‏"‏
+      ‏.
+    en: O Allah! I ask Thee for what is good in it, and the good which it contains, and the
+      good of that which it was sent for. I seek refuge with Thee from what is evil in it,
+      what evil it contains, and the evil of that what it was sent for
+    partial: true
+  textSource:
+    site: sunnah.com
+    fetched: 2026-11-21
+    translator: English translation via Sunnah.com
