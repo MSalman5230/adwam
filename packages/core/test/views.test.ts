@@ -51,7 +51,7 @@ describe('Today', () => {
     const view = todayState(localToMs('2026-12-01', 602, timeZone), state);
     expect(view.active).toHaveLength(0);
     expect(view.coming).toHaveLength(3);
-    expect(view.empty?.body).toMatchObject({ key: 'today.empty.next', params: { title: 'Thursday fast' } });
+    expect(view.empty?.body).toMatchObject({ key: 'timing.next.reminder', params: { title: 'Thursday fast' } });
   });
 
   it('selects notice actions for the date correction, sacrifice year, pause and usage', () => {

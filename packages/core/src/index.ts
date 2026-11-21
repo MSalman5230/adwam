@@ -49,3 +49,4 @@ export { eclipsesBetween } from './eclipses';
 export type { VisibleEclipse } from './eclipses';
 export { dayLine, detailState, todayState, upcomingRows } from './views';
 export type { DetailRequest, TodayOptions, UpcomingFilter } from './views';
+export { activeMeta, comingLabel, fmtClock, fmtDur, nextSentence, relDay } from './labels';
