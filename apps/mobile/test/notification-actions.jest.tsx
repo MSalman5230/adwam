@@ -52,6 +52,15 @@ it('records Done once and refreshes the real schedule without navigating', async
   expect(dismissNotificationAsync).toHaveBeenCalledWith(id);
 });
 
+it('reads a background Android action before Expo has mapped the notification data', async () => {
+  const action = response('done');
+  const request = action.notification.request;
+  const raw = { ...request.content, data: undefined, dataString: JSON.stringify(request.content.data) };
+  request.content = raw;
+  expect(await handleReminderAction(action)).toBe(true);
+  expect(trackersStore.getState().value.done[doneKey]).toBe(true);
+});
+
 it('queues one Later copy while the core window permits it', async () => {
   const action = response('later');
   const copy = {
