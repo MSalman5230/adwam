@@ -30,8 +30,10 @@ export function useClock(): number {
   return useStore(clockStore, ({ now, override }) => isTestBuild ? override ?? now : now);
 }
 
-export function setDebugTime(instant: number | null) {
-  if (isTestBuild && (instant === null || Number.isFinite(instant))) clockStore.getState().setOverride(instant);
+export function setDebugTime(instant: number | null, preserveMoment = false) {
+  if (!isTestBuild || (instant !== null && !Number.isFinite(instant))) return;
+  const clock = clockStore.getState();
+  clock.setOverride(instant, preserveMoment ? clock.moment : null);
 }
 
 export function setDebugMoment(moment: DebugMoment) {

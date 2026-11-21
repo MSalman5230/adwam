@@ -22,6 +22,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - run: pnpm --filter @adwam/content calendar --check
+      - run: pnpm --filter @adwam/mobile check:routes
 
   database:
     name: Database tests

@@ -7,4 +7,11 @@ const args = [contentBuild, '--mobile'];
 if (process.env.APP_VARIANT !== 'production') args.push('--include-review');
 execFileSync(process.execPath, args, { stdio: 'inherit' });
 
-module.exports = getSentryExpoConfig(__dirname);
+const config = getSentryExpoConfig(__dirname);
+if (process.env.APP_VARIANT === 'production') {
+  const exclusions = config.resolver.blockList;
+  const existing = Array.isArray(exclusions) ? exclusions : exclusions ? [exclusions] : [];
+  config.resolver.blockList = [...existing, /[/\\]src[/\\]app[/\\]debug[/\\]/];
+}
+
+module.exports = config;

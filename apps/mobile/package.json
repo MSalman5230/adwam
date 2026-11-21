@@ -8,6 +8,7 @@
     "android": "expo run:android",
     "test": "vitest run",
     "test:native": "jest --runInBand",
+    "check:routes": "node scripts/check-route-bundles.mjs",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

@@ -3,8 +3,7 @@ import { Stack } from 'expo-router';
 import { useStore } from 'zustand';
 
 import { startCrashReporting } from '../services/crash-reporting';
-import { settingsStore } from '../state/native';
-import { useForegroundClock } from '../state/useClock';
+import { useForegroundClock, useReminderStores } from '../state/useClock';
 import { bundledFonts } from '../theme/fonts';
 import { isTestBuild } from '../theme/isTestBuild';
 import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
@@ -15,7 +14,8 @@ export const unstable_settings = { anchor: '(tabs)' };
 
 function Navigator() {
   const { palette } = useTheme();
-  const setupDone = useStore(settingsStore, ({ value }) => value.setupDone);
+  const { settings } = useReminderStores();
+  const setupDone = useStore(settings, ({ value }) => value.setupDone);
   const [loaded, error] = useFonts(bundledFonts);
   if (!loaded && !error) return null;
   return (
@@ -30,12 +30,12 @@ function Navigator() {
         <Stack.Screen name="reminders" />
         <Stack.Screen name="about" />
       </Stack.Protected>
-      <Stack.Protected guard={isTestBuild} redirectTo="/">
+      {isTestBuild && <Stack.Protected guard={isTestBuild} redirectTo="/">
         <Stack.Screen name="debug/index" />
         <Stack.Screen name="debug/components" />
         <Stack.Screen name="debug/theme" />
         <Stack.Screen name="debug/clock" />
-      </Stack.Protected>
+      </Stack.Protected>}
     </Stack>
   );
 }
