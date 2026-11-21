@@ -1,0 +1,38 @@
+import type { GroupedSunnah } from '@adwam/content/schema';
+import { todayState, upcomingRows, type ReminderState, type UpcomingFilter } from '@adwam/core';
+
+import type { ServerCache, Settings, Trackers } from './schema';
+
+function memoizeLast<Args extends unknown[], Result>(compute: (...args: Args) => Result) {
+  let previous: { args: Args; result: Result } | undefined;
+  return (...args: Args): Result => {
+    if (previous && args.every((arg, index) => Object.is(arg, previous?.args[index]))) return previous.result;
+    const result = compute(...args);
+    previous = { args, result };
+    return result;
+  };
+}
+
+export const selectReminderState = memoizeLast((
+  settings: Settings,
+  trackers: Trackers,
+  cache: ServerCache,
+  catalog: readonly GroupedSunnah[],
+): ReminderState | undefined => {
+  const { location, prayer, hijri, reminders } = settings;
+  if (!location) return;
+  return {
+    calendar: { place: location, prayer, hijri },
+    preferences: reminders,
+    tracking: { done: trackers.done, fastLog: trackers.fastLog, makeup: trackers.makeup ?? undefined },
+    events: cache.events,
+    catalog,
+  };
+});
+
+export const selectToday = memoizeLast((now: number, state: ReminderState, settings: Settings) => todayState(now, state, {
+  correctionChoices: settings.correctionChoices,
+  usagePrompt: settings.usagePrompt,
+}));
+
+export const selectUpcoming = memoizeLast((now: number, state: ReminderState, filter: UpcomingFilter) => upcomingRows(now, state, filter));
