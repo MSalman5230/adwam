@@ -1,7 +1,7 @@
 import catalog from '@adwam/content/catalog';
 import { countMonthFasts, type CivilDate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LayoutAnimation, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -46,7 +46,11 @@ export default function TodayScreen() {
   const view = state && selectToday(now, state, settings, correction);
   const banner = view?.banner;
   const [snack, setSnack] = useState<Snack>();
-  useEffect(() => { setSnack(undefined); }, [trackersStore]);
+  const scroll = useRef<ScrollView>(null);
+  useEffect(() => {
+    setSnack(undefined);
+    scroll.current?.scrollTo({ y: 0, animated: false });
+  }, [trackersStore]);
   useEffect(() => {
     if (setup !== '1') return;
     setSnack({ message: t('snackbar.setup') });
@@ -124,7 +128,7 @@ export default function TodayScreen() {
 
   return (
     <SafeAreaView edges={['top', 'left', 'right']} style={[styles.screen, { backgroundColor: palette.paper }]}>
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView ref={scroll} contentContainerStyle={styles.body}>
         {view && location ? <>
           <Hero title={renderMessage(view.title, format)} date subtitle={<>
             <Text style={[typography.subtitle, { color: palette.ink2 }]}>{t('setup.hijri.place', { date: view.date, city: location.name })}</Text>
