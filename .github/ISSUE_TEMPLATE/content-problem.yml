@@ -1,0 +1,30 @@
+name: Content problem
+description: Report a problem with a Sunnah, source, translation, or reminder time.
+title: "Content problem — "
+labels: [content]
+body:
+  - type: input
+    id: item
+    attributes:
+      label: Item
+    validations:
+      required: true
+  - type: input
+    id: item-id
+    attributes:
+      label: Item ID
+  - type: input
+    id: content-version
+    attributes:
+      label: Content version
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+  - type: textarea
+    id: description
+    attributes:
+      label: What's wrong?
+      description: Include the source link or reminder time if it helps explain the problem.
+    validations:
+      required: true
