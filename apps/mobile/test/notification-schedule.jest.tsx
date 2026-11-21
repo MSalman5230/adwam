@@ -19,6 +19,7 @@ jest.mock('expo-notifications', () => ({
   SchedulableTriggerInputTypes: { DATE: 'date' },
 }));
 jest.mock('../src/services/crash-reporting', () => ({ recordScheduleCounts: jest.fn() }));
+jest.mock('../src/services/notification-permissions', () => ({ refreshNotificationPermissions: async () => {} }));
 jest.mock('../src/services/notification-presentation', () => ({
   notificationCategory: () => 'adwam-later',
   registerNotificationPresentation: () => Promise.resolve(),

@@ -6,7 +6,8 @@ import { Platform } from 'react-native';
 
 import { t } from '../language/messages';
 
-export const reminderChannels = ['weekly', 'monthly', 'yearly', 'weather', 'corrections', 'corrections-silent'] as const;
+export const calendarChannels = ['weekly', 'monthly', 'yearly', 'weather'] as const;
+const reminderChannels = [...calendarChannels, 'corrections', 'corrections-silent'] as const;
 const doneAndLater = 'adwam-done-and-later';
 const doneOnly = 'adwam-done';
 const laterOnly = 'adwam-later';
