@@ -1,20 +1,17 @@
 import type { PlannedNotification } from '@adwam/core';
 import {
-  AndroidImportance, cancelScheduledNotificationAsync, getPermissionsAsync, scheduleNotificationAsync,
-  SchedulableTriggerInputTypes, setNotificationChannelAsync, setNotificationHandler,
+  cancelScheduledNotificationAsync, getPermissionsAsync, scheduleNotificationAsync,
+  SchedulableTriggerInputTypes, setNotificationHandler,
 } from 'expo-notifications';
-import { Platform } from 'react-native';
 
-import { t } from '../language/messages';
+import { notificationCategory, registerNotificationPresentation } from '../services/notification-presentation';
 
 export async function scheduleDebugPush(push: PlannedNotification): Promise<'scheduled' | 'disabled'> {
   const permission = await getPermissionsAsync();
   if (!permission.granted) return 'disabled';
 
   const identifier = 'debug-next-push';
-  if (Platform.OS === 'android') {
-    await setNotificationChannelAsync(push.channel, { name: t(`notification.channel.${push.channel}`), importance: AndroidImportance.DEFAULT });
-  }
+  await registerNotificationPresentation();
   setNotificationHandler({
     handleNotification: async () => ({
       shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false,
@@ -23,7 +20,10 @@ export async function scheduleDebugPush(push: PlannedNotification): Promise<'sch
   await cancelScheduledNotificationAsync(identifier);
   await scheduleNotificationAsync({
     identifier,
-    content: { title: push.title, body: push.body, data: { link: push.link, debug: true } },
+    content: {
+      title: push.title, body: push.body, categoryIdentifier: notificationCategory(push.buttons),
+      data: { link: push.link, debug: true },
+    },
     trigger: { type: SchedulableTriggerInputTypes.DATE, channelId: push.channel, date: Date.now() + 10_000 },
   });
   return 'scheduled';
