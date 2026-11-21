@@ -4,11 +4,6 @@ appId: ${APP_ID}
     clearState: true
     permissions:
       all: unset
-- runFlow:
-    when:
-      true: ${typeof DEV_LINK !== 'undefined' && DEV_LINK.length > 0}
-    commands:
-      - openLink: ${DEV_LINK}
 - extendedWaitUntil:
     visible: 'Where are you\?'
     timeout: 45000

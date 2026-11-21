@@ -178,13 +178,13 @@ The agent sets up these commands in milestone 0. Then on real phones, test a pre
 
 ### Android setup flow
 
-Run this on a disposable English-language Android emulator. Each path starts by clearing the test app’s data and runtime permissions.
+Install a bundled preview APK on a disposable English-language Android emulator. Each path starts by clearing the test app’s data and runtime permissions.
 
 ```sh
 maestro --device emulator-5556 test -e APP_ID=com.msalman5230.adwam.preview apps/mobile/.maestro/setup.yaml
 ```
 
-For a development build, install that variant by itself on the test emulator and connect it to Metro with `adb -s emulator-5556 reverse tcp:8081 tcp:8081`. Pass `-e APP_ID=com.msalman5230.adwam.dev` and `-e 'DEV_LINK=adwam://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081'` to Maestro.
+For a locally bundled development APK, use `-e APP_ID=com.msalman5230.adwam.dev`. The bundled build can run the suite in airplane mode.
 
 ## Instructions for the building agent
 
