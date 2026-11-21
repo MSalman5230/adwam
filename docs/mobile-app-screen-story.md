@@ -24,15 +24,15 @@ There is no account or sign-in. The server knows a phone only by an anonymous in
 
 Setup runs once, on first launch, and takes under a minute. It has four steps with a progress bar, and a back arrow from step 2. Every choice can be changed later in Settings.
 
-1. **Where are you?** The app's name and tagline, then three promises: no account, only a rough area sent and only for weather, and about 4 reminders a week. "Use my location" asks for While Using permission. "Pick a city" opens a city search, and so does refusing location. Prayer times and the weather area depend on the answer.
-2. **Check your Hijri date.** For example: "Today is 9 Rajab 1448. Is that right where you live?" with −1, 0 and +1 buttons. The date and a strip of this week in both calendars update as the user shifts it. A note says when the Hijri day turns at Maghrib today, or after Maghrib, that the new Hijri day has begun. Another says the date is calculated with Umm al-Qura and that dates announced for the region take priority.
+1. **Where are you?** The app's name and tagline, then three promises: no account and trackers that stay on the phone, only a rough area sent and only for weather, and about 4 reminders a week. "Use my location" asks for approximate location while using the app. "Pick a city" opens a city search, and so does refusing location. Prayer times and the weather area depend on the answer.
+2. **Check your Hijri date.** For example: "Today is 9 Rajab 1448. Is that right where you live?" with −1, 0 and +1 buttons. The date and a strip of this week in both calendars update as the user shifts it. A note says when the Hijri day turns at Maghrib today, or after Maghrib, that the new Hijri day has begun. Another explains that Adwam calculates the date with Umm al-Qura and offers a correction when an announced date differs in the region.
 3. **Choose your reminders.** Three choices, each showing its push count:
    - **Recommended:** each item at its tier in the calendar. About 4 pushes a week.
    - **In-app only:** no notifications. Everything still shows on Today.
    - **Let me choose:** starts from Recommended and ends setup on the Reminders screen, with a Done button.
 4. **Allow notifications?** A sample reminder, a promise of nothing during quiet hours, and when reminders come: fasts the evening before after ʿIshāʾ, Friday about 2 hours before Jumuʿah and near Maghrib, and weather only for the first rain after a dry week. Continue brings up the system permission request right after the user picks reminders, when the request makes sense. Not now skips it. If they picked In-app only, setup ends after step 3 and never asks.
 
-Setup ends on Today with the snackbar "You're all set. Change anything in Settings."
+Setup ends on Today with the snackbar "You're all set. Change anything in Settings." A one-time notice asks "Share anonymous usage statistics?" with Share and No thanks. Both options are unselected, including when the user chose In-app only.
 
 ## Today
 
@@ -42,7 +42,7 @@ Today is the screen the app opens on. From top to bottom:
 2. **Day line.** Fajr, Ẓuhr (Jumuʿah on Fridays), ʿAṣr, Maghrib and ʿIshāʾ on a line, with their times and a marker for now. Its caption counts down to Maghrib, "The Hijri day turns then", or after Maghrib says the new Hijri day has begun.
 3. **Notices,** only when needed:
    - **Notifications are off.** Shown when notifications aren't allowed and at least one item is set to Push: "Push reminders can't reach you, so check here." Its Open settings button opens the phone's notification settings for the app.
-   - **Date correction.** Shown when the server reports an announced Ramadan or Eid date that differs from the calculation, for example "Ramadan starts on Sunday in your region, not Monday. Your dates follow the announcement." It can be dismissed.
+   - **Date correction.** Shown when the server reports an announced Ramadan or Eid date that differs from the calculation, for example "Ramadan starts on Sunday in the United Kingdom. Your app says Monday." The user picks Use Sunday or Keep my dates. Both choices offer Undo.
    - **Uḍḥiyah question.** Shown from 10 Dhul-Qaʿdah until it's answered: "Are you offering an uḍḥiyah this year?" with Yes and No. Only Yes turns on the hair-and-nails reminders. The same answer is in Settings.
    - **Fasting reminders paused.** Shown during a pause, with its end date and a Resume now button.
 4. **Season banner.** Only one shows at a time, and the most specific wins, in this order: the last ten nights, Ramadan, the best ten days (1–10 Dhul-Ḥijjah), the Days of Tashrīq, Muḥarram, Shaʿbān, then any other sacred month. Tapping it opens that item's detail screen. If the item is set to Off, there's no banner.
@@ -81,7 +81,7 @@ The detail screen opens from a card, a banner, a Coming up or Upcoming row, an i
 - **What to do.** The full text from the calendar. While the item is active, its tick and tracker sit under the text.
 - **Quran.com,** a button on al-Kahf and al-Sajdah that opens the surah.
 - **Duʿāʾ,** for items that have one: the Arabic, the transliteration and the English meaning, with a Copy button. The calendar has only the transliteration and meaning, so the Arabic text needs to be added to the shared JSON. The prototype already has the Arabic for all seven.
-- **Sources.** Grading notes and differences of opinion come first, in full, as written in the calendar. Then each source is a link that opens sunnah.com, quran.com or the fatwa site.
+- **Sources.** Grading notes and differences of opinion come first, in full, as written in the calendar. Hadith and Qurʾan rows show the source label and any available grade. Expand a row for the Arabic excerpt, its English meaning, the narrator where applicable, translation credit and the link. Book and fatwa rows link to the source.
 - **Your reminder.** The item's Push, In-app or Off control, with a line on what the choice means, such as "A push about 45 minutes before Maghrib." It can be changed here without going to Settings.
 - **Report a problem with this item.** This opens a sheet with the item, its ID, the content version, the app version and a box to describe the problem. "Open the issue form" opens an issue form with all of these filled in. Over-the-air updates mean a fix can ship within days.
 - **Weather credit** on weather items, the same as on their cards.
@@ -122,15 +122,16 @@ The Settings tab says "Saved on this phone. No account needed." Its rows come in
 | Group | Setting | Choices | Notes |
 |---|---|---|---|
 | Reminders | **Reminders** | Opens the Reminders screen | The row shows the preset and the pushes a week. |
-| | **Notifications** | Opens the phone's notification settings for the app | One Android channel per reminder group. |
+| | **Notifications** | Opens the phone's notification settings for the app | Six channels, including two for date corrections. |
 | | **Quiet hours** | Start and end, 10 pm to 7 am by default. A switch lets eclipses notify in quiet hours, off by default. | Lunar eclipses often happen at night. See below. |
 | | **Pause fasting reminders** | 3, 7 or 14 days, or until turned back on | Also on the Reminders screen. |
 | Place and time | **Location** | Current location, or a city from a search | With current location, the area updates each time the app opens. Picking a city also picks its suggested prayer method. |
 | | **Prayer times** | Calculation method. ʿAṣr: standard or Ḥanafī. | The sheet names the method suggested for the location and previews today's ʿAṣr and Maghrib. |
 | | **Jumuʿah time** | At Ẓuhr, or a fixed time | Defaults to Ẓuhr. Many mosques hold Jumuʿah at a set time. The push 2 hours before and the after-Jumuʿah card use this time. |
-| | **Hijri date** | Umm al-Qura by default, or tabular. Shift by −1, 0 or +1 days. | The sheet previews today's Hijri date. Dates announced for the user's region, sent by the server, take priority. |
+| | **Hijri date** | Umm al-Qura by default, or tabular. Shift by −1, 0 or +1 days. | The sheet previews today's Hijri date, explains how offers work and lists accepted corrections, each with Remove. |
 | This year | **Uḍḥiyah this year** | Yes, No or Not set | Not set means Today asks in mid-Dhul-Qaʿdah. It resets each year. |
 | App | **Appearance** | Match the phone, Light or Dark | |
+| | **Privacy** | Crash reports, anonymous usage statistics and Delete my data from the server | Deletion asks for confirmation. |
 | | **About Adwam** | Opens the About screen | |
 
 **Quiet hours and calendar pushes.** Some calendar pushes fall at night. The after-ʿIshāʾ fasting push can come near midnight in summer, and the Eid push after Fajr can come before 4 am at high latitudes. A push about something coming tonight or tomorrow moves earlier, to just before quiet hours start. A push about something already under way, like Eid after Fajr, moves later, to when quiet hours end. Weather pushes during quiet hours are dropped, as the calendar says, so quiet hours are also sent to the server.
@@ -157,16 +158,17 @@ Each item has up to three choices:
 
 - **Header.** The app icon and name, the line "Sunnah practices, timed to your Hijri date and prayer times.", and the app version and content version, so a bug report shows which content update the phone has.
 - **Sources.** A short note that the content comes from Sunni hadith and fiqh, that gradings and differences of opinion are shown, and that each item has a "Report a problem" link.
-- **Privacy.** No account or sign-in. The server knows the phone only by an anonymous install ID, its push token and the settings it needs for weather pushes. Trackers stay on the phone.
+- **Privacy.** Adwam uses an anonymous install ID, a push token and the settings the server needs for reminders. It sends a rough area only for weather. Trackers stay on the phone. Sentry receives crash reports when enabled, and PostHog receives anonymous usage statistics after opt-in. The Privacy sheet controls both and offers server data deletion.
 - **Credits.** "Weather data by Open-Meteo.com", linking to open-meteo.com, with a link to the CC BY 4.0 licence. The app is free and non-commercial, so it can use Open-Meteo's free API. The free API still comes under the CC BY 4.0 data licence, which requires this credit. The licence also asks for the link next to any place its data appears, so weather cards carry it too. If MET Norway is added as a backup, credit it here as well.
-- **Open source.** A link to the code on GitHub.
+- **Content and city credits.** GeoNames for city data, Sunnah.com and its translators for hadith, and Quran.com and Dr. Mustafa Khattab’s The Clear Quran for Qurʾan excerpts.
+- **Open source.** A link to [the Adwam repository](https://github.com/MSalman5230/adwam).
 
 ## Notifications
 
 - **Tapping** a push opens that item's detail screen. The combined Friday push opens Today instead, because it covers two items.
 - **Later** is on every push. It sends the push once more an hour later, if its window is still open.
 - **Done** ticks the item, like the tick on its card. Only pushes for items with a Done tick have it. Fasting pushes come the evening before, so they have only Later, and so does the combined Friday push.
-- **Android channels:** one per reminder group, so users can also silence a group in Android's settings.
+- **Android channels:** Weekly, Monthly, Yearly, Weather and eclipses, Date corrections, and Date corrections (silent) for quiet hours.
 - **Wording** is short: what's coming, then one line on what to do, such as "Tomorrow is Monday, a Sunnah fast". Weather wording stays soft, such as "Rain is likely starting in your area", because the data is a forecast.
 
 ## A week in the app
@@ -201,7 +203,7 @@ The calendar gives each item's window in words. The prototype turns these into t
 - **Prototype controls.** The left panel (Go to, Moment, Clock, Simulate, App theme and Reset) and the right panel (Review of the 24 mockups) are for testing and review, not part of the app. Tapping the status bar opens a stand-in for Android's notification shade.
 - **Location.** "Use my location" always finds London, and the city list is a short sample.
 - **Notifications.** Pushes are worked out from the clock, not scheduled. Later doesn't send again, and quiet hours are saved but not applied. Open settings and the Notifications row open a mock of Android's settings.
-- **Server data.** The date correction is a fixed example. Weather is a "Rain starting now" switch. Rain stopping, heavy rain, thunder, wind and eclipses aren't simulated, so Upcoming lists no eclipses yet.
+- **Server data.** The date correction and server data deletion are simulated. Use the Date correction offer Moment to try the example. Weather is a "Rain starting now" switch. Rain stopping, heavy rain, thunder, wind and eclipses aren't simulated, so Upcoming lists no eclipses yet.
 - **Links.** Report a problem shows a snackbar instead of opening the issue form, and the GitHub link is a placeholder.
 - **Uḍḥiyah.** The answer doesn't reset each year.
 - **Starting values.** The prototype starts with demo values: Jumuʿah at a fixed 1:30 pm, so the Friday moment reads "2 h to Jumuʿah", and 3 make-up days. The app defaults Jumuʿah to Ẓuhr and starts the make-up count unset, so the card asks for it.
