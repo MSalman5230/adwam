@@ -112,6 +112,14 @@ Each occurrence says which days it falls on, when its card shows, and when it pu
 | `card`, `upcoming` | Set to `false` to leave the occurrence off Today or Upcoming | `card: false` |
 | `banner` | A season banner, with a rank so the most specific one wins | `{ title: The last ten nights, rank: 1 }` |
 | `rules` | Named behaviours the engine implements | `requires-udhiyah` |
+| `tickScope` | A Done tick can count once per civil date, Hijri month or Hijri year. The default is the civil date. | `hijri-month` for the crescent |
+| `upcomingGroup` | Combines occurrences in the same calendar period into a single Coming up and Upcoming row. An optional title names the row. | `{ key: white-days, title: White Days }` |
+| `marker` | Marks a day in Upcoming. Set `card: false` to show the marker without a Today card. | `no-fasting` |
+| `startAnchor`, `endAnchor`, `countdown` | Wording for a start, an end, or the time left until Jumuʿah. | `startAnchor: all-day`, `endAnchor: maghrib`, `countdown: jumuah` |
+| `coming` | Set to `false` to leave an occurrence out of Coming up. | The make-up tracker |
+| `fast.borrowPush` | Allows a winning fast without its own push to borrow one from a lower-priority fast. Defaults to allowed. | White Days |
+
+A Hijri selector can cover several months and exclude others with `excludeMonths`. Use `nextHijri` for an evening leading into a matching date. A push may have its own `on` selector, for example to notify only on the first day of a range. It can set `quiet` to `advance`, `delay` or `drop`. For weather and eclipses, a time point can name the event's `start` or `end`. Use `if`, `then` and `otherwise` to choose a time point from a calendar selector, such as ending at Eid prayer only on the last day of Ramadan.
 
 Window presets:
 
@@ -133,6 +141,7 @@ Some behaviour is too specific for the vocabulary, so the engine implements it i
 | `tracker-white-days`, `tracker-shawwal`, `tracker-makeup` | White Days, six Shawwāl fasts, make-up fasts |
 | `stop-after-six` | Six Shawwāl fasts |
 | `combine-into-friday-push` | al-Kahf, which joins the Friday preparation push unless ticked first |
+| `follow-makeup-season` | The make-up tracker's visibility follows the Shaʿbān and Shawwāl reminder choices |
 
 A new Sunnah needs code only when its timing needs a new rule or a new kind of `on`. That code goes in `packages/core`, with tests, in the same pull request as the content.
 
@@ -249,7 +258,7 @@ A hadith entry's label and link come from its collection. An entry can set its o
 
 ## How the detail screen shows evidence
 
-This extends the prototype, whose Sources section shows only links. The screen story and the prototype need updating to match.
+The prototype shows expandable evidence rows with placeholder text. The app fills those rows from the validated content.
 
 1. **Notes come first,** as now: grading notes and differences of opinion, in full.
 2. **Each source is a row** with its label and its grade, such as "Muslim 1162b · ṣaḥīḥ".
@@ -324,7 +333,7 @@ The build then writes:
 | Output | Used by |
 |---|---|
 | `dist/content.json`: published Sunnahs, duʿāʾ, evidence and collections, with the version | Built into the app, and into the server's Edge Functions for weather push wording |
-| `dist/schema.json` | Code editors, which check the YAML as you type |
+| `dist/schema.json` | Code editors, which check the YAML as you type. Each file points to its shape, such as `../dist/schema.json#/properties/sunnahs`. |
 | The tables in [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md) | People reading the calendar on GitHub. CI fails if the committed file is out of date. |
 
 ## Adding a Sunnah

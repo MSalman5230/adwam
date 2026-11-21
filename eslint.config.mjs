@@ -32,6 +32,11 @@ export default tseslint.config(
         {
           patterns: [
             {
+              regex: '^@adwam/content(?:/|$)',
+              allowTypeImports: true,
+              message: 'Use the content types and pass loaded content into core.',
+            },
+            {
               regex: '^(react(?:-native)?|expo(?:-[^/]+)?|@expo/[^/]+|@supabase/[^/]+|node:[^/]+)(?:/|$)',
               message: 'Core runs in Hermes, Deno, and Node with no platform dependencies.',
             },
