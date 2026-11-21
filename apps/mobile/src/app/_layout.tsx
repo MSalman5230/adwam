@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { useStore } from 'zustand';
 
 import { startCrashReporting } from '../services/crash-reporting';
+import { useNotificationLifecycle } from '../services/notification-lifecycle';
 import { useForegroundClock, useReminderStores } from '../state/useClock';
 import { bundledFonts } from '../theme/fonts';
 import { isTestBuild } from '../theme/isTestBuild';
@@ -42,6 +43,7 @@ function Navigator() {
 
 export default function RootLayout() {
   useForegroundClock();
+  useNotificationLifecycle();
   return (
     <ThemeProvider>
       <Navigator />
