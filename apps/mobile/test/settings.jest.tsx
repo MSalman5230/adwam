@@ -1,0 +1,46 @@
+import { afterEach, expect, it, jest } from '@jest/globals';
+import { fireEvent, render, screen } from '@testing-library/react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import SettingsScreen from '../src/app/(tabs)/settings';
+import { t } from '../src/language/messages';
+import { settingsStore } from '../src/state/native';
+import { defaultSettings } from '../src/state/schema';
+import { ThemeProvider } from '../src/theme/ThemeProvider';
+import { setFixedClock } from './fixed-clock';
+
+const mockSetParams = jest.fn();
+const mockPush = jest.fn();
+jest.mock('expo-router', () => ({
+  useLocalSearchParams: () => ({}),
+  useRouter: () => ({ push: mockPush, setParams: mockSetParams }),
+}));
+jest.mock('@adwam/content/catalog', () => ({ sunnahs: [] }), { virtual: true });
+
+const zeroInsets = {
+  frame: { x: 0, y: 0, width: 412, height: 915 },
+  insets: { top: 0, right: 0, bottom: 0, left: 0 },
+};
+
+afterEach(async () => {
+  await setFixedClock(null);
+  settingsStore.getState().update(defaultSettings);
+});
+
+it('shows saved settings in the four groups and opens their destinations', async () => {
+  settingsStore.getState().update((settings) => ({ ...settings, location: {
+    source: 'city', name: 'London', countryCode: 'GB', latitude: 51.5, longitude: -0.12, timeZone: 'Europe/London',
+  } }));
+  await setFixedClock(Date.UTC(2026, 11, 18, 11, 30));
+  await render(<SafeAreaProvider initialMetrics={zeroInsets}><ThemeProvider><SettingsScreen /></ThemeProvider></SafeAreaProvider>);
+
+  for (const group of ['reminders', 'place', 'thisYear', 'app'] as const) {
+    expect(screen.getByRole('header', { name: t(`settings.section.${group}`) })).toBeOnTheScreen();
+  }
+  expect(screen.getByText(t('settings.chosenCity', { city: 'London' }))).toBeOnTheScreen();
+  expect(screen.getByText(t('settings.privacySummary'))).toBeOnTheScreen();
+  await fireEvent.press(screen.getByText(t('settings.quietHours')));
+  expect(mockSetParams).toHaveBeenCalledWith({ sheet: 'quiet' });
+  await fireEvent.press(screen.getByText(t('settings.about')));
+  expect(mockPush).toHaveBeenCalledWith('/about');
+});
