@@ -10,12 +10,12 @@ import { useStore } from 'zustand';
 
 import { ListRow } from '../../components/cards';
 import { Hero } from '../../components/headers';
-import { Sheet } from '../../components/overlays';
 import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { openNotificationSettings } from '../../services/notification-settings';
 import { syncSchedule } from '../../services/notification-schedule';
 import { HijriSheet, JumuahSheet, LocationSheet, PrayerSheet } from '../../settings/place-time-sheets';
+import { AppearanceSheet, PauseSheet, PrivacySheet, QuietSheet, UdhiyahSheet } from '../../settings/preference-sheets';
 import type { Settings } from '../../state/schema';
 import { selectReminderState } from '../../state/selectors';
 import { useClock, useReminderStores } from '../../state/useClock';
@@ -120,9 +120,11 @@ export default function SettingsScreen() {
       {sheet === 'prayer' && <PrayerSheet {...sheetProps} />}
       {sheet === 'jumuah' && <JumuahSheet {...sheetProps} />}
       {sheet === 'hijri' && <HijriSheet {...sheetProps} />}
-      {sheet && sheet !== 'city' && sheet !== 'prayer' && sheet !== 'jumuah' && sheet !== 'hijri' && (
-        <Sheet open title={t(`sheet.${sheet}.title`)} lead={summary[sheet]} onClose={closeSheet} />
-      )}
+      {sheet === 'quiet' && <QuietSheet {...sheetProps} />}
+      {sheet === 'pause' && <PauseSheet {...sheetProps} today={today} />}
+      {sheet === 'udhiyah' && <UdhiyahSheet {...sheetProps} year={year} />}
+      {sheet === 'theme' && <AppearanceSheet onClose={closeSheet} />}
+      {sheet === 'privacy' && <PrivacySheet {...sheetProps} />}
     </SafeAreaView>
   );
 }

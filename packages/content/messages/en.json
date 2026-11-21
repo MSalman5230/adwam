@@ -512,6 +512,7 @@
       "body": "No pushes in this window. A push about tonight or tomorrow moves earlier, to just before it starts. One about something already under way, like Eid after Fajr, waits until it ends. Weather pushes are dropped.",
       "starts": "Starts",
       "ends": "Ends",
+      "timeControl": "{{label}}, {{time}}",
       "eclipse": "Eclipses can notify in quiet hours",
       "eclipseHint": "Lunar eclipses often happen at night."
     },
@@ -545,7 +546,8 @@
       "usageHint": "Share app usage through PostHog.",
       "delete": "Delete my data from the server",
       "confirmTitle": "Delete server data?",
-      "confirmBody": "This removes your anonymous install and its reminder settings from the server. Your trackers stay on this phone."
+      "confirmBody": "This removes your anonymous install and its reminder settings from the server. Your trackers stay on this phone.",
+      "noSavedSettings": "This phone hasn’t synced reminder settings to the server."
     },
     "report": {
       "title": "Report a problem",
