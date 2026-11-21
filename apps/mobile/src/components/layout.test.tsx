@@ -28,7 +28,7 @@ vi.mock('react-native', async () => {
   }, props.children);
 
   return {
-    Text: element('span'), View: element('div'), ScrollView: element('div'),
+    Text: element('span'), View: element('div'), ScrollView: element('div'), KeyboardAvoidingView: element('div'),
     Pressable: (props: MockProps) => {
       if (props.onPress) actions.press.push(props.onPress);
       return element('button')(props);
