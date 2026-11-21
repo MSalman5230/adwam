@@ -946,7 +946,7 @@ const MOMENTS = [
   {id:'fri-pm', label:'Friday afternoon, rain', sub:'Rain card, last hour of Friday, al-Kahf done', date:'2026-12-18', time:'15:08', rain:true, done:{'kahf:2026-12-17':true}},
   {id:'tue', label:'A quiet Tuesday', sub:'Nothing active, so Coming up moves up', date:'2026-12-01', time:'10:02'},
   {id:'white', label:'White Days', sub:'Fasting tracker at 1 of 3', date:'2026-12-22', time:'10:02', fasts:['2026-12-14']},
-  {id:'shaban', label:'End of Shaʿbān', sub:'Notifications off and make-up days', date:'2027-02-06', time:'10:02', notif:'denied', makeup:3},
+  {id:'shaban', label:'End of Shaʿbān', sub:'Notifications off, a date correction, make-up days', date:'2027-02-06', time:'10:02', notif:'denied', correction:true, makeup:3},
   {id:'correction', label:'Date correction offer', sub:'An announced Ramadan start in the United Kingdom', date:'2027-02-06', time:'10:02', correction:true},
   {id:'qadr', label:'Last ten nights', sub:'After Maghrib, so the Hijri day has turned', date:'2027-02-27', time:'19:40'},
   {id:'shawwal', label:'Shawwāl, on a Monday', sub:'Six fasts at 3 of 6, three days to make up', date:'2027-03-29', time:'10:02', fasts:['2027-03-15','2027-03-18','2027-03-22'], makeup:3},
@@ -1915,6 +1915,7 @@ function applyMoment(id) {
   const m = MOMENTS.find(x => x.id === id); if (!m) return;
   S.moment = id; S.date = m.date; S.minutes = toMin(m.time);
   S.rain = !!m.rain; S.rainAt = m.rain ? S.minutes - 8 : null;
+  if (m.correction) { S.city = 'london'; S.hijriMethod = 'umalqura'; S.hijriShift = 0; }
   S.correction = !!m.correction; S.correctionChoice = null; S.usagePrompt = false; S.dismissed = {}; S.notifGone = {};
   S.notif = m.notif || 'granted';
   S.done = Object.assign({}, m.done || {});
