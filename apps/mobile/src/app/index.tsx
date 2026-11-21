@@ -1,12 +1,15 @@
-import { StyleSheet, Text, View, useColorScheme } from 'react-native';
+import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import messages from '@adwam/content/messages/en.json';
-
+import { t } from '../language/messages';
 import { checkLocalSupabase } from '../services/local-supabase';
+import { isTestBuild } from '../theme/isTestBuild';
+import { useTheme } from '../theme/ThemeProvider';
+import { typography } from '../theme/typography';
 
 export default function HomeScreen() {
-  const dark = useColorScheme() === 'dark';
+  const { palette } = useTheme();
   const [connection, setConnection] = useState<'connected' | 'failed'>();
 
   useEffect(() => {
@@ -20,15 +23,20 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View style={[styles.screen, dark && styles.darkScreen]}>
-      <Text accessibilityRole="header" style={[styles.title, dark && styles.darkTitle]}>
-        {messages.app.name}
+    <View style={[styles.screen, { backgroundColor: palette.paper }]}>
+      <Text accessibilityRole="header" style={[typography.hijriTitle, styles.centered, { color: palette.ink }]}>
+        {t('app.name')}
       </Text>
-      <Text style={[styles.tagline, dark && styles.darkTitle]}>{messages.app.tagline}</Text>
+      <Text style={[typography.subtitle, styles.tagline, { color: palette.ink2 }]}>{t('app.tagline')}</Text>
       {connection && (
-        <Text accessibilityLiveRegion="polite" style={[styles.tagline, dark && styles.darkTitle]}>
-          {messages.development.supabase[connection]}
+        <Text accessibilityLiveRegion="polite" style={[typography.subtitle, styles.tagline, { color: palette.ink2 }]}>
+          {t(`development.supabase.${connection}`)}
         </Text>
+      )}
+      {isTestBuild && (
+        <Link href="/debug/theme" style={[typography.button, styles.tagline, { color: palette.green }]}>
+          {t('developerTools.themeGallery')}
+        </Link>
       )}
     </View>
   );
@@ -40,10 +48,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
-    backgroundColor: '#f7f5ed',
   },
-  darkScreen: { backgroundColor: '#171c18' },
-  title: { color: '#19231e', fontSize: 36, fontWeight: '600', textAlign: 'center' },
-  darkTitle: { color: '#f2f0e6' },
-  tagline: { color: '#19231e', fontSize: 16, textAlign: 'center', marginTop: 8 },
+  centered: { textAlign: 'center' },
+  tagline: { textAlign: 'center', marginTop: 8 },
 });

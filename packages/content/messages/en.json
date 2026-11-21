@@ -605,6 +605,12 @@
     "scheduled": "Scheduled notifications",
     "fireNext": "Fire the next notification in 10 seconds",
     "reset": "Reset app",
-    "themeGallery": "Theme gallery"
+    "themeGallery": "Theme gallery",
+    "gallery": {
+      "colors": "Colour tokens",
+      "type": "Text styles",
+      "sample": "Friday preparation",
+      "prose": "The Prophet {{glyph}} · al-Ākhirah"
+    }
   }
 }
