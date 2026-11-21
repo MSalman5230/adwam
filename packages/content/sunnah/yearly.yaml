@@ -90,6 +90,7 @@
       check: fast
       fast:
         priority: 5
+        reason: specific
       startAnchor: from-fajr
       endAnchor: maghrib
       push:
@@ -411,6 +412,7 @@
       check: fast
       fast:
         priority: 2
+        reason: specific
         also: a Shawwāl fast
       startAnchor: from-fajr
       endAnchor: maghrib
@@ -556,6 +558,7 @@
       check: fast
       fast:
         priority: 6
+        reason: specific
       startAnchor: from-fajr
       endAnchor: maghrib
       push:

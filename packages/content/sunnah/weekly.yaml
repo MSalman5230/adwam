@@ -19,6 +19,7 @@
       check: fast
       fast:
         priority: 1
+        reason: habit
         also: a Monday fast
       startAnchor: from-fajr
       endAnchor: maghrib
@@ -40,6 +41,7 @@
       check: fast
       fast:
         priority: 1
+        reason: habit
         also: a Thursday fast
       startAnchor: from-fajr
       endAnchor: maghrib

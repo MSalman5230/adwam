@@ -191,6 +191,7 @@ export const occurrenceSchema = z.strictObject({
   fast: z
     .strictObject({
       priority: z.int().min(1),
+      reason: z.enum(['specific', 'habit', 'makeup']).optional(),
       also: wording.optional(),
       borrowPush: z.boolean().optional(),
     })
