@@ -55,16 +55,21 @@ export function createSavedStores(storage: StateStorage) {
   };
 }
 
+export type SavedStores = ReturnType<typeof createSavedStores>;
+export type MomentSession = { id: string; stores: SavedStores };
+
 export function createClockStore(initial: number) {
   return createStore<{
     now: number;
     override: number | null;
+    moment: MomentSession | null;
     setNow: (now: number) => void;
-    setOverride: (override: number | null) => void;
+    setOverride: (override: number | null, moment?: MomentSession | null) => void;
   }>((set) => ({
     now: initial,
     override: null,
+    moment: null,
     setNow: (now) => set({ now }),
-    setOverride: (override) => set({ override }),
+    setOverride: (override, moment = null) => set({ override, moment }),
   }));
 }

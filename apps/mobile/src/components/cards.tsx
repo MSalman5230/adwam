@@ -8,11 +8,13 @@ import { useTheme } from '../theme/ThemeProvider';
 import { typography } from '../theme/typography';
 import { Button, type ButtonProps } from './controls';
 
-export function Card({ title, body, meta, bell, icon, onPress, done, fasting, details, children }: {
+export function Card({ title, body, meta, bell, icon, onPress, done, fasting, details, footerDivider, children }: {
   title: string; body?: string; meta?: string; bell?: boolean; icon?: IconName; onPress?: () => void;
-  done?: boolean; fasting?: boolean; details?: ReactNode; children?: ReactNode;
+  done?: boolean; fasting?: boolean; details?: ReactNode; footerDivider?: boolean; children?: ReactNode;
 }) {
   const { palette } = useTheme();
+  const surface = done ? palette.doneSurface : fasting ? palette.fastingSurface : palette.surface;
+  const mainStyle = [styles.cardContent, children ? styles.cardContentWithFooter : undefined, done && styles.dimmed];
   const content = (
     <>
       <View style={styles.cardTitle}>
@@ -27,28 +29,28 @@ export function Card({ title, body, meta, bell, icon, onPress, done, fasting, de
     </>
   );
   return (
-    <View style={[styles.card, { backgroundColor: fasting ? palette.sage : palette.surface, borderColor: fasting ? palette.sage : palette.hair }]}>
+    <View style={[styles.card, { backgroundColor: surface, borderColor: done || fasting ? 'transparent' : palette.hair }]}>
       {onPress ? (
-        <Pressable accessibilityRole="button" onPress={onPress} style={[styles.cardContent, done && styles.dimmed]}>
+        <Pressable accessibilityRole="button" onPress={onPress} style={mainStyle}>
           {content}
         </Pressable>
-      ) : <View style={[styles.cardContent, done && styles.dimmed]}>{content}</View>}
+      ) : <View style={mainStyle}>{content}</View>}
       {details && <View style={[styles.cardDetails, done && styles.dimmed]}>{details}</View>}
-      {children && <View style={styles.cardFoot}>{children}</View>}
+      {children && <View style={[styles.cardFoot, footerDivider && { borderTopWidth: StyleSheet.hairlineWidth, borderColor: palette.hair }]}>{children}</View>}
     </View>
   );
 }
 
-export function ListRow({ title, subtitle, icon, end, onPress }: {
-  title: string; subtitle?: string; icon?: IconName; end?: ReactNode; onPress: () => void;
+export function ListRow({ title, subtitle, icon, end, serif, onPress }: {
+  title: string; subtitle?: string; icon?: IconName; end?: ReactNode; serif?: boolean; onPress: () => void;
 }) {
   const { palette } = useTheme();
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={[styles.listRow, { borderColor: palette.hair, backgroundColor: palette.surface }]}>
       {icon && <Icon name={icon} color={palette.green} size={22} />}
       <View style={styles.grow}>
-        <Text style={[typography.listTitle, { color: palette.ink }]}>{title}</Text>
-        {subtitle && <Text style={[typography.caption, { color: palette.ink2 }]}>{subtitle}</Text>}
+        <Text style={[serif ? styles.serifRowTitle : typography.listTitle, { color: palette.ink }]}>{title}</Text>
+        {subtitle && <Text style={[typography.caption, styles.rowSubtitle, { color: palette.ink2 }]}>{subtitle}</Text>}
       </View>
       {end}
       <Icon name="chevron_right" size={20} color={palette.ink3} />
@@ -102,10 +104,10 @@ export function Notice({ title, body, icon, actions = [] }: {
   const { palette } = useTheme();
   return (
     <View style={[styles.notice, { backgroundColor: palette.surface, borderColor: palette.hair }]}>
-      {icon && <Icon name={icon} size={22} color={palette.gold} />}
+      {icon && <View style={[styles.noticeIcon, { backgroundColor: palette.goldSoft }]}><Icon name={icon} size={20} color={palette.gold} /></View>}
       <View style={styles.grow}>
         <Text style={[typography.listTitle, { color: palette.ink }]}>{title}</Text>
-        <Text style={[typography.supporting, { color: palette.ink2 }]}>{body}</Text>
+        <Text style={[typography.supporting, styles.rowSubtitle, { color: palette.ink2 }]}>{body}</Text>
         {!!actions.length && (
           <View style={styles.actions}>
             {actions.map((action) => <Button key={action.label} {...action} variant={action.variant ?? 'outlined'} small />)}
@@ -120,7 +122,7 @@ export function Banner({ title, body, onPress }: { title: string; body?: string;
   const { palette } = useTheme();
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={[styles.banner, { backgroundColor: palette.sage }]}>
-      <Crescent size={24} color={palette.gold} />
+      <View style={styles.bannerIcon}><Crescent size={24} color={palette.gold} /></View>
       <View style={styles.grow}>
         <Text style={[typography.bannerTitle, { color: palette.onSage }]}>{title}</Text>
         {body && <Text style={[typography.supporting, { color: palette.onSage }]}>{body}</Text>}
@@ -136,16 +138,21 @@ const styles = StyleSheet.create({
   cardTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   cardMeta: { flexDirection: 'row', alignItems: 'center', flexShrink: 1, gap: 4 },
   cardContent: { minHeight: 44, paddingHorizontal: 16, paddingVertical: 14, gap: 6 },
+  cardContentWithFooter: { paddingBottom: 4 },
   cardDetails: { paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
-  cardFoot: { paddingHorizontal: 16, paddingBottom: 10, gap: 6 },
+  cardFoot: { marginHorizontal: 16, paddingBottom: 8, gap: 6 },
   dimmed: { opacity: 0.55 },
   listRow: { minHeight: 58, borderBottomWidth: StyleSheet.hairlineWidth, paddingHorizontal: 14, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  serifRowTitle: { ...typography.cardTitle, fontSize: 16, lineHeight: 20 },
+  rowSubtitle: { marginTop: 2 },
   radioChoice: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 12 },
   radioCard: { padding: 16, borderWidth: 1, borderRadius: 16 },
   optionRow: { paddingVertical: 8, paddingHorizontal: 2, borderTopWidth: StyleSheet.hairlineWidth },
   radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   dot: { width: 10, height: 10, borderRadius: 5 },
   notice: { padding: 12, borderWidth: 1, borderRadius: 16, flexDirection: 'row', gap: 10 },
+  noticeIcon: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 },
   banner: { minHeight: 56, borderRadius: 16, padding: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  bannerIcon: { alignSelf: 'flex-start', marginTop: 1 },
 });

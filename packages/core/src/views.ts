@@ -169,6 +169,10 @@ function futurePush(occurrence: Occurrence, now: number, state: ReminderState): 
     pushAllowed(occurrence, state) && !isDone(occurrence, state.tracking);
 }
 
+function reminderBell(occurrence: Occurrence, state: ReminderState): boolean {
+  return level(state, occurrence.push?.item ?? occurrence.entry.id, occurrence.hijri.year) === 'push';
+}
+
 function collect(date: CivilDate, from: number, to: number, state: ReminderState): Occurrence[] {
   const result: Occurrence[] = [];
   for (let offset = from; offset <= to; offset++) result.push(...reminderOccurrences(isoAdd(date, offset), state));
@@ -195,6 +199,7 @@ export function todayState(now: number, state: ReminderState, options: TodayOpti
     tick: tick(occurrence, now, state),
     tracker: tracker(occurrence, state),
     push: futurePush(occurrence, now, state),
+    bell: reminderBell(occurrence, state),
     body: occurrence.definition.check === 'fast' && now < occurrence.fajr
       ? msg('today.planSuhur', { time: occurrence.fajr }) : undefined,
   })).sort((a, b) => Number(a.done) - Number(b.done) || a.occurrence.end - b.occurrence.end);
@@ -208,7 +213,7 @@ export function todayState(now: number, state: ReminderState, options: TodayOpti
         (occurrence.definition.check === 'fast' && paused(state.preferences.pause, date))) continue;
     activeSeries.add(key);
     const push = futurePush(occurrence, now, state);
-    coming.push({ occurrence, push, label: comingLabel(occurrence, now, place.timeZone, push) });
+    coming.push({ occurrence, push, bell: reminderBell(occurrence, state), label: comingLabel(occurrence, now, place.timeZone, push) });
     if (coming.length === 3) break;
   }
 

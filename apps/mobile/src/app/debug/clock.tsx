@@ -9,7 +9,7 @@ import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { moments } from '../../state/moments';
 import { settingsStore } from '../../state/native';
-import { setDebugTime, useClock } from '../../state/useClock';
+import { setDebugMoment, setDebugTime, useClock, useMomentSession } from '../../state/useClock';
 import { isTestBuild } from '../../theme/isTestBuild';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
@@ -21,22 +21,24 @@ function clockInput(minutes: number) {
 function DebugClock() {
   const router = useRouter();
   const { palette } = useTheme();
+  const session = useMomentSession();
   const place = useStore(settingsStore, ({ value }) => value.location);
-  const format = useMessageFormat(place?.timeZone);
+  const actualFormat = useMessageFormat(place?.timeZone);
+  const previewPlace = session?.stores.settings.getState().value.location;
+  const format = { ...actualFormat, timeZone: previewPlace?.timeZone ?? actualFormat.timeZone };
   const now = useClock();
   const current = civil(now, format.timeZone);
   const [date, setDate] = useState<string>(current.iso);
   const [time, setTime] = useState(clockInput(current.min));
   const [invalid, setInvalid] = useState(false);
-  const [selected, setSelected] = useState<string>();
+  const selected = session?.id;
 
   const apply = () => {
     const match = time.trim().match(/^([01]\d|2[0-3]):([0-5]\d)$/);
     if (!match) { setInvalid(true); return; }
     try {
-      setDebugTime(localToMs(date.trim() as CivilDate, Number(match[1]) * 60 + Number(match[2]), format.timeZone));
+      setDebugTime(localToMs(date.trim() as CivilDate, Number(match[1]) * 60 + Number(match[2]), actualFormat.timeZone));
       setInvalid(false);
-      setSelected(undefined);
     } catch {
       setInvalid(true);
     }
@@ -45,16 +47,14 @@ function DebugClock() {
   const pick = (moment: (typeof moments)[number]) => {
     setDate(moment.date);
     setTime(clockInput(moment.minute));
-    setDebugTime(localToMs(moment.date, moment.minute, format.timeZone));
-    setSelected(moment.id);
+    setDebugMoment(moment);
     setInvalid(false);
   };
   const reset = () => {
     setDebugTime(null);
-    const wall = civil(Date.now(), format.timeZone);
+    const wall = civil(Date.now(), actualFormat.timeZone);
     setDate(wall.iso);
     setTime(clockInput(wall.min));
-    setSelected(undefined);
     setInvalid(false);
   };
 

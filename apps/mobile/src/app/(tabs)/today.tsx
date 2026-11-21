@@ -1,7 +1,7 @@
 import catalog from '@adwam/content/catalog';
 import { countMonthFasts, type CivilDate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { LayoutAnimation, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,10 +16,9 @@ import { Icon, type IconName } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { syncSchedule } from '../../services/notification-schedule';
-import { serverCacheStore, settingsStore, trackersStore } from '../../state/native';
 import { selectReminderState, selectToday } from '../../state/selectors';
 import { editMakeup, editTick, type TrackerEdit } from '../../state/tracker-edits';
-import { useClock } from '../../state/useClock';
+import { useClock, useReminderStores } from '../../state/useClock';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
 import { ActiveCard, type ActiveReminder, type MakeupAction } from '../../today/ActiveCard';
@@ -34,6 +33,7 @@ export default function TodayScreen() {
   const { palette } = useTheme();
   const router = useRouter();
   const { setup } = useLocalSearchParams<{ setup?: string }>();
+  const { settings: settingsStore, trackers: trackersStore, serverCache: serverCacheStore } = useReminderStores();
   const settings = useStore(settingsStore, ({ value }) => value);
   const trackers = useStore(trackersStore, ({ value }) => value);
   const cached = useStore(serverCacheStore, ({ value }) => value);
@@ -46,6 +46,11 @@ export default function TodayScreen() {
   const view = state && selectToday(now, state, settings, correction);
   const banner = view?.banner;
   const [snack, setSnack] = useState<Snack>();
+  const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
+  useEffect(() => {
+    setSnack(undefined);
+    scroll.current?.scrollTo({ y: 0, animated: false });
+  }, [trackersStore]);
   useEffect(() => {
     if (setup !== '1') return;
     setSnack({ message: t('snackbar.setup') });
@@ -123,22 +128,24 @@ export default function TodayScreen() {
 
   return (
     <SafeAreaView edges={['top', 'left', 'right']} style={[styles.screen, { backgroundColor: palette.paper }]}>
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView ref={scroll} contentContainerStyle={styles.body}>
         {view && location ? <>
           <Hero title={renderMessage(view.title, format)} date subtitle={<>
             <Text style={[typography.subtitle, { color: palette.ink2 }]}>{t('setup.hijri.place', { date: view.date, city: location.name })}</Text>
             {view.sinceMaghribLabel && <Tag label={renderMessage(view.sinceMaghribLabel, format)} tone="gold" icon="bedtime" />}
           </>} />
           <DayLine timeline={view.dayLine} format={format} />
-          {view.notices.map((notice) => (
+          {!!view.notices.length && <View style={styles.notices}>{view.notices.map((notice) => (
             <Notice key={notice.id} title={renderMessage(notice.title, format)} body={renderMessage(notice.body, format)}
               icon={noticeIcons[notice.id]} actions={notice.actions.map((action) => ({
                 label: renderMessage(action.label, format), variant: action.id === 'accept' ? 'tonal' : 'outlined',
                 onPress: () => answerNotice(notice.id, action.id, view.hijri.year),
               }))} />
-          ))}
-          {banner && <Banner title={banner.title.replace('{{month}}', t('setup.hijri.monthName', { month: banner.hijri.month }))}
-            body={banner.body} onPress={() => openItem(banner.item, banner.date)} />}
+          ))}</View>}
+          {banner && <View style={styles.banner}><Banner
+            title={banner.title.replace('{{month}}', t('setup.hijri.monthName', { month: banner.hijri.month }))}
+            body={banner.body} onPress={() => openItem(banner.item, banner.date)} />
+          </View>}
           <SectionHeader title={t('today.activeTitle')} aside={view.active.length ? renderMessage(view.activeCount, format) : undefined} />
           {view.empty ? <View style={[styles.empty, { borderColor: palette.hair2 }]}>
             <Icon name="wb_twilight" color={palette.gold} />
@@ -156,9 +163,9 @@ export default function TodayScreen() {
           {!!view.coming.length && <>
             <SectionHeader title={t('today.comingTitle')} />
             <View style={[styles.coming, { borderColor: palette.hair, backgroundColor: palette.surface }]}>
-              {view.coming.map(({ occurrence, push, label }) => (
-                <ListRow key={occurrence.key} title={occurrence.title} subtitle={renderMessage(label, format)}
-                  end={push && <Icon name="notifications" label={t('reminders.push')} size={18} color={palette.gold} />}
+              {view.coming.map(({ occurrence, bell, label }) => (
+                <ListRow key={occurrence.key} title={occurrence.title} subtitle={renderMessage(label, format)} serif
+                  end={bell && <Icon name="notifications" label={t('reminders.push')} size={18} color={palette.gold} />}
                   onPress={() => openItem(occurrence.entry.id, occurrence.date)} />
               ))}
             </View>
@@ -178,6 +185,8 @@ export default function TodayScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   body: { paddingHorizontal: 20, paddingBottom: 28 },
+  notices: { marginTop: 12, gap: 12 },
+  banner: { marginTop: 16 },
   cards: { gap: 10 },
   empty: { flexDirection: 'row', gap: 12, borderStyle: 'dashed', borderWidth: 1, borderRadius: 16, padding: 16 },
   emptyText: { flex: 1, gap: 3 },
