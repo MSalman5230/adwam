@@ -46,6 +46,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-router',
       'expo-localization',
       'expo-notifications',
+      ['@sentry/react-native/expo', {
+        organization: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        url: 'https://de.sentry.io/',
+        disableAutoUpload: !process.env.SENTRY_AUTH_TOKEN,
+      }],
       './plugins/with-session-backup.cjs',
       ['./plugins/with-development-http.cjs', { enabled: variant === 'development' }],
     ],
