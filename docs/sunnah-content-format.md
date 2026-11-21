@@ -185,7 +185,7 @@ An entry in `evidence/hadith.yaml`:
   collection: muslim          # from collections.yaml, giving the label "Muslim 1162b"
   number: 1162b
   url: https://sunnah.com/muslim:1162b
-  from: prophet               # prophet, or companion for a Companion's own practice
+  from: prophet               # prophet, companion or successor, according to whose words or practice the report records
   narrator: Abū Qatādah al-Anṣārī
   grading:
     - { by: Muslim, grade: ṣaḥīḥ, note: In his Ṣaḥīḥ }

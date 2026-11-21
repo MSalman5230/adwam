@@ -14,3 +14,19 @@ muslim:
   name: Ṣaḥīḥ Muslim
   short: Muslim
   url: https://sunnah.com/muslim:{number}
+abudawud:
+  name: Sunan Abī Dāwūd
+  short: Abū Dāwūd
+  url: https://sunnah.com/abudawud:{number}
+nasai:
+  name: Sunan al-Nasāʾī
+  short: Nasāʾī
+  url: https://sunnah.com/nasai:{number}
+ibnmajah:
+  name: Sunan Ibn Mājah
+  short: Ibn Mājah
+  url: https://sunnah.com/ibnmajah:{number}
+malik:
+  name: Muwaṭṭaʾ Mālik
+  short: Muwaṭṭaʾ Mālik
+  url: https://sunnah.com/malik/{number}

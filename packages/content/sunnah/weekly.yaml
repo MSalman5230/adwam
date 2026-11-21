@@ -8,7 +8,8 @@
       liked to be fasting when his were presented.
   when: Every Monday and Thursday, Fajr to Maghrib. The card appears the evening before.
   pushNote: A push the evening before, after ʿIshāʾ.
-  evidence: []
+  evidence:
+    - tirmidhi-747
   duas: []
   occurrences:
     - key: monday
@@ -68,7 +69,8 @@
   notes:
     - Al-Shāfiʿī placed al-Kahf on Friday night or day.
     - Scholars differ on the strength of the al-Kahf reports.
-  evidence: []
+  evidence:
+    - abudawud-1047
   duas: []
   rules:
     - combine-into-friday-push
@@ -102,7 +104,8 @@
   what:
     - Recite al-Sajdah and al-Insān in Fajr if you lead the prayer or pray it yourself.
   when: Friday, before Fajr.
-  evidence: []
+  evidence:
+    - muslim-879a
   duas: []
   occurrences:
     - on:
@@ -131,7 +134,11 @@
   notes:
     - Most jurists treat the ghusl as an emphasized Sunnah, and some consider it
       obligatory.
-  evidence: []
+  evidence:
+    - bukhari-880
+    - bukhari-883
+    - abudawud-345
+    - tirmidhi-497
   duas: []
   occurrences:
     - on:
@@ -165,7 +172,9 @@
   what:
     - Pray four rakʿahs, or two at home as the Prophet ﷺ did.
   when: From Jumuʿah until ʿAṣr.
-  evidence: []
+  evidence:
+    - muslim-881a
+    - bukhari-937
   duas: []
   occurrences:
     - on:
@@ -195,7 +204,9 @@
   notes:
     - Another report places the special hour between the imam sitting down and the end of
       the prayer.
-  evidence: []
+  evidence:
+    - abudawud-1048
+    - muslim-853
   duas: []
   occurrences:
     - on:

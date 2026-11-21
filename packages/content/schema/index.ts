@@ -126,7 +126,7 @@ export const hadithSchema = z.strictObject({
   collection: id,
   number: z.union([wording, z.int().positive()]),
   url: webUrl.optional(),
-  from: z.enum(['prophet', 'companion']),
+  from: z.enum(['prophet', 'companion', 'successor']),
   narrator: wording.optional(),
   grading: z.array(grading),
   excerpt,

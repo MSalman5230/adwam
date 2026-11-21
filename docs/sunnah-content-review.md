@@ -16,3 +16,12 @@ The seven duʿāʾ are in [duas.yaml](../packages/content/duas.yaml), with their
 - Compare the rain-start Arabic and transliteration. Bukhārī 1032's Arabic gives the request without an opening *Allāhumma*. Its English renders it as an invocation and the prototype's transliteration starts with *Allāhumma*.
 - The English for rain stopping appears within a longer sentence. The excerpt uses the published words about what the rain was due to.
 - Sunnah.com allows individual hadith or selections to be reproduced for teaching. The source copies keep the page attribution where an individual translator was absent. [Sunnah.com reproduction guidance](https://sunnah.com/about)
+
+## Remaining hadith
+
+[Hadith evidence](../packages/content/evidence/hadith.yaml) now lists all 70 browser records with the Arabic and English shown on the source page, its attribution, and any displayed grade. The reminder YAML files use the evidence IDs. Material cited for the calendar rules and future reminders stays available for review alongside the current catalog.
+
+- The two number aliases use the reference displayed by Sunnah.com. Book 13, Hadith 18 is Bukhārī 969, and Book 14, Hadith 125 is Abū Dāwūd 2437. The original browser URLs remain on the evidence entries.
+- Muwaṭṭaʾ Mālik 56/26 records the practice of ʿĀmir ibn ʿAbdullāh ibn al-Zubayr, a Successor. Al-Adab al-Mufrad 723 records the practice of ʿAbdullāh ibn al-Zubayr.
+- Muslim 1141b gives additional wording for the preceding narration. Check its placement and context before using it as a standalone excerpt.
+- Read each Arabic and English excerpt together. Some browser pages render a shorter Arabic body while the English includes surrounding narration. Select corresponding portions from the saved copies before approving those pairs.

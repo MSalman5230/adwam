@@ -11,6 +11,10 @@
       from going astray, slipping, wronging or being wronged, and acting foolishly.
   when: "**Detect:** the user leaves the home radius. **Push:** on exit, with a “Starting a
     journey?” button that opens the travel duʿāʾ."
+  evidence:
+    - abudawud-5095
+    - abudawud-5094
+    - muslim-1342
 - id: coming-home
   status: future
   title: Coming home
@@ -23,6 +27,10 @@
       ḥasan.
   when: "**Detect:** the user enters the home radius. **Push:** on entry, which happens just
     before they reach the door."
+  evidence:
+    - muslim-2018a
+    - muslim-253b
+    - abudawud-5096
 - id: starting-a-journey
   status: future
   title: Starting a journey
@@ -32,6 +40,8 @@
   when: "**Detect:** the user goes beyond a travel distance they set, defaulting to 80 km.
     Schools differ on what distance counts as travel. **In-app:** a journey card. The
     leaving-home push already offers the duʿāʾ at the door."
+  evidence:
+    - muslim-1342
 - id: returning-from-a-journey
   status: future
   title: Returning from a journey
@@ -41,3 +51,6 @@
       and praising our Lord.” Go first to the mosque and pray two rakʿahs.
   when: "**Detect:** after a journey, the user comes back within about 10 km of home. **Push:**
     at that point, before they reach home. The coming-home push follows on arrival."
+  evidence:
+    - muslim-1342
+    - bukhari-3088
