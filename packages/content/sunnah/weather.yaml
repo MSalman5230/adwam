@@ -8,8 +8,10 @@
     - The Prophet ﷺ also let some rain touch his skin.
   when: While it rains.
   pushNote: A push only for the first rain after about 7 dry days.
-  evidence: []
-  duas: []
+  evidence:
+    - bukhari-1032
+  duas:
+    - rain-beneficial
   occurrences:
     - on:
         weather: rain-start
@@ -25,6 +27,7 @@
         title: Rain is likely starting in your area
         body: "Say: Allāhumma ṣayyiban nāfiʿan"
         quiet: drop
+      inlineDua: rain-beneficial
 - id: rain-stops
   status: review
   tier: inapp
@@ -33,8 +36,10 @@
   what:
     - Credit the rain to Allah rather than to the stars.
   when: For a few hours after the rain ends.
-  evidence: []
-  duas: []
+  evidence:
+    - bukhari-846
+  duas:
+    - rain-stopped
   occurrences:
     - on:
         weather: rain-stop
@@ -52,8 +57,10 @@
     - Say the duʿāʾ for heavy rain.
   when: When forecast rain is above about 7.6 mm an hour.
   pushNote: A push when it starts.
-  evidence: []
-  duas: []
+  evidence:
+    - bukhari-1014
+  duas:
+    - heavy-rain
   occurrences:
     - on:
         weather: heavy-rain
@@ -79,8 +86,10 @@
   notes:
     - This is the practice of the Companion ʿAbdullāh ibn al-Zubayr, not a saying of the
       Prophet ﷺ.
-  evidence: []
-  duas: []
+  evidence:
+    - adab-723
+  duas:
+    - thunder
   occurrences:
     - on:
         weather: thunder
@@ -100,8 +109,10 @@
       refuge from its harm.
   when: When forecast gusts pass about 60 km/h.
   pushNote: A push for gusts above about 75 km/h.
-  evidence: []
-  duas: []
+  evidence:
+    - muslim-899b
+  duas:
+    - wind
   occurrences:
     - on:
         weather: wind
