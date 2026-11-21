@@ -1,0 +1,7 @@
+appId: ${APP_ID}
+---
+- tapOn: Search cities
+- inputText: lon
+- tapOn: London
+- assertVisible: Check your Hijri date
+- assertVisible: '.* · London'

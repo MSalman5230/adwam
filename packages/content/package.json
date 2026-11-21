@@ -5,7 +5,11 @@
   "type": "module",
   "exports": {
     "./schema": "./schema/index.ts",
-    "./messages/en.json": "./messages/en.json"
+    "./messages/en.json": "./messages/en.json",
+    "./catalog": {
+      "types": "./schema/catalog.d.ts",
+      "default": "./dist/mobile-content.json"
+    }
   },
   "scripts": {
     "validate": "node scripts/check.ts",

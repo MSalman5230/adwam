@@ -176,6 +176,16 @@ Details:
 
 The agent sets up these commands in milestone 0. Then on real phones, test a preview build that uses the staging server.
 
+### Android setup flow
+
+Install a bundled preview APK on a disposable English-language Android emulator. Each path starts by clearing the test app’s data and runtime permissions.
+
+```sh
+maestro --device emulator-5556 test -e APP_ID=com.msalman5230.adwam.preview apps/mobile/.maestro/setup.yaml
+```
+
+For a locally bundled development APK, use `-e APP_ID=com.msalman5230.adwam.dev`. The bundled build can run the suite in airplane mode.
+
 ## Instructions for the building agent
 
 `AGENTS.md` at the repository root holds the few rules an agent can't work out from the code or [plan.md](plan.md), and links to the Expo and Supabase documentation. Keep it short: anything an agent would do anyway doesn't belong there.
