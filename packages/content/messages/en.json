@@ -5,6 +5,7 @@
   },
   "calendar": {
     "hijriDate": "{{day}} {{month, hijriMonth}} {{year}}",
+    "hijriDay": "{{day}} {{month, hijriMonth}}",
     "prayer": {
       "fajr": "Fajr",
       "sunrise": "sunrise",
@@ -124,8 +125,13 @@
     "week": {
       "this": "This week",
       "next": "Next week",
-      "of": "Week of {{date, dayMonth}}"
+      "of": "Week of {{date, dayMonth}}",
+      "range": "{{first}}–{{last}} {{end, shortMonth}}",
+      "acrossMonths": "{{start, shortDayMonth}} – {{end, shortDayMonth}}"
     },
+    "weekday": "{{date, shortWeekday}}",
+    "eclipseWindow": "{{start, time}}–{{end, time}}",
+    "filtersLabel": "Upcoming filters",
     "monthStartDetail": "From Maghrib on {{eve, shortDate}} · 1 {{month, hijriMonth}} is {{first, shortDate}}",
     "range": "{{start}}–{{end}} {{month, hijriMonth}} · to {{date, shortDate}}",
     "rangeAcrossMonths": "{{start}} – {{end}} · to {{date, shortDate}}",
