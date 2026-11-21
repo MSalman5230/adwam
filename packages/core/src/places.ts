@@ -48,14 +48,18 @@ export function suggestedPrayerMethod(countryCode: string): PrayerMethod {
   return countryMethods.get(countryCode.trim().toUpperCase()) ?? 'mwl';
 }
 
-export function weatherArea({ latitude, longitude }: Coordinates): WeatherArea {
+export function assertCoordinates({ latitude, longitude }: Coordinates): void {
   if (!Number.isFinite(latitude) || Math.abs(latitude) > 90) {
     throw new RangeError('Latitude must be between -90 and 90 degrees');
   }
   if (!Number.isFinite(longitude) || Math.abs(longitude) > 180) {
     throw new RangeError('Longitude must be between -180 and 180 degrees');
   }
+}
 
+export function weatherArea(coordinates: Coordinates): WeatherArea {
+  assertCoordinates(coordinates);
+  const { latitude, longitude } = coordinates;
   const roundedLatitude = Math.round(latitude * 10) || 0;
   const roundedLongitude = Math.round(longitude * 10) || 0;
   const gridLongitude = roundedLongitude === 1_800 ? -1_800 : roundedLongitude;
