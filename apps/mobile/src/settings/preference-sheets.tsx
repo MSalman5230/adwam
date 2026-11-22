@@ -177,7 +177,7 @@ export function PrivacySheet({ settings, update, onClose }: SettingsProps) {
 const styles = StyleSheet.create({
   timeRow: { flexDirection: 'row', gap: 12, marginVertical: 16 },
   timeField: { flex: 1, gap: 4 },
-  timeButton: { minHeight: 46, justifyContent: 'center', borderRadius: 12, borderWidth: 1, paddingHorizontal: 12 },
+  timeButton: { minHeight: 48, justifyContent: 'center', borderRadius: 12, borderWidth: 1, paddingHorizontal: 12 },
   toggleRow: { flexDirection: 'row', gap: 12, alignItems: 'center', borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 8 },
   toggleText: { flex: 1, gap: 3 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 16 },

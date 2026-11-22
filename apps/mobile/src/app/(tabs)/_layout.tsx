@@ -6,6 +6,7 @@ import { Icon, type IconName } from '../../icons';
 import { t } from '../../language/messages';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
+import { useDeviceReduceMotion } from '../../theme/useDeviceReduceMotion';
 
 const tabs = {
   today: 'today', upcoming: 'format_list_bulleted', settings: 'settings',
@@ -42,9 +43,10 @@ function TabBar({ state, emitter, navigateToTab, descriptors }: BottomTabBarProp
 
 export default function TabsLayout() {
   const { palette } = useTheme();
+  const reduced = useDeviceReduceMotion();
   return (
     <Tabs backBehavior="initialRoute" tabBar={(props) => <TabBar {...props} />}
-      screenOptions={{ headerShown: false, animation: 'fade', sceneStyle: { backgroundColor: palette.paper } }}>
+      screenOptions={{ headerShown: false, animation: reduced ? 'none' : 'fade', sceneStyle: { backgroundColor: palette.paper } }}>
       <Tabs.Screen name="today" options={{ title: t('navigation.today') }} />
       <Tabs.Screen name="upcoming" options={{ title: t('navigation.upcoming') }} />
       <Tabs.Screen name="settings" options={{ title: t('navigation.settings') }} />
@@ -54,7 +56,7 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create({
   bar: { flexDirection: 'row', minHeight: 78, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
-  tab: { flex: 1, alignItems: 'center', gap: 4 },
+  tab: { flex: 1, minHeight: 48, alignItems: 'center', gap: 4, paddingHorizontal: 4 },
   pill: { width: 64, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
   selected: { fontFamily: 'SourceSans3_700Bold' },
 });

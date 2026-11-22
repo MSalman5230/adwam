@@ -38,7 +38,8 @@ export function ActiveCard({ reminder, format, onOpen, onTick, onMakeup }: {
         {transliteration && <Prose style={[typography.transliteration, styles.dua, { color: palette.ink }]}>
           {transliteration}
         </Prose>}
-        {weather && <Pressable accessibilityRole="link" onPress={() => { void Linking.openURL('https://open-meteo.com/').catch(() => {}); }}>
+        {weather && <Pressable accessibilityRole="link" style={styles.creditTarget}
+          onPress={() => { void Linking.openURL('https://open-meteo.com/').catch(() => {}); }}>
           <Text style={[typography.small, styles.credit, { color: palette.green }]}>{t('about.weather')}</Text>
         </Pressable>}
         {tracker && <TrackerDots total={tracker.total} completed={tracker.count} label={renderMessage(tracker.label, format)} />}
@@ -70,5 +71,6 @@ function MakeupCard({ count, label, shaban, onOpen, onMakeup }: {
 const styles = StyleSheet.create({
   dua: { fontSize: 15.5, lineHeight: 20.9 },
   credit: { textDecorationLine: 'underline' },
+  creditTarget: { minWidth: 48, minHeight: 48, justifyContent: 'center' },
   makeupActions: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 },
 });

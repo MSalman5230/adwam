@@ -1,10 +1,11 @@
-import type { ReactNode } from 'react';
-import { KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { useRef, type ComponentRef, type ReactNode } from 'react';
+import { AccessibilityInfo, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { t } from '../language/messages';
 import { useTheme } from '../theme/ThemeProvider';
 import { typography } from '../theme/typography';
+import { useDeviceReduceMotion } from '../theme/useDeviceReduceMotion';
 
 export function Snackbar({ message, onUndo }: { message: string; onUndo?: () => void }) {
   const { palette } = useTheme();
@@ -26,18 +27,23 @@ export function Sheet({ open, title, lead, onClose, children }: {
   const { palette } = useTheme();
   const { height } = useWindowDimensions();
   const { bottom } = useSafeAreaInsets();
+  const reduced = useDeviceReduceMotion();
+  const heading = useRef<ComponentRef<typeof Text>>(null);
 
   return (
-    <Modal visible={open} transparent statusBarTranslucent navigationBarTranslucent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={open} transparent statusBarTranslucent navigationBarTranslucent animationType={reduced ? 'none' : 'slide'}
+      onRequestClose={onClose} onShow={() => {
+        if (heading.current) AccessibilityInfo.sendAccessibilityEvent(heading.current, 'focus');
+      }}>
       <View style={styles.modal}>
-        <Pressable onPress={onClose} aria-hidden style={[StyleSheet.absoluteFill, { backgroundColor: palette.scrim }]} />
+        <Pressable onPress={onClose} aria-hidden importantForAccessibility="no" style={[StyleSheet.absoluteFill, { backgroundColor: palette.scrim }]} />
         <KeyboardAvoidingView behavior="padding" pointerEvents="box-none" style={styles.positionSheet}>
           <View accessibilityViewIsModal role="dialog" accessibilityLabel={title}
             style={[styles.sheet, { maxHeight: height * 0.88, backgroundColor: palette.paper }]}>
             <View aria-hidden style={[styles.handleBar, { backgroundColor: palette.ink3 }]} />
             <ScrollView style={styles.sheetScroll} contentContainerStyle={[styles.sheetContent, { paddingBottom: 28 + bottom }]}
               keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-              <Text accessibilityRole="header" style={[typography.sheetTitle, { color: palette.ink }]}>{title}</Text>
+              <Text ref={heading} accessible accessibilityRole="header" style={[typography.sheetTitle, { color: palette.ink }]}>{title}</Text>
               {lead && <Text style={[styles.lead, typography.sheetLead, { color: palette.ink2 }]}>{lead}</Text>}
               {children}
             </ScrollView>
@@ -54,7 +60,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 6, elevation: 6,
   },
   message: { flex: 1 },
-  undo: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 12 },
+  undo: { minWidth: 48, minHeight: 48, justifyContent: 'center', paddingHorizontal: 12 },
   modal: { flex: 1 },
   positionSheet: { flex: 1, justifyContent: 'flex-end' },
   sheet: { flexShrink: 1, borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingTop: 14 },

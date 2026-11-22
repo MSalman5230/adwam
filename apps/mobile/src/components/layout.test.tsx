@@ -39,10 +39,12 @@ vi.mock('react-native', async () => {
     },
     Animated: { View: element('div'), Value: class { interpolate() { return 0; } } },
     StyleSheet: { create: <T,>(styles: T) => styles, hairlineWidth: 1 },
-    useWindowDimensions: () => ({ height: 800 }),
+    useWindowDimensions: () => ({ height: 800, fontScale: 1 }),
+    AccessibilityInfo: { addEventListener: () => ({ remove: () => undefined }) },
   };
 });
 vi.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ bottom: 20 }) }));
+vi.mock('react-native-reanimated', () => ({ useReducedMotion: () => false }));
 vi.mock('../icons', () => ({ Icon: () => null }));
 vi.mock('../theme/ThemeProvider', async () => {
   const { colors } = await import('../theme/tokens');
