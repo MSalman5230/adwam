@@ -77,8 +77,9 @@ These are uploaded once in expo.dev. They aren't environment variables.
 |---|---|
 | `EXPO_ACCESS_TOKEN` | Sending pushes. Turn on Expo's enhanced push security, so only this token can send to Adwam's phones. |
 | `SENTRY_DSN` | Error reports from the Edge Functions |
+| `ADWAM_JOB_KEY` | Authorizes scheduled jobs. Copy the value of `adwam_job_key` from this project’s Vault into Edge Function secrets. |
 
-Supabase gives each Edge Function its own project URL and keys automatically. The scheduled jobs call the functions with a key stored in Supabase Vault, set once per project with a short SQL script that the agent writes.
+Supabase gives each Edge Function its own project URL and keys automatically. After the staging functions are deployed, run [the scheduler setup SQL](../supabase/setup-staging-jobs.sql) in the staging SQL Editor with that project’s URL. It generates a key in Vault. Copy the key directly from the Vault dashboard into the `ADWAM_JOB_KEY` Edge Function secret. Check that `weather-tick` records a finished run on the next quarter-hour.
 
 ### CI secrets (GitHub, repository settings)
 
