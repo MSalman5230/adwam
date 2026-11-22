@@ -37,7 +37,7 @@ export function ReportSheet({ entry, version, open, onClose }: {
         ))}
       </View>
       <TextInput accessibilityLabel={t('sheet.report.placeholder')} value={description} onChangeText={setDescription}
-        placeholder={t('sheet.report.placeholder')} placeholderTextColor={palette.ink3} multiline
+        placeholder={t('sheet.report.placeholder')} placeholderTextColor={palette.ink2} multiline
         style={[typography.body, styles.input, { color: palette.ink, borderColor: palette.hair2, backgroundColor: palette.surface }]} />
       {failed && <Prose accessibilityLiveRegion="polite" style={[typography.caption, { color: palette.rust }]}>{t('detail.linkUnavailable')}</Prose>}
       <Button style={styles.open} label={t('sheet.report.open')} onPress={() => { void openIssue(); }} />

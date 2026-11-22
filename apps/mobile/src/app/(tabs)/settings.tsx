@@ -26,7 +26,7 @@ type SheetId = (typeof sheetIds)[number];
 function Group({ title, children }: { title: string; children: ReactNode }) {
   const { palette } = useTheme();
   return <>
-    <Text accessibilityRole="header" style={[typography.overline, styles.groupTitle, { color: palette.gold }]}>{title}</Text>
+    <Text accessibilityRole="header" style={[typography.overline, styles.groupTitle, { color: palette.goldText }]}>{title}</Text>
     <View style={[styles.group, { backgroundColor: palette.surface, borderColor: palette.hair }]}>{children}</View>
   </>;
 }

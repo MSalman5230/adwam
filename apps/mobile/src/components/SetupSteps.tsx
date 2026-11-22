@@ -95,18 +95,18 @@ export function SetupHijriDate({ calendar, city, now, shift, onShift }: {
           style={[styles.week, { borderColor: palette.hair, backgroundColor: palette.surface }]}>
           {week.map(({ iso: date, hijri: cell }) => (
             <View key={date} style={[styles.weekDay, date === iso && { backgroundColor: palette.sage }]}>
-              <Text style={[typography.tag, { color: palette.ink3 }]}>{t('setup.hijri.weekday', { date }).slice(0, 2).toUpperCase()}</Text>
+              <Text style={[typography.tag, { color: palette.ink2 }]}>{t('setup.hijri.weekday', { date }).slice(0, 2).toUpperCase()}</Text>
               <Text style={[typography.cardTitle, { color: palette.ink }]}>{isoParts(date).day}</Text>
               <Text style={[typography.tag, { color: palette.green }]}>{cell.day}</Text>
-              {cell.day === 1 && <Text style={[styles.monthAbbreviation, typography.tag, { color: palette.gold }]} numberOfLines={1}>
+              {cell.day === 1 && <Text style={[styles.monthAbbreviation, typography.tag, { color: palette.goldText }]} numberOfLines={1}>
                 {t('setup.hijri.monthName', { month: cell.month }).split(' ')[0]?.slice(0, 5)}
               </Text>}
             </View>
           ))}
         </View>
         <View style={styles.weekCaption}>
-          <Text style={[typography.prayerTime, { color: palette.ink3 }]}>{t('setup.hijri.weekStart', { date: monday })}</Text>
-          <Text style={[typography.prayerTime, { color: palette.gold }]}>{t('setup.hijri.weekEnd', { month: monthSpan, year: last.year })}</Text>
+          <Text style={[typography.prayerTime, { color: palette.paperCaption }]}>{t('setup.hijri.weekStart', { date: monday })}</Text>
+          <Text style={[typography.prayerTime, { color: palette.goldText }]}>{t('setup.hijri.weekEnd', { month: monthSpan, year: last.year })}</Text>
         </View>
       </View>
       <PromiseList>
@@ -141,11 +141,11 @@ export function SetupNotificationPreview({ now, timeZone, quiet }: { now: number
     <View style={styles.details}>
       <Text style={[typography.setupBody, { color: palette.ink2 }]}>{t('setup.notifications.body', { start, end }, format)}</Text>
       <View style={[styles.preview, { backgroundColor: palette.sys, borderColor: palette.hair }]}>
-        <Text style={[typography.overline, { color: palette.ink3 }]}>{t('setup.notifications.sample')}</Text>
+        <Text style={[typography.overline, { color: palette.ink2 }]}>{t('setup.notifications.sample')}</Text>
         <View style={[styles.previewCard, { backgroundColor: palette.surface }]}>
           <View style={styles.previewHeading}>
             <Crescent size={15} color={palette.green} />
-            <Text style={[typography.caption, { color: palette.ink3 }]}>{t('notification.header', { when: t('setup.notifications.sampleDate') })}</Text>
+            <Text style={[typography.caption, { color: palette.ink2 }]}>{t('notification.header', { when: t('setup.notifications.sampleDate') })}</Text>
           </View>
           <Text style={[typography.listTitle, { color: palette.ink }]}>{t('setup.notifications.sampleTitle')}</Text>
           <Text style={[typography.supporting, { color: palette.ink2 }]}>{t('setup.notifications.sampleBody')}</Text>

@@ -36,10 +36,10 @@ export function DayLine({ timeline, format }: { timeline: ReturnType<typeof dayL
       <View style={[styles.anchorLabels, largerText && styles.largerLabels]}>
         {anchors.map((mark) => (
           <View key={mark.name} style={largerText ? styles.largeAnchor : styles.anchorLabel}>
-            <Text style={[typography.prayerLabel, styles.center, { color: mark.name === 'maghrib' ? palette.gold : palette.ink }]}>
+            <Text style={[typography.prayerLabel, styles.center, { color: mark.name === 'maghrib' ? palette.goldText : palette.ink }]}>
               {mark.label}
             </Text>
-            <Text style={[typography.prayerTime, styles.center, { color: palette.ink3 }]}>
+            <Text style={[typography.prayerTime, styles.center, { color: palette.paperCaption }]}>
               {mark.time.replace(' ', '\u202f')}
             </Text>
           </View>

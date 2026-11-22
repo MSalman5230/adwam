@@ -73,7 +73,7 @@ export function PageTitle({ title, overline, subtitle, children }: {
   const { palette } = useTheme();
   return (
     <View style={[styles.pageTitle, { borderColor: palette.goldLine }]}>
-      {overline && <Text style={[typography.overline, { color: palette.gold }]}>{overline}</Text>}
+      {overline && <Text style={[typography.overline, { color: palette.goldText }]}>{overline}</Text>}
       <Text accessibilityRole="header" style={[typography.detailTitle, { color: palette.ink }]}>{title}</Text>
       {subtitle && <Text style={[typography.detailSubtitle, { color: palette.ink2 }]}>{subtitle}</Text>}
       {children}
@@ -87,7 +87,7 @@ export function SectionHeader({ title, aside }: { title: string; aside?: string 
     <View style={styles.section}>
       <Text accessibilityRole="header" style={[typography.sectionTitle, styles.wrap, { color: palette.green }]}>{title}</Text>
       <View aria-hidden style={[styles.rule, { backgroundColor: palette.rule }]} />
-      {aside && <Text style={[typography.sectionAside, styles.wrap, { color: palette.ink3 }]}>{aside}</Text>}
+      {aside && <Text style={[typography.sectionAside, styles.wrap, { color: palette.paperCaption }]}>{aside}</Text>}
     </View>
   );
 }

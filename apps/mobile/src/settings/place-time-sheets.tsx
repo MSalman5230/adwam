@@ -26,7 +26,7 @@ type TimeContext = CloseProps & {
 
 function FieldLabel({ children }: { children: string }) {
   const { palette } = useTheme();
-  return <Prose accessibilityRole="header" style={[typography.overline, styles.label, { color: palette.gold }]}>{children}</Prose>;
+  return <Prose accessibilityRole="header" style={[typography.overline, styles.label, { color: palette.goldText }]}>{children}</Prose>;
 }
 
 function Preview({ title, children }: { title: string; children: string }) {

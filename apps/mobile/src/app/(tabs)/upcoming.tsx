@@ -93,7 +93,7 @@ function Day({ day, today, format, open }: { day: AgendaDay; today: CivilDate; f
   return (
     <View style={styles.day}>
       <View style={[styles.date, { borderColor: palette.hair }]}>
-        <Text style={[typography.overline, styles.weekday, { color: current ? palette.green : palette.ink3 }]}>{label}</Text>
+        <Text style={[typography.overline, styles.weekday, { color: current ? palette.green : palette.ink2 }]}>{label}</Text>
         <Text style={[typography.sheetTitle, styles.dayNumber, { color: current ? palette.green : palette.ink }]}>{isoParts(day.date).day}</Text>
       </View>
       <View style={styles.grow}>
