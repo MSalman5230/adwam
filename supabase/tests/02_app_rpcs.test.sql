@@ -1,5 +1,5 @@
 begin;
-select plan(15);
+select plan(18);
 
 insert into auth.users (id, is_anonymous) values
   ('00000000-0000-0000-0000-000000008011', true),
@@ -33,6 +33,7 @@ select ok(not has_function_privilege('anon', 'public.sync_install_v1(jsonb)', 'e
 set local role authenticated;
 set local "request.jwt.claims" = '{"sub":"00000000-0000-0000-0000-000000008013","is_anonymous":false,"role":"authenticated"}';
 select throws_ok('select public.config_v1()', '42501', 'Anonymous install required', 'A non-install user is refused');
+select throws_ok('select public.forget_me_v1()', '42501', 'Anonymous install required', 'A permanent user cannot delete an account through the install RPC');
 
 set local "request.jwt.claims" = '{"sub":"00000000-0000-0000-0000-000000008011","is_anonymous":true,"role":"authenticated"}';
 select lives_ok(
@@ -77,6 +78,7 @@ select lives_ok(
 );
 select is(jsonb_array_length(public.my_weather_v1()), 1, 'Another install in the same area cannot see the simulated event');
 select lives_ok('select public.forget_me_v1()', 'An anonymous install can delete its own settings');
+select lives_ok('select public.forget_me_v1()', 'A repeat request from the same install is safe');
 
 reset role;
 select is(
@@ -85,6 +87,14 @@ select is(
   )),
   array['00000000-0000-0000-0000-000000008011'],
   'Deleting one install keeps the other install’s settings'
+);
+select is(
+  (select array_agg(id::text order by id) from auth.users where id in (
+    '00000000-0000-0000-0000-000000008011', '00000000-0000-0000-0000-000000008012',
+    '00000000-0000-0000-0000-000000008013'
+  )),
+  array['00000000-0000-0000-0000-000000008011', '00000000-0000-0000-0000-000000008013'],
+  'Deleting an install removes its anonymous identity and preserves other users'
 );
 
 select * from finish();
