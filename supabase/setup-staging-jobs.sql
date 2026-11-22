@@ -21,3 +21,5 @@ begin
   end if;
 end;
 $$;
+
+update public.app_config set debug_tools_enabled = true where singleton;

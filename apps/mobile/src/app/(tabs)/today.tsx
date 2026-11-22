@@ -2,7 +2,7 @@ import catalog from '@adwam/content/catalog';
 import type { CivilDate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
-import { LayoutAnimation, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { LayoutAnimation, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore } from 'zustand';
@@ -15,7 +15,9 @@ import { Snackbar } from '../../components/overlays';
 import { Icon, type IconName } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
+import { appVersion } from '../../services/app-version';
 import { openNotificationSettings } from '../../services/notification-settings';
+import { needsServerUpdate } from '../../services/server-sync-payload';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
 import { selectReminderState, selectToday } from '../../state/selectors';
 import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
@@ -45,6 +47,8 @@ export default function TodayScreen() {
   const correction = cached.correctionOffer ?? undefined;
   const state = selectReminderState(settings, trackers, cached, catalog.sunnahs);
   const view = state && selectToday(now, state, settings, correction);
+  const updateNeeded = cached.config && needsServerUpdate(appVersion, cached.config.minAppVersion);
+  const showsWeather = view?.active.some(({ occurrence: { event } }) => event && 'weather' in event);
   const banner = view?.banner;
   const [snack, setSnack] = useState<Snack>();
   const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
@@ -118,7 +122,9 @@ export default function TodayScreen() {
             {view.sinceMaghribLabel && <Tag label={renderMessage(view.sinceMaghribLabel, format)} tone="gold" icon="bedtime" />}
           </>} />
           <DayLine timeline={view.dayLine} format={format} />
-          {!!view.notices.length && <View style={styles.notices}>{view.notices.map((notice) => (
+          {(updateNeeded || !!view.notices.length) && <View style={styles.notices}>
+            {updateNeeded && <Notice icon="info" title={t('today.notice.updateNeeded.title')} body={t('today.notice.updateNeeded.body')} />}
+            {view.notices.map((notice) => (
             <Notice key={notice.id} title={renderMessage(notice.title, format)} body={renderMessage(notice.body, format)}
               icon={noticeIcons[notice.id]} actions={notice.actions.map((action) => ({
                 label: renderMessage(action.label, format), variant: action.id === 'accept' ? 'tonal' : 'outlined',
@@ -129,6 +135,8 @@ export default function TodayScreen() {
             title={banner.title.replace('{{month}}', t('setup.hijri.monthName', { month: banner.hijri.month }))}
             body={banner.body} onPress={() => openItem(banner.item, banner.date)} />
           </View>}
+          {showsWeather && <Button label={t('about.weather')} variant="text"
+            style={styles.weatherCredit} onPress={() => { void Linking.openURL('https://open-meteo.com/').catch(() => {}); }} />}
           <SectionHeader title={t('today.activeTitle')} aside={view.active.length ? renderMessage(view.activeCount, format) : undefined} />
           {view.empty ? <View style={[styles.empty, { borderColor: palette.hair2 }]}>
             <Icon name="wb_twilight" color={palette.gold} />
@@ -175,5 +183,6 @@ const styles = StyleSheet.create({
   emptyText: { flex: 1, gap: 3 },
   coming: { borderWidth: 1, borderRadius: 16, overflow: 'hidden' },
   allUpcoming: { alignSelf: 'flex-end', marginTop: 8 },
+  weatherCredit: { alignSelf: 'flex-start', marginTop: 4 },
   snack: { position: 'absolute', bottom: 20, left: 12, right: 12 },
 });

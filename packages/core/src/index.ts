@@ -35,7 +35,7 @@ export type {
 } from './occurrences';
 export { chosenLevel, isDone, level, paused, pushAllowed, reminderOccurrences, visible } from './rules';
 export type { FastingPause, ReminderPreferences, ReminderState, ReminderTracking } from './rules';
-export { laterFor, planNotifications } from './notifications';
+export { laterFor, planNotifications, serverNotificationKind } from './notifications';
 export type { NotificationState, PlannedNotification } from './notifications';
 export type { QuietHours } from './quiet-hours';
 export { applyPreset, presetOf, pushEstimate } from './presets';

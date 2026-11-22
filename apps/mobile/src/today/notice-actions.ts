@@ -17,7 +17,7 @@ export function answerTodayNotice(settings: Settings, id: string, action: string
       return {
         ...settings,
         correctionChoices: { ...settings.correctionChoices, [id]: accepted ? 'accepted' : 'declined' },
-        hijri: accepted ? { ...settings.hijri, corrections: [...correctedMonths, { year, month, start }] } : settings.hijri,
+        hijri: accepted ? { ...settings.hijri, corrections: [...correctedMonths, { id, year, month, start }] } : settings.hijri,
       };
     }
     default:

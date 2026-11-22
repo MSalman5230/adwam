@@ -45,6 +45,10 @@
         "body": "Push reminders can’t reach you, so check here.",
         "openSettings": "Open settings"
       },
+      "updateNeeded": {
+        "title": "Update needed",
+        "body": "Update Adwam to use weather and date corrections. Local reminders still work."
+      },
       "correction": {
         "title": "Date correction",
         "body": "{{month, hijriMonth}} starts on {{announced, weekday}} in {{region}}. Your app says {{calculated, weekday}}.",
@@ -547,7 +551,10 @@
       "delete": "Delete my data from the server",
       "confirmTitle": "Delete server data?",
       "confirmBody": "This removes your anonymous install and its reminder settings from the server. Your trackers stay on this phone.",
-      "noSavedSettings": "This phone hasn’t synced reminder settings to the server."
+      "noSavedSettings": "This phone hasn’t synced reminder settings to the server.",
+      "deleting": "Deleting…",
+      "deleted": "Your server data was deleted.",
+      "deleteFailed": "Couldn’t delete your data. Check your connection and try again."
     },
     "report": {
       "title": "Report a problem",
@@ -647,6 +654,7 @@
     "galleries": "Galleries",
     "install": "Test install",
     "simulateRain": "Rain starting now",
+    "simulationFailed": "Couldn’t simulate rain on the server.",
     "correction": "Date correction offer",
     "planned": "Planned notifications",
     "scheduled": "Scheduled notifications",

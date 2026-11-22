@@ -2,7 +2,7 @@ import type { GroupedSunnah } from '@adwam/content/schema';
 import { expect, test } from 'vitest';
 
 import { defaultSettings, type Settings } from '../state/schema';
-import { installSyncPayload, needsServerUpdate } from './server-sync-payload';
+import { installSyncPayload, needsServerUpdate, removeWithdrawnCorrections } from './server-sync-payload';
 
 const settings: Settings = {
   ...defaultSettings(), setupDone: true,
@@ -43,4 +43,13 @@ test('the minimum compares numeric components and prerelease versions', () => {
   expect(needsServerUpdate('0.9.8', '0.10.0')).toBe(true);
   expect(needsServerUpdate('1.0.0-rc.1', '1.0.0')).toBe(true);
   expect(needsServerUpdate('1.0.0+42', '1.0.0')).toBe(false);
+});
+
+test('withdrawal removes its pin and preserves a replacement for the same month', () => {
+  const announcement = { countryCode: 'GB', id: 'first', year: 1448, month: 9, start: '2027-02-07', withdrawn: true } as const;
+  const pin = { year: announcement.year, month: announcement.month, start: announcement.start };
+  const previous = { ...settings, correctionChoices: { first: 'accepted' as const }, hijri: { ...settings.hijri, corrections: [pin] } };
+  expect(removeWithdrawnCorrections(previous, [announcement]).hijri.corrections).toEqual([]);
+  const replacement = { ...previous, hijri: { ...previous.hijri, corrections: [{ ...pin, id: 'replacement' }] } };
+  expect(removeWithdrawnCorrections(replacement, [announcement])).toBe(replacement);
 });
