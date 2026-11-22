@@ -7,7 +7,7 @@ name: Settings sheets, appearance, Sunnah sources and report
 - tapOn: Search cities
 - inputText: London
 - tapOn: London
-- assertVisible: 'Location, London.*'
+- assertVisible: 'London · chosen city'
 
 - openLink: 'adwam://settings?sheet=prayer'
 - assertVisible: Calculation method
@@ -43,11 +43,11 @@ name: Settings sheets, appearance, Sunnah sources and report
 - openLink: 'adwam://settings?sheet=pause'
 - tapOn: 7 days
 - pressKey: Back
-- assertVisible: 'Pause fasting reminders, Until .*'
+- assertVisible: 'Until .*'
 
 - openLink: 'adwam://settings?sheet=udhiyah'
 - tapOn: 'Yes, I.m offering one'
-- assertVisible: 'Uḍḥiyah this year, Yes.*'
+- assertVisible: 'Yes · resets each year'
 
 - openLink: 'adwam://settings?sheet=theme'
 - tapOn: Dark

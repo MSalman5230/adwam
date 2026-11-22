@@ -20,7 +20,7 @@ name: Reminder choices, pause, presets and Upcoming filters
 - scrollUntilVisible:
     element: Your reminder
     direction: DOWN
-- tapOn: Off
+- tapOn: 'Off'
 - assertVisible: 'Off. No card and no notification.'
 - tapOn: In-app
 - assertVisible: 'Shows on Today during its window, with no notification.'
