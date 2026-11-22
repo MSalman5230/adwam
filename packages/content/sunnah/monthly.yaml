@@ -1,5 +1,6 @@
 - id: crescent
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   title: Look for the new crescent
   short: Say the duʿāʾ when you see it.
@@ -27,7 +28,8 @@
       check: done
       tickScope: hijri-month
 - id: white-days
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: White Days fast
   short: Fast the 13th, 14th and 15th.

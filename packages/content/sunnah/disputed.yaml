@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=../dist/schema.json#/properties/sunnahs
 - id: shaban15
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   default: off
   title: Night of 15 Shaʿbān
@@ -24,7 +25,8 @@
       window: night
       startAnchor: from-maghrib
 - id: ashura-family
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   default: off
   title: Spending more on family on ʿĀshūrāʾ
