@@ -2,6 +2,10 @@
 
 Use the latest signed **Adwam Preview** APK from the staging project. Record the Expo build ID and app version code with each result. [Preview builds](https://expo.dev/accounts/msalman5230/projects/adwam/builds)
 
+## Check delivery and tap routing
+
+Open Settings → Developer tools, scroll to Scheduled notifications, and tap **Fire the next notification in 10 seconds**. Press Home and then open Android’s notification shade. Record whether the reminder appeared and which screen opens when you tap it. If the button is unavailable, enable Android notifications for Adwam Preview and choose Recommended in Reminders.
+
 ## Run the week
 
 1. Complete Setup, allow Android notifications, and choose Recommended in Reminders. Leave the phone on its usual battery settings for the first part of the week.
@@ -27,4 +31,6 @@ Emulator checks confirmed notification registration, Done and Later after killin
 
 | Phone and scenario | Reminder | Local time zone | Planned time | Posted time | Delay or result |
 | --- | --- | --- | --- | --- | --- |
-| | | | | | |
+| Nothing Phone (2), 10-second test | Monday fasting | | About 10 seconds after starting the test | Arrived | Tap opened the Sunnah detail with What to do and sources |
+
+Reported by the owner on 22 November 2026. Android version, battery settings, and exact delivery time were not recorded. [Signed Preview used for this check](https://expo.dev/accounts/msalman5230/projects/adwam/builds/5057e7d1-bae2-4791-8284-23d42c996915)
