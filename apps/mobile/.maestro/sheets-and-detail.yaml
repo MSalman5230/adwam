@@ -5,9 +5,12 @@ name: Settings sheets, appearance, Sunnah sources and report
 - openLink: 'adwam://settings?sheet=city'
 - assertVisible: Choose your city
 - tapOn: Search cities
-- inputText: London
+- inputText: lon
 - tapOn: London
-- assertVisible: 'London · chosen city'
+- assertNotVisible: Choose your city
+- scrollUntilVisible:
+    element: 'London · chosen city'
+    direction: DOWN
 
 - openLink: 'adwam://settings?sheet=prayer'
 - assertVisible: Calculation method
@@ -47,7 +50,9 @@ name: Settings sheets, appearance, Sunnah sources and report
 
 - openLink: 'adwam://settings?sheet=udhiyah'
 - tapOn: 'Yes, I.m offering one'
-- assertVisible: 'Yes · resets each year'
+- scrollUntilVisible:
+    element: 'Yes · resets each year'
+    direction: DOWN
 
 - openLink: 'adwam://settings?sheet=theme'
 - tapOn: Dark

@@ -25,7 +25,7 @@ name: Reminder choices, pause, presets and Upcoming filters
 - tapOn: In-app
 - assertVisible: 'Shows on Today during its window, with no notification.'
 - tapOn: Push
-- assertVisible: 'A notification at its push time, and a card on Today.'
+- assertVisible: 'A push the evening before, after ʿIshāʾ.'
 - takeScreenshot: sunnah-reminder-choice
 
 - openLink: adwam://reminders
@@ -38,12 +38,14 @@ name: Reminder choices, pause, presets and Upcoming filters
 - tapOn:
     text: Monthly
     checked: false
+    rightOf: Monthly
 - scrollUntilVisible:
     element: Pause fasting reminders
     direction: UP
 - tapOn:
     text: Pause fasting reminders
     checked: false
+    rightOf: Pause fasting reminders
 - assertVisible: 'Paused until .*'
 - tapOn: 3 days
 - tapOn:
