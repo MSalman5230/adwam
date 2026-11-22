@@ -81,6 +81,12 @@ These are uploaded once in expo.dev. They aren't environment variables.
 
 Supabase gives each Edge Function its own project URL and keys automatically. After the staging functions are deployed, run [the scheduler setup SQL](../supabase/setup-staging-jobs.sql) in the staging SQL Editor with that project’s URL. It generates a key in Vault. Copy the key directly from the Vault dashboard into the `ADWAM_JOB_KEY` Edge Function secret. Check that `weather-tick` records a finished run on the next quarter-hour.
 
+### Correction admin sign-in
+
+Add `https://msalman5230.github.io/adwam/` to the staging project’s Auth redirect URLs. Set the staging magic-link email template to [the sign-in code template](../supabase/templates/admin-code.html). The owner and helper need existing, confirmed email users in `auth.users` and matching IDs in `public.admins`. Supabase’s built-in email sends to project organization members. Configure SMTP or invite the helper to the organization if their email is outside it.
+
+To test the admin page locally, run `pnpm db:start`, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_KEY` from the local stack, then run `pnpm --filter @adwam/admin dev`. Open `http://127.0.0.1:5173/adwam/`. The local inbox at `http://127.0.0.1:54324` receives the sign-in code.
+
 ### CI secrets (GitHub, repository settings)
 
 Use two GitHub environments, `staging` and `production`. The production environment requires the owner's approval, so nothing reaches production without it.
