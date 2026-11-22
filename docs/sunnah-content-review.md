@@ -1,6 +1,6 @@
 # Sunnah content read-through
 
-The seven duʿāʾ are in [duas.yaml](../packages/content/duas.yaml), with their corresponding excerpts and source gradings in [hadith.yaml](../packages/content/evidence/hadith.yaml). The validator matches their Arabic and English against the same copies in [sources/sunnah.com](../packages/content/sources/sunnah.com). All seven entries are in review.
+The seven duʿāʾ are in [duas.yaml](../packages/content/duas.yaml), with their corresponding excerpts and source gradings in [hadith.yaml](../packages/content/evidence/hadith.yaml). The validator matches their Arabic and English against the same copies in [sources/sunnah.com](../packages/content/sources/sunnah.com). The owner approved the first catalogue on 22 November 2026.
 
 | In Adwam | Source | Source note |
 |---|---|---|
@@ -28,6 +28,8 @@ The seven duʿāʾ are in [duas.yaml](../packages/content/duas.yaml), with their
 
 ## Qurʾan and other sources
 
-[Qurʾan references](../packages/content/evidence/quran.yaml) use direct links in the staging catalog. The private browser archive includes the Uthmani Arabic and displayed English for the four cited verses. Two pages showed a named translation credit. Quran.com requires written consent for public redistribution. [Quran.com terms](https://quran.com/terms-and-conditions)
+The owner confirmed written permission for the Quran.com text and The Clear Quran translation on 22 November 2026. The four verse entries contain the Uthmani Arabic, Dr. Mustafa Khattab's English translation, the translation credit and the direct verse link. The validator checks the text against the script-copied files. [Qurʾan evidence](../packages/content/evidence/quran.yaml) · [Quran.com source copies](../packages/content/sources/quran.com)
+
+The owner approved the copied text for 2:185, 2:203 and 9:36 in the current reminders. The copy of 24:61 is kept for a future reminder. The chapter reading links go directly to Quran.com.
 
 [Fatwa and book references](../packages/content/evidence/other.yaml) include seven existing Wayback links and four browser copies. The archive filenames in the YAML point to the four private copies. The Bin Bāz reference about ʿĀshūrāʾ uses the full source URL, which opens the relevant fatwa.

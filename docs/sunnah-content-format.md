@@ -212,7 +212,7 @@ The thunder duʿāʾ's source uses `from: companion`, because it records ʿAbdul
 
 ### Qurʾan
 
-Entries in `evidence/quran.yaml` can use a direct link. Set `ayah` for a verse or range and `label` for a named chapter. A Sunnah’s optional `quran` field supplies the Quran.com button’s label and URL.
+Entries in `evidence/quran.yaml` carry a direct Quran.com link. Set `ayah` for a verse or range and `label` for a named chapter. A Sunnah’s optional `quran` field supplies the Quran.com button’s label and URL.
 
 An entry with an approved excerpt includes the following fields.
 
@@ -232,7 +232,7 @@ An entry with an approved excerpt includes the following fields.
   reviewed: { by: <reviewer's name>, on: <date> }
 ```
 
-To normalize saved verse captures into a private directory, run `node packages/content/scripts/fetch-quran.ts <browser-capture-directory> <private-output-directory>`. It takes the Arabic, English and displayed credit from the browser records. Check any generic translation credit before publishing a quotation.
+To normalize saved verse captures into a private directory, run `node packages/content/scripts/fetch-quran.ts <browser-capture-directory> <private-output-directory>`. It takes the Arabic, English and displayed credit from the browser records. Check any generic translation credit before publishing a quotation. The owner confirmed written permission for the four cited Quran.com verses. [Content read-through](sunnah-content-review.md)
 
 ### Fatwas and books
 
