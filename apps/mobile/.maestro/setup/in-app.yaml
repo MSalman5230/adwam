@@ -1,0 +1,7 @@
+appId: ${APP_ID}
+---
+- runFlow: start.yaml
+- runFlow: place-and-date.yaml
+- tapOn: In-app only
+- tapOn: Continue
+- assertVisible: Today

@@ -1,0 +1,71 @@
+appId: ${APP_ID}
+name: Reminder choices, pause, presets and Upcoming filters
+---
+- runFlow: setup/in-app.yaml
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Friday morning
+- openLink: adwam://reminders
+- assertVisible: Each reminder can push.*
+- tapOn: In-app only
+- assertVisible: No pushes
+- tapOn: Recommended
+- assertVisible: 'About .* push(es)? a week'
+
+- scrollUntilVisible:
+    element: 'Monday and Thursday fast.*'
+    direction: DOWN
+- tapOn: 'Monday and Thursday fast.*'
+- scrollUntilVisible:
+    element: Your reminder
+    direction: DOWN
+- tapOn: 'Off'
+- assertVisible: 'Off. No card and no notification.'
+- tapOn: In-app
+- assertVisible: 'Shows on Today during its window, with no notification.'
+- tapOn: Push
+- assertVisible: 'A push the evening before, after ʿIshāʾ.'
+- takeScreenshot: sunnah-reminder-choice
+
+- openLink: adwam://reminders
+- scrollUntilVisible:
+    element: 'Monthly'
+    direction: DOWN
+- tapOn:
+    text: Monthly
+    checked: true
+- tapOn:
+    text: Monthly
+    checked: false
+    rightOf: Monthly
+- scrollUntilVisible:
+    element: Pause fasting reminders
+    direction: UP
+- tapOn:
+    text: Pause fasting reminders
+    checked: false
+    rightOf: Pause fasting reminders
+- assertVisible: 'Paused until .*'
+- tapOn: 3 days
+- tapOn:
+    text: Pause fasting reminders
+    checked: true
+- assertVisible: For illness, travel or any reason. No questions.
+
+- openLink: adwam://upcoming
+- assertVisible: 'Next 60 days, to .*'
+- tapOn: Fasts
+- assertVisible:
+    text: Fasts
+    selected: true
+- takeScreenshot: upcoming-fasts
+- tapOn: Notifies me
+- assertVisible:
+    text: Notifies me
+    selected: true
+- tapOn: All
+- assertVisible:
+    text: All
+    selected: true
+- takeScreenshot: upcoming-all

@@ -204,7 +204,9 @@ Install a bundled preview APK on a disposable English-language Android emulator.
 maestro --device emulator-5556 test -e APP_ID=com.msalman5230.adwam.preview apps/mobile/.maestro/setup.yaml
 ```
 
-For a locally bundled development APK, use `-e APP_ID=com.msalman5230.adwam.dev`. The bundled build can run the suite in airplane mode.
+For a locally bundled development APK, use `-e APP_ID=com.msalman5230.adwam.dev`. The bundled build can run the setup flow in airplane mode.
+
+Run all Android flows with `maestro test -e APP_ID=com.msalman5230.adwam.dev apps/mobile/.maestro` when the emulator has a bundled development APK. The nightly workflow builds this APK, starts local Supabase, and uploads the JUnit report and screenshots. Before a release, run **Android end-to-end tests** on the release commit and check its results.
 
 ## Instructions for the building agent
 
