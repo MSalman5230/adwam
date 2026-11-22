@@ -443,6 +443,6 @@ Once this plan is approved, update these files:
 On 21 November 2026 the owner answered some of these and accepted defaults for the rest during development. [plan.md](plan.md) tracks them as decisions D2–D5. The defaults are confirmed or changed before the production release.
 
 1. **App ID and domain.** Decided: `com.msalman5230.adwam`, with `.preview` and `.dev` for test builds. No domain for now. The privacy policy and the admin page use GitHub Pages.
-2. **Licences.** Default for development: Apache-2.0 for the code and CC BY-SA 4.0 for Adwam's own text. Quoted sunnah.com and Quran.com text keeps its own terms.
+2. **Licence.** The owner chose noncommercial use with credit to MSalman5230 for Adwam's original app, code, text and artwork. Third-party material keeps its own terms. [Adwam Noncommercial Licence](../LICENSE)
 3. **Analytics consent.** Default for development: PostHog stays off until the user agrees.
 4. **Content reviewer.** Decided: the owner. Content isn't held for review during development, and the owner reads all of it before the production release.

@@ -14,7 +14,7 @@ Reminder content and tiers come from [sunnah-reminder-calendar.md](sunnah-remind
 | **Settings** | Third tab | Reminders, notifications, place and time, the uḍḥiyah answer, appearance |
 | **Reminders** | Settings, or Let me choose in Setup | Push, In-app or Off for each item, presets and the fasting pause |
 | **Sunnah detail** | Tap a card, a banner, a Coming up or Upcoming row, an item in Reminders, or a push | Full text, duʿāʾ, sources and grading notes, and the item's reminder choice |
-| **About** | Settings | Sources, privacy, credits, open source and version |
+| **About** | Settings | Sources, privacy, credits, source code and version |
 
 The bottom bar holds the three tabs. Reminders, Sunnah detail and About open on top with a back arrow and no bottom bar. Back from Upcoming or Settings returns to Today. The other Settings rows open bottom sheets. A snackbar confirms changes, with Undo after every tick. The app has light and dark themes.
 
@@ -161,7 +161,7 @@ Each item has up to three choices:
 - **Privacy.** Adwam uses an anonymous install ID, a push token and the settings the server needs for reminders. It sends a rough area only for weather. Trackers stay on the phone. Sentry receives crash reports when enabled, and PostHog receives anonymous usage statistics after opt-in. The Privacy sheet controls both and offers server data deletion.
 - **Credits.** "Weather data by Open-Meteo.com", linking to open-meteo.com, with a link to the CC BY 4.0 licence. The app is free and non-commercial, so it can use Open-Meteo's free API. The free API still comes under the CC BY 4.0 data licence, which requires this credit. The licence also asks for the link next to any place its data appears, so weather cards carry it too. If MET Norway is added as a backup, credit it here as well.
 - **Content and city credits.** GeoNames for city data, Sunnah.com and its translators for hadith, and Quran.com and Dr. Mustafa Khattab’s The Clear Quran for Qurʾan excerpts.
-- **Open source.** A link to [the Adwam repository](https://github.com/MSalman5230/adwam).
+- **Source code.** Links to the Adwam repository and the noncommercial licence. [Repository](https://github.com/MSalman5230/adwam) · [Adwam Noncommercial Licence](../LICENSE)
 
 ## Notifications
 

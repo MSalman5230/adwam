@@ -36,8 +36,9 @@ export default function AboutScreen() {
     <Prose style={styles.paragraph}>{t('about.diagnostics')}</Prose>
     <SectionHeader title={t('about.credits')} />
     {credits.map(({ label, url }) => <ExternalLink key={label} label={t(label)} onPress={() => { void open(url); }} />)}
-    <SectionHeader title={t('about.openSource')} />
+    <SectionHeader title={t('about.sourceCode')} />
     <ExternalLink label={t('about.repository')} onPress={() => { void open('https://github.com/MSalman5230/adwam'); }} />
+    <ExternalLink label={t('about.license')} onPress={() => { void open('https://github.com/MSalman5230/adwam/blob/master/LICENSE'); }} />
   </Subpage>;
 }
 
