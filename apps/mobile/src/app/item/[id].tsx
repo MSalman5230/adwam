@@ -18,6 +18,7 @@ import { Icon } from '../../icons';
 import { renderMessage, t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { readItemParams } from '../../navigation/item-params';
+import { track } from '../../services/usage-statistics';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
 import { reminderOptions, setReminderChoice } from '../../state/reminder-choices';
 import { selectDetail, selectReminderState } from '../../state/selectors';
@@ -83,6 +84,7 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
   };
   const changeLevel = (level: ReminderLevel) => {
     settingsStore.getState().update((previous) => setReminderChoice(previous, entry, level));
+    if (view.level !== level) track({ event: 'reminder_level_changed', properties: { item: entry.id, level } });
   };
   const openLink = (url: string) => {
     void Linking.openURL(url).catch(() => setSnack({ message: t('detail.linkUnavailable') }));
@@ -137,7 +139,10 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
         </Prose>
       </>}
       <View style={[styles.footer, { borderColor: palette.hair }]}>
-        <Button variant="text" style={styles.footerButton} label={t('detail.reportLink')} icon="flag" onPress={() => setReportOpen(true)} />
+        <Button variant="text" style={styles.footerButton} label={t('detail.reportLink')} icon="flag" onPress={() => {
+          setReportOpen(true);
+          track({ event: 'report_opened', properties: { item: entry.id } });
+        }} />
         {entry.group === 'weather' && entry.occurrences.some(({ on }) => 'weather' in on) && (
           <Button variant="text" style={styles.footerButton} label={t('about.weather')} icon="rainy"
             onPress={() => openLink('https://open-meteo.com/')} />

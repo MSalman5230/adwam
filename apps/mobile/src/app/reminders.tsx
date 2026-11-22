@@ -1,5 +1,5 @@
 import catalog from '@adwam/content/catalog';
-import { applyPreset, civil, effectiveHijri, presetOf, pushEstimate, type Preset } from '@adwam/core';
+import { applyPreset, civil, effectiveHijri, level, presetOf, pushEstimate, type Preset } from '@adwam/core';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -10,6 +10,7 @@ import { Snackbar } from '../components/overlays';
 import { Subpage } from '../components/Subpage';
 import { t } from '../language/messages';
 import { FastingPauseCard, PresetCard, ReminderGroup, groupOrder } from '../reminders/controls';
+import { track } from '../services/usage-statistics';
 import { activePauseDuration, pauseFor } from '../settings/fasting-pause';
 import { UdhiyahSheet } from '../settings/preference-sheets';
 import { setReminderChoice } from '../state/reminder-choices';
@@ -40,9 +41,13 @@ export default function RemindersScreen() {
   const pause = settings.reminders.pause;
   const duration = activePauseDuration(pause, today);
   const { update } = settingsStore.getState();
-  const choosePreset = (preset: Preset) => update((value) => ({
-    ...value, reminders: { ...value.reminders, ...applyPreset({ ...state, preferences: value.reminders }, preset) },
-  }));
+  const currentPreset = presetOf(state);
+  const choosePreset = (preset: Preset) => {
+    update((value) => ({
+      ...value, reminders: { ...value.reminders, ...applyPreset({ ...state, preferences: value.reminders }, preset) },
+    }));
+    if (preset !== currentPreset) track({ event: 'preset_applied', properties: {} });
+  };
   const setPause = (next: Settings['reminders']['pause']) => update((value) => ({
     ...value, reminders: { ...value.reminders, pause: next },
   }));
@@ -67,7 +72,7 @@ export default function RemindersScreen() {
           setUndoPause(undefined);
         }} />
       </View>}>
-      <PresetCard estimate={pushEstimate(state, year)} preset={presetOf(state)} onChange={choosePreset} />
+      <PresetCard estimate={pushEstimate(state, year)} preset={currentPreset} onChange={choosePreset} />
       <FastingPauseCard duration={duration} until={pause?.until} onToggle={togglePause} onDuration={(days) => {
         setUndoPause(undefined);
         setPause(pauseFor(today, days));
@@ -76,7 +81,12 @@ export default function RemindersScreen() {
         onToggle={(enabled) => update((value) => ({
           ...value, reminders: { ...value.reminders, groupOn: { ...value.reminders.groupOn, [group]: enabled } },
         }))}
-        onChoice={(entry, choice) => update((value) => setReminderChoice(value, entry, choice))}
+        onChoice={(entry, choice) => {
+          update((value) => setReminderChoice(value, entry, choice));
+          if (level(state, entry.id, year) !== choice) {
+            track({ event: 'reminder_level_changed', properties: { item: entry.id, level: choice } });
+          }
+        }}
         onOpen={(entry) => router.push({ pathname: '/item/[id]', params: { id: entry.id } })}
         onUdhiyah={() => setUdhiyahOpen(true)} />)}
       {fromSetup === '1' && <Button label={t('common.done')} style={styles.actions}

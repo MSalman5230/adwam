@@ -3,7 +3,7 @@ import type { CorrectionOffer, Settings } from '../state/schema';
 export function answerTodayNotice(settings: Settings, id: string, action: string, year: number, correction?: CorrectionOffer): Settings {
   switch (id) {
     case 'usage':
-      return { ...settings, usagePrompt: false, usageStats: action === 'share' };
+      return { ...settings, usagePrompt: false, usageSetup: undefined, usageStats: action === 'share' };
     case 'udhiyah':
       if (action !== 'yes' && action !== 'no') return settings;
       return { ...settings, reminders: { ...settings.reminders, udhiyah: { ...settings.reminders.udhiyah, [year]: action } } };
