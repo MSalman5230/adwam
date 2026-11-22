@@ -43,6 +43,10 @@ export function startCrashReporting() {
   });
 }
 
+export function reportScreenError(error: Error) {
+  if (shouldReport() && Sentry.getClient()) Sentry.captureException(error);
+}
+
 export function recordScheduleCounts(data: ScheduleCounts) {
   if (shouldReport() && Sentry.getClient()) Sentry.addBreadcrumb({ category: scheduleBreadcrumbCategory, data });
 }

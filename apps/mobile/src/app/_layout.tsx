@@ -2,6 +2,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useStore } from 'zustand';
 
+import { ScreenRecovery } from '../components/ScreenRecovery';
 import { useNotificationRouting } from '../navigation/useNotificationRouting';
 import { startCrashReporting } from '../services/crash-reporting';
 import { useNotificationLifecycle } from '../services/notification-lifecycle';
@@ -14,7 +15,8 @@ import { DeviceMotionProvider, useDeviceReduceMotion } from '../theme/useDeviceR
 
 startCrashReporting();
 
-export const unstable_settings = { anchor: '(tabs)' };
+export const unstable_settings = { anchor: '(tabs)', screenErrorBoundary: ScreenRecovery };
+export { ScreenRecovery as ErrorBoundary };
 
 function Navigator() {
   const { palette } = useTheme();
