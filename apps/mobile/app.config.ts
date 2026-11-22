@@ -1,5 +1,9 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
+import { relative, sep } from 'node:path';
 
+import fontFiles from './fonts.json';
+
+const androidFonts = Object.values(fontFiles).map((file) => relative(__dirname, require.resolve(file)).split(sep).join('/'));
 const packageName = 'com.msalman5230.adwam';
 const projectId = 'c4990a3f-ae86-48d7-9b21-98f73762b49b';
 const variants = {
@@ -50,6 +54,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: [
       'expo-router',
+      ['expo-font', { android: { fonts: androidFonts } }],
       'expo-localization',
       'expo-notifications',
       ['@sentry/react-native/expo', {

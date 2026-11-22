@@ -1,0 +1,12 @@
+{
+  "Amiri_400Regular": "@expo-google-fonts/amiri/400Regular/Amiri_400Regular.ttf",
+  "Amiri_700Bold": "@expo-google-fonts/amiri/700Bold/Amiri_700Bold.ttf",
+  "SourceSans3_400Regular": "@expo-google-fonts/source-sans-3/400Regular/SourceSans3_400Regular.ttf",
+  "SourceSans3_400Regular_Italic": "@expo-google-fonts/source-sans-3/400Regular_Italic/SourceSans3_400Regular_Italic.ttf",
+  "SourceSans3_500Medium": "@expo-google-fonts/source-sans-3/500Medium/SourceSans3_500Medium.ttf",
+  "SourceSans3_600SemiBold": "@expo-google-fonts/source-sans-3/600SemiBold/SourceSans3_600SemiBold.ttf",
+  "SourceSans3_700Bold": "@expo-google-fonts/source-sans-3/700Bold/SourceSans3_700Bold.ttf",
+  "SourceSerif4_400Regular_Italic": "@expo-google-fonts/source-serif-4/400Regular_Italic/SourceSerif4_400Regular_Italic.ttf",
+  "SourceSerif4_600SemiBold": "@expo-google-fonts/source-serif-4/600SemiBold/SourceSerif4_600SemiBold.ttf",
+  "SourceSerif4_700Bold": "@expo-google-fonts/source-serif-4/700Bold/SourceSerif4_700Bold.ttf"
+}

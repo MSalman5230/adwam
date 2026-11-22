@@ -1,8 +1,8 @@
 import type { TextStyle } from 'react-native';
 
-import type { bundledFonts } from './fonts';
+import type fontFiles from '../../fonts.json';
 
-function typeface(fontFamily: keyof typeof bundledFonts, fontSize: number, leading: number): TextStyle {
+function typeface(fontFamily: keyof typeof fontFiles, fontSize: number, leading: number): TextStyle {
   return { fontFamily, fontSize, lineHeight: fontSize * leading };
 }
 
