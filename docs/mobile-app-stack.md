@@ -19,7 +19,7 @@ The YAML files described in [sunnah-content-format.md](sunnah-content-format.md)
 | Backend | Supabase: Postgres, scheduled jobs and Edge Functions | Stores push tokens, preferences and each user's coarse weather area. It checks forecasts for areas that are due and sends weather pushes. |
 | Eclipses | Astronomy Engine on the phone | Computes local visibility and schedules reminders offline. |
 | Date correction admin | A static Vite and TypeScript page on GitHub Pages | Admins sign in by email code to publish or withdraw corrections in Supabase. |
-| Weather | Open-Meteo | Free for non-commercial apps, and this app is open-source and free. It combines forecasts from national weather agencies such as ECMWF, NOAA, DWD and Météo-France. |
+| Weather | Open-Meteo | Adwam uses the free API for noncommercial apps. It combines forecasts from national weather agencies such as ECMWF, NOAA, DWD and Météo-France. |
 | Shared content | One JSON file generated from the YAML content | The app and the server read the same reminder list. |
 
 ## Location and privacy in version 1

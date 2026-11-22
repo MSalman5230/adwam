@@ -21,13 +21,15 @@ it('shows the app and content versions, privacy text and external links', async 
 
     expect(screen.getByText(t('about.appVersion', { version: '0.1.0' }))).toBeOnTheScreen();
     expect(screen.getByText(t('about.contentVersion', { version: '2026.11.21' }))).toBeOnTheScreen();
-    for (const section of ['sources', 'privacy', 'credits', 'openSource'] as const) {
+    for (const section of ['sources', 'privacy', 'credits', 'sourceCode'] as const) {
       expect(screen.getByRole('header', { name: t(`about.${section}`) })).toBeOnTheScreen();
     }
     await fireEvent.press(screen.getByRole('link', { name: t('about.quran') }));
     expect(openURL).toHaveBeenLastCalledWith('https://quran.com/');
     await fireEvent.press(screen.getByRole('link', { name: t('about.repository') }));
     expect(openURL).toHaveBeenLastCalledWith('https://github.com/MSalman5230/adwam');
+    await fireEvent.press(screen.getByRole('link', { name: t('about.license') }));
+    expect(openURL).toHaveBeenLastCalledWith('https://github.com/MSalman5230/adwam/blob/master/LICENSE');
   } finally {
     openURL.mockRestore();
   }

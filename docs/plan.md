@@ -85,7 +85,7 @@ On 21 November 2026 the owner approved the drafts (D1), chose the app IDs (D2) a
 |---|---|---|---|
 | D1 | Approve the architecture, content format and development setup | M0 | Approved on 21 November 2026 |
 | D2 | App IDs and domain (architecture, open question 1) | M0.4 | `com.msalman5230.adwam` for production, `com.msalman5230.adwam.preview` and `com.msalman5230.adwam.dev` for test builds. No domain for now: the privacy policy and admin page use GitHub Pages. |
-| D3 | Licences for the code and the content (open question 2) | M6 | Suggestion: Apache-2.0 for the code and CC BY-SA 4.0 for Adwam's own text. Texts quoted from sunnah.com and Quran.com, and GeoNames and Open-Meteo data, keep their own terms. |
+| D3 | Licences for the code and the content (open question 2) | M6 | The owner chose noncommercial use with credit to MSalman5230 for Adwam's original app, code, text and artwork. Third-party material keeps its own terms. [Adwam Noncommercial Licence](../LICENSE) |
 | D4 | Analytics consent (open question 3) | M6 | Off until the user agrees |
 | D5 | Content reviewer (open question 4) | M6.6 | The owner. During development, content isn't held for review: entries stay in `review`, and test builds show them all. Before production, the owner reads every entry once, and only then is it marked published. |
 | D6 | Where the usage-statistics question goes | M0.2 | A one-time notice on Today right after setup, "Share anonymous usage statistics?", with Share and No thanks and neither preselected. Setup stays under a minute, and users who pick In-app only, who skip step 4, still see it. |
@@ -505,7 +505,7 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 ### M3.5 About · S
 
-- The header with the app and content versions, Sources, Privacy, Credits and Open source, as approved in M0.2.
+- The header with the app and content versions, Sources, Privacy, Credits and Source code. The source section links to the repository and the licence from D3.
 
 ### M3.6 Debug screen · M
 

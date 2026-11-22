@@ -1562,7 +1562,7 @@ function renderAbout() {
     <a class="src" href="https://www.geonames.org/" target="_blank" rel="noopener" data-act="ext"><span>City data by GeoNames</span>${I('open_in_new')}</a>
     <a class="src" href="https://sunnah.com/" target="_blank" rel="noopener" data-act="ext"><span>Hadith and translations from Sunnah.com</span>${I('open_in_new')}</a>
     <a class="src" href="https://quran.com/" target="_blank" rel="noopener" data-act="ext"><span>Qurʾan from Quran.com · The Clear Quran, Dr. Mustafa Khattab</span>${I('open_in_new')}</a></div>
-    ${sec('Open source')}<div class="srcs"><a class="src" href="https://github.com/MSalman5230/adwam" target="_blank" rel="noopener" data-act="ext"><span>View the code on GitHub</span>${I('open_in_new')}</a></div>
+    ${sec('Source code')}<div class="srcs"><a class="src" href="https://github.com/MSalman5230/adwam" target="_blank" rel="noopener" data-act="ext"><span>View the code on GitHub</span>${I('open_in_new')}</a><a class="src" href="https://github.com/MSalman5230/adwam/blob/master/LICENSE" target="_blank" rel="noopener" data-act="ext"><span>Adwam Noncommercial Licence</span>${I('open_in_new')}</a></div>
   </div>`;
 }
 
@@ -2081,7 +2081,7 @@ const REVIEW = [
   {n:'18', f:'18-today-shawwal.png', t:'Today · Shawwāl', issue:'Monday fast and Shawwāl both needed a Fasting today tick on the same day.', fix:'One fasting card per day, “Also a Monday fast”. The make-up counter logs fasts with Undo.', go:['moment', 'shawwal']},
   {n:'19', f:'19-settings-preferences.png', t:'Settings', issue:'Nine rows of equal weight; Eclipses in quiet hours was a lone switch.', fix:'Grouped into Reminders, Place and time, This year, and App, with icons. The eclipse switch moved into Quiet hours. Each row opens a sheet.', go:['tab', 'settings']},
   {n:'20–22', f:'20-settings-reminder-groups.png', t:'Reminders', issue:'Three screens with no visible way into a group, and the pause had no duration.', fix:'One screen: a live push estimate, presets, expandable groups, Disputed at the bottom, and a pause for 3, 7 or 14 days.', go:['push', 'reminders']},
-  {n:'23', f:'23-about.png', t:'About', issue:'Sparse, with no identity.', fix:'App identity, plus Sources, Privacy, Credits, Open source and the version.', go:['push', 'about']},
+  {n:'23', f:'23-about.png', t:'About', issue:'Sparse, with no identity.', fix:'App identity, plus Sources, Privacy, Credits, Source code and the version.', go:['push', 'about']},
   {n:'24', f:'24-android-notifications.png', t:'Notification shade', issue:'Static.', fix:'Live: tap the status bar. Done ticks the card, Later snoozes, and tapping opens the item. Next push shows a heads-up.', go:['shade']},
 ];
 function renderRail() {
