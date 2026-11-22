@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adwam Google Play review</title>
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+  <main>
+    <h1>Adwam Google Play listing</h1>
+    <aside>
+      <p><strong>Draft for owner review.</strong> Before submission, approve the listing and privacy notice, complete the Play Console questionnaires, and replace the review screenshots with captures from a passing end-to-end run on the release commit.</p>
+      <p><a href="privacy-policy.html">Privacy policy draft</a></p>
+    </aside>
+
+    <h2>App name</h2>
+    <p>Adwam — Sunnah Reminders</p>
+
+    <h2>Short description</h2>
+    <p>Sunnah reminders timed to your Hijri date and local prayer times.</p>
+
+    <h2>Full description</h2>
+    <p>See which Sunnah practices are relevant today, with times for your city and the Hijri date you follow. Open an item for what to do, the timing and its sources.</p>
+    <p>Choose which reminders send a notification, appear only in Adwam or stay off. Set quiet hours and pause fasting reminders when you need to. Keep track of voluntary fasts and Ramadan make-up days on your phone.</p>
+    <p>Check the next 60 days in Upcoming. Adwam calculates calendar reminders on your phone, so they work offline after setup. Weather reminders and announced Hijri date corrections use an internet connection. You choose whether to apply a correction.</p>
+    <p>Choose a city or use approximate location. Adwam works without a sign-in screen and includes light and dark themes. Settings → Privacy lets you manage crash reports, optional usage statistics and server data.</p>
+
+    <h2>Graphics and screenshots</h2>
+    <p><a href="assets/play-icon.png">512 × 512 Play Store icon</a></p>
+    <img src="assets/feature-graphic.png" width="1024" height="500" alt="Sunnah reminders with the Adwam Today screen">
+    <p>These 1080 × 1920 review screenshots are from signed Preview build 11. <a href="https://expo.dev/accounts/msalman5230/projects/adwam/builds/444c54ae-8265-4d38-a52f-bcc9ca915097">Signed Preview</a> · <a href="https://support.google.com/googleplay/android-developer/answer/9866151">Google Play graphics requirements</a></p>
+    <div class="screenshots">
+      <figure>
+        <img src="assets/today-friday.png" width="1080" height="1920" alt="Today shows local prayer times and active Friday Sunnahs">
+        <figcaption>Today</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/upcoming.png" width="1080" height="1920" alt="Upcoming lists Sunnahs by date with filters for fasts and notifications">
+        <figcaption>Upcoming</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/sunnah-detail.png" width="1080" height="1920" alt="A fasting reminder with guidance, its source and notification choices">
+        <figcaption>Sunnah detail</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/today-rain.png" width="1080" height="1920" alt="Today shows a rain reminder with guidance and a weather data credit">
+        <figcaption>Weather reminders</figcaption>
+      </figure>
+    </div>
+
+    <h2>Data safety answers for review</h2>
+    <div class="table">
+      <table>
+        <thead>
+          <tr><th scope="col">Play Console category</th><th scope="col">Draft answer</th><th scope="col">Purpose and detail</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Approximate location</th><td>Collected</td><td>Country and time zone support reminders and corrections. A rounded area is sent when weather reminders are on. Confirm how Play classifies the location derived from a chosen city.</td></tr>
+          <tr><th scope="row">Device or other IDs</th><td>Collected</td><td>Anonymous install ID, push token when available and a separate random analytics ID after consent. Confirm the final Firebase SDK configuration.</td></tr>
+          <tr><th scope="row">Crash logs and diagnostics</th><td>Collected when enabled</td><td>Sentry receives error stacks, build information and schedule counts to diagnose failures. Users can turn off reports.</td></tr>
+          <tr><th scope="row">App interactions</th><td>Optional analytics</td><td>PostHog receives approved interactions after opt-in. Reminder settings sent to Supabase serve app functionality.</td></tr>
+          <tr><th scope="row">Other personal information</th><td>Review</td><td>Use of a Sunnah app and reminder choices can indicate religious beliefs. Confirm the applicable disclosure and the consent approach.</td></tr>
+          <tr><th scope="row">Sharing</th><td>Review</td><td>Confirm which recipients qualify for Play's service-provider exception. Check Supabase, Expo, Firebase, Sentry, PostHog and Open-Meteo.</td></tr>
+          <tr><th scope="row">Encryption and deletion</th><td>Verify on the release build</td><td>Confirm hosted connections use HTTPS. In-app deletion removes reminder settings and push tokens. Confirm how users can request deletion from diagnostics and analytics services.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><a href="https://support.google.com/googleplay/android-developer/answer/10787469">Google Play Data safety form guidance</a></p>
+
+    <h2>Content rating and app access</h2>
+    <p>Suggested store category is Lifestyle. The app provides religious educational text and reminders. There is no in-app posting, chat, purchase, gambling or location sharing with other users. Source and problem-report links open external sites. Review the source text and translations against the live rating questionnaire.</p>
+    <p>Reviewers can choose a city, finish Setup and open Today and a Sunnah detail without credentials. The signed Preview targets Android 16 (API 36), the current minimum for a new Android phone app. Check the final release bundle again before submission. <a href="https://support.google.com/googleplay/android-developer/answer/11926878">Google Play target API requirements</a></p>
+  </main>
+</body>
+</html>
