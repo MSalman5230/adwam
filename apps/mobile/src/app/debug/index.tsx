@@ -19,6 +19,7 @@ import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { canTestCrashReporting, triggerPreviewTestCrash } from '../../services/crash-reporting';
 import { checkLocalSupabase, resetLocalSupabaseSession } from '../../services/supabase';
+import { simulateServerRain } from '../../services/server-sync';
 import { scheduledTime } from '../../services/notification-request';
 import { deviceStores, settingsStore } from '../../state/native';
 import { moments } from '../../state/moments';
@@ -100,8 +101,23 @@ export default function DebugScreen() {
       setBusy(false);
     }
   };
-  const showRain = () => {
-    stores.serverCache.getState().update((value) => simulateRain(now, value));
+  const showRain = async () => {
+    if (stores === deviceStores && cache.config?.debugToolsEnabled) {
+      setBusy(true);
+      try {
+        if (!await simulateServerRain()) {
+          setStatus(t('developerTools.simulationFailed'));
+          return;
+        }
+      } catch {
+        setStatus(t('developerTools.simulationFailed'));
+        return;
+      } finally {
+        setBusy(false);
+      }
+    } else {
+      stores.serverCache.getState().update((value) => simulateRain(now, value));
+    }
     router.dismissTo('/today');
   };
   const showCorrection = () => {
@@ -132,7 +148,7 @@ export default function DebugScreen() {
       </View>
       <SectionHeader title={t('developerTools.simulation')} />
       <View style={styles.controls}>
-        <Button label={t('developerTools.simulateRain')} variant="outlined" disabled={!state || busy} onPress={showRain} />
+        <Button label={t('developerTools.simulateRain')} variant="outlined" disabled={!state || busy} onPress={() => { void showRain(); }} />
         <Button label={t('developerTools.correction')} variant="outlined" disabled={!state || busy} onPress={showCorrection} />
       </View>
       <SectionHeader title={t('settings.notifications')} />

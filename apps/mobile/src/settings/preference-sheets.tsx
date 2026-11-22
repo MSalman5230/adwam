@@ -7,6 +7,9 @@ import { OptionRow } from '../components/cards';
 import { Button, Switch } from '../components/controls';
 import { Sheet } from '../components/overlays';
 import { t, type MessageFormat } from '../language/messages';
+import { deleteServerData } from '../services/server-sync';
+import { supabase } from '../services/supabase';
+import { clockStore } from '../state/native';
 import type { Settings } from '../state/schema';
 import { Prose } from '../theme/Text';
 import { useTheme } from '../theme/ThemeProvider';
@@ -131,12 +134,25 @@ export function AppearanceSheet({ onClose }: CloseProps) {
 export function PrivacySheet({ settings, update, onClose }: SettingsProps) {
   const { palette } = useTheme();
   const [confirm, setConfirm] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<'deleted' | 'deleteFailed'>();
+  const available = !!supabase && !clockStore.getState().moment;
+  const remove = async () => {
+    setBusy(true);
+    const ok = await deleteServerData();
+    setBusy(false);
+    setResult(ok ? 'deleted' : 'deleteFailed');
+    if (ok) setConfirm(false);
+  };
   if (confirm) return (
     <Sheet open title={t('sheet.privacy.confirmTitle')} lead={t('sheet.privacy.confirmBody')} onClose={() => setConfirm(false)}>
-      <Prose style={[typography.caption, styles.options, { color: palette.ink2 }]}>{t('sheet.privacy.noSavedSettings')}</Prose>
+      {!available && <Prose style={[typography.caption, styles.options, { color: palette.ink2 }]}>{t('sheet.privacy.noSavedSettings')}</Prose>}
+      {result === 'deleteFailed' && <Prose accessibilityLiveRegion="polite"
+        style={[typography.caption, styles.options, { color: palette.ink2 }]}>{t('sheet.privacy.deleteFailed')}</Prose>}
       <View style={styles.chips}>
         <Button label={t('common.cancel')} variant="outlined" onPress={() => setConfirm(false)} />
-        <Button label={t('common.delete')} disabled onPress={() => {}} />
+        <Button label={t(busy ? 'sheet.privacy.deleting' : 'common.delete')} disabled={busy || !available}
+          onPress={() => { void remove(); }} />
       </View>
     </Sheet>
   );
@@ -148,7 +164,12 @@ export function PrivacySheet({ settings, update, onClose }: SettingsProps) {
         <ToggleRow title={t('sheet.privacy.usage')} description={t('sheet.privacy.usageHint')} checked={settings.usageStats}
           onChange={(usageStats) => update((value) => ({ ...value, usageStats, usagePrompt: false }))} />
       </View>
-      <Button label={t('sheet.privacy.delete')} variant="outlined" style={styles.action} onPress={() => setConfirm(true)} />
+      <Button label={t('sheet.privacy.delete')} variant="outlined" style={styles.action} onPress={() => {
+        setResult(undefined);
+        setConfirm(true);
+      }} />
+      {result === 'deleted' && <Prose accessibilityLiveRegion="polite"
+        style={[typography.caption, styles.options, { color: palette.ink2 }]}>{t('sheet.privacy.deleted')}</Prose>}
     </Sheet>
   );
 }

@@ -9,7 +9,8 @@ const channels = z.object({
   yearly: z.boolean().optional(), weather: z.boolean().optional(), disputed: z.boolean().optional(),
 });
 const corrections = z.array(z.object({
-  year: z.int().positive(), month: z.int().min(1).max(12), start: date, withdrawn: z.boolean().optional(),
+  id: z.string().min(1).optional(), year: z.int().positive(), month: z.int().min(1).max(12),
+  start: date, withdrawn: z.boolean().optional(),
 }));
 const correctionOffer = corrections.element.omit({ withdrawn: true }).extend({
   id: z.string().min(1), countryCode: z.string().regex(/^[A-Z]{2}$/), region: z.string().min(1),

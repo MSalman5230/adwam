@@ -1,7 +1,7 @@
 import type { GroupedSunnah } from '@adwam/content/schema';
 import { chosenLevel, weatherArea, type ReminderLevel } from '@adwam/core';
 
-import type { Settings } from '../state/schema';
+import type { CorrectionOffer, Settings } from '../state/schema';
 
 export function installSyncPayload(
   settings: Settings,
@@ -40,4 +40,12 @@ export function needsServerUpdate(version: string, minimum: string) {
     if (difference) return difference < 0;
   }
   return Boolean(versionParts[4] && (!minimumParts[4] || versionParts[4].localeCompare(minimumParts[4], 'en', { numeric: true }) < 0));
+}
+
+export function removeWithdrawnCorrections(settings: Settings, announcements: readonly (Omit<CorrectionOffer, 'region'> & { withdrawn: boolean })[]) {
+  const withdrawn = announcements.filter((announcement) => announcement.withdrawn);
+  if (!withdrawn.length) return settings;
+  const remain = settings.hijri.corrections.filter((pin) => !withdrawn.some(({ id, year, month, start }) =>
+    pin.id ? pin.id === id : settings.correctionChoices[id] === 'accepted' && pin.year === year && pin.month === month && pin.start === start));
+  return remain.length === settings.hijri.corrections.length ? settings : { ...settings, hijri: { ...settings.hijri, corrections: remain } };
 }

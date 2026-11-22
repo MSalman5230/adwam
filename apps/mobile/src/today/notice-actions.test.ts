@@ -8,7 +8,7 @@ const offer: CorrectionOffer = { id: 'gb-1448-9', countryCode: 'GB', region: 'th
 it('applies an accepted month correction and undoes only that decision', () => {
   const before = defaultSettings();
   const applied = answerTodayNotice(before, 'correction', 'accept', offer.year, offer);
-  expect(applied.hijri.corrections).toEqual([{ year: 1448, month: 9, start: '2027-02-07' }]);
+  expect(applied.hijri.corrections).toEqual([{ id: offer.id, year: 1448, month: 9, start: '2027-02-07' }]);
   expect(applied.correctionChoices).toEqual({ [offer.id]: 'accepted' });
   const after = undoTodayCorrection({ ...applied, usageStats: true }, before, offer, true);
   expect(after).toEqual({ ...before, usageStats: true });

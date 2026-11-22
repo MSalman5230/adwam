@@ -6,10 +6,10 @@ import { Platform } from 'react-native';
 import { z } from 'zod';
 
 import { countryName } from '../location/cities';
-import { serverCacheStore, sessionStorage, settingsStore } from '../state/native';
-import { serverConfigSchema, serverCorrectionSchema, weatherEventSchema, type Settings } from '../state/schema';
+import { clearSessionStorage, serverCacheStore, sessionStorage, settingsStore } from '../state/native';
+import { defaultServerCache, serverConfigSchema, serverCorrectionSchema, weatherEventSchema, type Settings } from '../state/schema';
 import { appVersion } from './app-version';
-import { installSyncPayload, needsServerUpdate } from './server-sync-payload';
+import { installSyncPayload, needsServerUpdate, removeWithdrawnCorrections } from './server-sync-payload';
 import { anonymousInstall, supabase } from './supabase';
 
 const weatherEvents = z.array(weatherEventSchema);
@@ -22,6 +22,8 @@ const tokenRefresh = 24 * 60 * 60 * 1000;
 let newNativeToken: DevicePushToken | undefined;
 let pending = false;
 let running: Promise<boolean> | undefined;
+let deleted = false;
+let deleting: Promise<boolean> | undefined;
 
 export function installSnapshot(settings: Settings) {
   if (Platform.OS !== 'android' && Platform.OS !== 'ios') return;
@@ -54,12 +56,12 @@ async function pushToken(allowed: boolean, now: number) {
 }
 
 export function syncServer(): Promise<boolean> {
-  if (!supabase) return Promise.resolve(true);
+  if (!supabase || deleted || deleting) return Promise.resolve(true);
   pending = true;
   running ??= Promise.resolve().then(async () => {
     let succeeded = true;
     try {
-      while (pending) {
+      while (pending && !deleting) {
         pending = false;
         succeeded = await refresh().catch(() => false);
       }
@@ -69,6 +71,35 @@ export function syncServer(): Promise<boolean> {
     }
   });
   return running;
+}
+
+export function deleteServerData(): Promise<boolean> {
+  deleting ??= forgetInstall().catch(() => false).finally(() => { deleting = undefined; });
+  return deleting;
+}
+
+async function forgetInstall() {
+  if (!supabase) return false;
+  await running;
+  const session = await supabase.auth.getSession();
+  if (session.error) return false;
+  if (session.data.session) {
+    const removed = await supabase.rpc('forget_me_v1');
+    if (removed.error) return false;
+    await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+  }
+  deleted = true;
+  newNativeToken = undefined;
+  clearSessionStorage();
+  serverCacheStore.getState().update(defaultServerCache);
+  return true;
+}
+
+export async function simulateServerRain() {
+  if (!supabase || deleted || deleting || !await syncServer()) return false;
+  if (serverCacheStore.getState().value.config?.debugToolsEnabled !== true) return false;
+  const result = await supabase.rpc('debug_weather_event_v1');
+  return !result.error && await syncServer();
 }
 
 async function refresh() {
@@ -105,8 +136,12 @@ async function refresh() {
   if (forecast.error || announced.error) return false;
   const events = weatherEvents.parse(forecast.data);
   const correctionList = corrections.parse(announced.data);
-  const saved = settingsStore.getState().value;
-  if (JSON.stringify(payload) !== JSON.stringify(installSnapshot(saved))) return true;
+  const settings = settingsStore.getState().value;
+  if (JSON.stringify(payload) !== JSON.stringify(installSnapshot(settings))) return true;
+  const saved = removeWithdrawnCorrections(settings, correctionList);
+  if (saved !== settings) {
+    settingsStore.getState().update((current) => removeWithdrawnCorrections(current, correctionList));
+  }
   const candidate = correctionList.findLast((item) => !item.withdrawn && item.countryCode === payload.countryCode &&
     !saved.correctionChoices[item.id] && hijriMonthStart(item.year, item.month, saved.hijri) !== item.start);
   const correctionOffer = candidate ? { ...candidate, region: await countryName(candidate.countryCode) } : null;

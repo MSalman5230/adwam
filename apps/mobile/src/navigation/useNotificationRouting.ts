@@ -1,3 +1,4 @@
+import { serverNotificationKind } from '@adwam/core';
 import {
   addNotificationResponseReceivedListener, clearLastNotificationResponse, DEFAULT_ACTION_IDENTIFIER,
   getLastNotificationResponse, type NotificationResponse,
@@ -7,6 +8,7 @@ import { useEffect, useRef } from 'react';
 
 import { handleReminderAction } from '../services/notification-actions';
 import { calendarNotification } from '../services/notification-request';
+import { syncServer } from '../services/server-sync';
 import { isTestBuild } from '../theme/isTestBuild';
 import { notificationRoute } from './notification-route';
 
@@ -27,9 +29,13 @@ export function useNotificationRouting(setupDone: boolean) {
         return;
       }
       const data = notification.request.content.data;
-      if (data?.kind !== calendarNotification && !(isTestBuild && data?.debug === true)) return;
+      const server = data?.kind === serverNotificationKind;
+      if (!server && data?.kind !== calendarNotification && !(isTestBuild && data?.debug === true)) return;
       const route = notificationRoute(data?.link);
-      if (route) router.navigate(route);
+      if (route) {
+        if (server) void syncServer();
+        router.navigate(route);
+      }
     };
     const subscription = addNotificationResponseReceivedListener(respond);
     const response = getLastNotificationResponse();

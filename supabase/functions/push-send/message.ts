@@ -1,4 +1,4 @@
-import { hijriMonthStart } from '../_shared/core.mjs';
+import { hijriMonthStart, serverNotificationKind } from '../_shared/core.mjs';
 import catalog from '../_shared/content.json' with { type: 'json' };
 import messages from '../_shared/messages/en.json' with { type: 'json' };
 import type { PushMessage } from '../_lib/expo-push.ts';
@@ -32,7 +32,7 @@ export function pushMessage(row: QueuedPush): PushMessage | undefined {
       const rule = sunnah.occurrences.find((item) => 'push' in item && 'weather' in item.on && item.on.weather === row.weather);
       if (rule && 'push' in rule && rule.push) {
         return { ...base, title: rule.push.title, body: rule.push.body, expiration: Math.floor(Date.parse(row.weatherEnd) / 1000),
-          data: { link: `/item/${sunnah.id}` } };
+          data: { kind: serverNotificationKind, link: `/item/${sunnah.id}` } };
       }
     }
     return;
@@ -50,5 +50,5 @@ export function pushMessage(row: QueuedPush): PushMessage | undefined {
   const wording = messages.today.notice.correction;
   const body = wording.body.replace(/{{(month|announced|calculated|region)(?:, \w+)?}}/g,
     (_, name: keyof typeof values) => values[name]);
-  return { ...base, title: wording.title, body, data: { link: '/today' } };
+  return { ...base, title: wording.title, body, data: { kind: serverNotificationKind, link: '/today' } };
 }

@@ -22,7 +22,7 @@ Deno.test('the recorded forecast yields rain events and a faster fetch', async (
 
 const message: PushMessage = {
   to: 'ExponentPushToken[localFixture]', title: 'Preview test', body: 'Test notification',
-  channelId: 'weather', priority: 'high', sound: 'default', data: { link: '/item/rain' },
+  channelId: 'weather', priority: 'high', sound: 'default', data: { kind: 'adwam-server-v1', link: '/item/rain' },
 };
 
 Deno.test('Expo tickets preserve batch order and identify the rejected token', async () => {

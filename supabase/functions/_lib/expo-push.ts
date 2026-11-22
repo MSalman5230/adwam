@@ -6,7 +6,7 @@ export type PushMessage = {
   priority: 'high';
   sound: 'default' | null;
   expiration?: number;
-  data: { link: string };
+  data: { kind: string; link: string };
 };
 
 export type Ticket = { receipt_id?: string; code?: string; retry_seconds?: number };

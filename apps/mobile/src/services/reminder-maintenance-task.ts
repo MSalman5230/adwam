@@ -3,6 +3,7 @@ import Constants from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
 import * as Updates from 'expo-updates';
 
+import { settingsStore } from '../state/native';
 import { syncSchedule } from './notification-schedule';
 import { syncServer } from './server-sync';
 
@@ -13,7 +14,9 @@ TaskManager.defineTask(task, async ({ error }) => {
   if (error) return BackgroundTaskResult.Failed;
   try {
     await syncSchedule();
+    const corrections = settingsStore.getState().value.hijri.corrections;
     await syncServer();
+    if (corrections !== settingsStore.getState().value.hijri.corrections) await syncSchedule();
     if (!__DEV__ && (variant === 'preview' || variant === 'production') && Updates.isEnabled) {
       const update = await Updates.checkForUpdateAsync();
       if (update.isAvailable) await Updates.fetchUpdateAsync();

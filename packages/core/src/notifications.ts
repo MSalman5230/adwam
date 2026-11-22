@@ -4,6 +4,8 @@ import type { Occurrence, OccurrencePush } from './occurrences';
 import { quietInterval } from './quiet-hours';
 import { isDone, pushAllowed, reminderOccurrences, type ReminderState } from './rules';
 
+export const serverNotificationKind = 'adwam-server-v1';
+
 export type NotificationState = ReminderState & { platform?: 'android' | 'ios' };
 type Channel = 'weekly' | 'monthly' | 'yearly' | 'weather';
 type Button = 'done' | 'later';
