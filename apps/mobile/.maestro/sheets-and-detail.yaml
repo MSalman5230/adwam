@@ -84,7 +84,23 @@ name: Settings sheets, appearance, Sunnah sources and report
 - openLink: adwam://about
 - assertVisible: Adwam
 - assertVisible: Sources
-- takeScreenshot: about
+- scrollUntilVisible:
+    element: Adwam Noncommercial Licence
+    direction: DOWN
+- assertVisible: View the code on GitHub
+- takeScreenshot: about-licence-light
+
+- openLink: 'adwam://settings?sheet=theme'
+- tapOn: Dark
+- pressKey: Back
+- openLink: adwam://about
+- scrollUntilVisible:
+    element: Adwam Noncommercial Licence
+    direction: DOWN
+- takeScreenshot: about-licence-dark
+- openLink: 'adwam://settings?sheet=theme'
+- tapOn: Light
+- pressKey: Back
 
 - openLink: adwam://item/kahf
 - assertVisible: 'Sūrat al-Kahf'
