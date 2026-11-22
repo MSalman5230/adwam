@@ -145,6 +145,11 @@
       "forecast": "Weather isn’t listed, because it can’t be forecast this far ahead. Eclipses visible from {{city}} are."
     }
   },
+  "recovery": {
+    "title": "This screen couldn’t open",
+    "body": "Try opening it again.",
+    "retry": "Try again"
+  },
   "detail": {
     "reminder": {
       "groupOff": "The {{group, reminderGroup}} group is off in Settings.",

@@ -124,7 +124,7 @@ export default function SetupScreen() {
       </View>
       <ScrollView key={step} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {step === 1 && <SetupWelcome />}
-        <Text style={[styles.overline, typography.overline, { color: palette.gold }]}>{progress}</Text>
+        <Text style={[styles.overline, typography.overline, { color: palette.goldText }]}>{progress}</Text>
         <Text accessibilityRole="header" style={[styles.title, typography.setupTitle, { color: palette.ink }]}>{t(titles[step])}</Text>
         {body()}
       </ScrollView>

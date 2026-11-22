@@ -54,6 +54,28 @@ it('uses fresh defaults for malformed settings without affecting the tracker sto
   expect(trackers.getState().value.makeup).toBe(2);
 });
 
+it('recovers valid tracker entries from a partly damaged snapshot', () => {
+  const storage = memoryStorage();
+  storage.setItem('trackers', JSON.stringify({ state: { value: {
+    done: { 'kahf:2026-12-17': true, 'bad-value': 'true' },
+    fastLog: { '2026-12-17': true, '2026-12-18': false, invalid: true },
+    makeup: -3,
+  } }, version: 1 }));
+  const { trackers } = createSavedStores(storage);
+  expect(trackers.getState().value).toEqual({
+    done: { 'kahf:2026-12-17': true },
+    fastLog: { '2026-12-17': true, '2026-12-18': false },
+    makeup: null,
+  });
+});
+
+it('retains a valid make-up count when the fast log is damaged', () => {
+  const storage = memoryStorage();
+  storage.setItem('trackers', JSON.stringify({ state: { value: { fastLog: null, makeup: 3 } }, version: 1 }));
+  const { trackers } = createSavedStores(storage);
+  expect(trackers.getState().value).toEqual({ done: {}, fastLog: {}, makeup: 3 });
+});
+
 it('keeps the clock in memory', () => {
   const clock = createClockStore(0);
   clock.getState().setOverride(120_000);

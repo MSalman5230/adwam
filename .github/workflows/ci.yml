@@ -43,3 +43,76 @@ jobs:
         run: pnpm db:start > /dev/null
       - run: pnpm db:test
       - run: pnpm server:test
+
+  android-fingerprint:
+    name: Android runtime fingerprint
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      APP_VARIANT: preview
+    outputs:
+      changed: ${{ steps.compare.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Resolve the proposed Android runtime
+        id: proposed
+        working-directory: apps/mobile
+        run: |
+          runtime=$(pnpm exec expo-updates runtimeversion:resolve --platform android --workflow managed |
+            jq -er '.runtimeVersion | select(test("^[a-f0-9]{40}$"))')
+          echo "runtime=$runtime" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - run: pnpm install --frozen-lockfile
+      - name: Compare with the base Android runtime
+        id: compare
+        working-directory: apps/mobile
+        env:
+          PROPOSED_RUNTIME: ${{ steps.proposed.outputs.runtime }}
+        run: |
+          base=$(pnpm exec expo-updates runtimeversion:resolve --platform android --workflow managed |
+            jq -er '.runtimeVersion | select(test("^[a-f0-9]{40}$"))')
+          changed=false
+          if [[ "$base" != "$PROPOSED_RUNTIME" ]]; then
+            changed=true
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          printf 'Base runtime `%s`\n\nProposed runtime `%s`\n\nNeeds a new Android build: **%s**\n' \
+            "$base" "$PROPOSED_RUNTIME" "$changed" >> "$GITHUB_STEP_SUMMARY"
+
+  label-android-build:
+    name: Label Android build requirement
+    needs: android-fingerprint
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v8
+        env:
+          ANDROID_RUNTIME_CHANGED: ${{ needs.android-fingerprint.outputs.changed }}
+        with:
+          script: |
+            const event = context.payload.pull_request;
+            const repo = context.repo;
+            const { data: current } = await github.rest.pulls.get({ ...repo, pull_number: event.number });
+            if (current.state !== 'open' || current.head.sha !== event.head.sha || current.base.sha !== event.base.sha) return;
+
+            const label = 'needs-new-build';
+            const present = current.labels.some(item => item.name === label);
+            const issue = { ...repo, issue_number: event.number };
+            if (process.env.ANDROID_RUNTIME_CHANGED === 'true' && !present) {
+              await github.rest.issues.addLabels({ ...issue, labels: [label] });
+            } else if (process.env.ANDROID_RUNTIME_CHANGED === 'false' && present) {
+              await github.rest.issues.removeLabel({ ...issue, name: label });
+            }

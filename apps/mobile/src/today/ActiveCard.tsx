@@ -34,7 +34,7 @@ export function ActiveCard({ reminder, format, onOpen, onTick, onMakeup }: {
       meta={renderMessage(meta, format)} bell={bell} icon={weather ? 'rainy' : undefined}
       done={done} fasting={tick?.type === 'fast' && tick.done} footerDivider={Boolean(tracker)} onPress={onOpen}
       details={hasDetails && <>
-        {!!names?.length && <Prose style={[typography.caption, { color: palette.gold }]}>{t('today.also', { practices: names.join(', ') })}</Prose>}
+        {!!names?.length && <Prose style={[typography.caption, { color: palette.goldText }]}>{t('today.also', { practices: names.join(', ') })}</Prose>}
         {transliteration && <Prose style={[typography.transliteration, styles.dua, { color: palette.ink }]}>
           {transliteration}
         </Prose>}

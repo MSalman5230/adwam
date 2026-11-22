@@ -14,12 +14,12 @@ export function Card({ title, body, meta, bell, icon, onPress, done, fasting, de
 }) {
   const { palette } = useTheme();
   const surface = done ? palette.doneSurface : fasting ? palette.fastingSurface : palette.surface;
-  const mainStyle = [styles.cardContent, children ? styles.cardContentWithFooter : undefined, done && styles.dimmed];
+  const mainStyle = [styles.cardContent, children ? styles.cardContentWithFooter : undefined];
   const content = (
     <>
       <View style={styles.cardTitle}>
         {icon && <Icon name={icon} color={palette.green} size={20} />}
-        <Text style={[typography.cardTitle, styles.grow, { color: palette.ink }]}>{title}</Text>
+        <Text style={[typography.cardTitle, styles.grow, { color: done ? palette.ink2 : palette.ink }]}>{title}</Text>
         {(meta || bell) && <View style={styles.cardMeta}>
           {bell && <Icon name="notifications" label={t('reminders.push')} color={palette.gold} size={16} />}
           {meta && <Text style={[typography.caption, { color: palette.ink2 }]}>{meta}</Text>}
@@ -35,7 +35,7 @@ export function Card({ title, body, meta, bell, icon, onPress, done, fasting, de
           {content}
         </Pressable>
       ) : <View style={mainStyle}>{content}</View>}
-      {details && <View style={[styles.cardDetails, done && styles.dimmed]}>{details}</View>}
+      {details && <View style={styles.cardDetails}>{details}</View>}
       {children && <View style={[styles.cardFoot, footerDivider && { borderTopWidth: StyleSheet.hairlineWidth, borderColor: palette.hair }]}>{children}</View>}
     </View>
   );
@@ -88,7 +88,7 @@ function RadioChoice({ title, subtitle, selected, disabled, onPress, framed, det
         {subtitle && <Text style={[typography.supporting, { color: palette.ink2 }]}>{subtitle}</Text>}
         {detail && <View style={styles.radioDetail}>
           {detailIcon && <Icon name={detailIcon} color={palette.gold} size={16} />}
-          <Text style={[typography.sectionAside, styles.radioDetailText, { color: palette.gold }]}>{detail}</Text>
+          <Text style={[typography.sectionAside, styles.radioDetailText, { color: palette.goldText }]}>{detail}</Text>
         </View>}
       </View>
     </Pressable>
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
   cardContentWithFooter: { paddingBottom: 4 },
   cardDetails: { paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
   cardFoot: { marginHorizontal: 16, paddingBottom: 8, gap: 6 },
-  dimmed: { opacity: 0.55 },
   listRow: { minHeight: 58, borderBottomWidth: StyleSheet.hairlineWidth, paddingHorizontal: 14, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', gap: 10 },
   serifRowTitle: { ...typography.cardTitle, fontSize: 16, lineHeight: 20 },
   rowSubtitle: { marginTop: 2 },
