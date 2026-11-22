@@ -1,0 +1,4 @@
+# EAS materializes the Firebase app file at a temporary path.
+# Ignore EAS copies so the runtime matches in builds, updates, and CI.
+**/eas-environment-secrets/**
+.eas/.env/**
