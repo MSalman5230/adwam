@@ -1,0 +1,6 @@
+{
+  "data": [
+    { "status": "ok", "id": "3d130887-935d-493a-a33c-daca1d16c1f3" },
+    { "status": "error", "details": { "error": "DeviceNotRegistered" } }
+  ]
+}
