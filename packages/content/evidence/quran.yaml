@@ -1,28 +1,64 @@
 - id: quran-18
-  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 18
   label: Sūrat al-Kahf
   url: https://quran.com/18
+  reviewed:
+    by: MSalman5230
+    on: 2026-11-22
 - id: quran-32
   surah: 32
   label: Sūrat al-Sajdah
   url: https://quran.com/32
 - id: quran-2-185
-  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 2
   ayah: 185
   url: https://quran.com/2/185
+  excerpt:
+    ar: شَهْرُ رَمَضَانَ ٱلَّذِىٓ أُنزِلَ فِيهِ ٱلْقُرْءَانُ هُدًى لِّلنَّاسِ وَبَيِّنَـٰتٍ مِّنَ ٱلْهُدَىٰ وَٱلْفُرْقَانِ ۚ فَمَن شَهِدَ مِنكُمُ ٱلشَّهْرَ فَلْيَصُمْهُ ۖ وَمَن كَانَ مَرِيضًا أَوْ عَلَىٰ سَفَرٍ فَعِدَّةٌ مِّنْ أَيَّامٍ أُخَرَ ۗ يُرِيدُ ٱللَّهُ بِكُمُ ٱلْيُسْرَ وَلَا يُرِيدُ بِكُمُ ٱلْعُسْرَ وَلِتُكْمِلُوا۟ ٱلْعِدَّةَ وَلِتُكَبِّرُوا۟ ٱللَّهَ عَلَىٰ مَا هَدَىٰكُمْ وَلَعَلَّكُمْ تَشْكُرُونَ
+    en: Ramaḍân is the month in which the Quran was revealed as a guide for humanity with clear proofs of guidance and the decisive authority. So whoever is present this month, let them fast. But whoever is ill or on a journey, then ˹let them fast˺ an equal number of days ˹after Ramaḍân˺. Allah intends ease for you, not hardship, so that you may complete the prescribed period and proclaim the greatness of Allah for guiding you, and perhaps you will be grateful.
+  textSource:
+    site: quran.com
+    fetched: 2026-11-22
+    translator: Dr. Mustafa Khattab, The Clear Quran
+  reviewed:
+    by: MSalman5230
+    on: 2026-11-22
 - id: quran-2-203
-  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 2
   ayah: 203
   url: https://quran.com/2/203
+  excerpt:
+    ar: ۞ وَٱذْكُرُوا۟ ٱللَّهَ فِىٓ أَيَّامٍ مَّعْدُودَٰتٍ ۚ فَمَن تَعَجَّلَ فِى يَوْمَيْنِ فَلَآ إِثْمَ عَلَيْهِ وَمَن تَأَخَّرَ فَلَآ إِثْمَ عَلَيْهِ ۚ لِمَنِ ٱتَّقَىٰ ۗ وَٱتَّقُوا۟ ٱللَّهَ وَٱعْلَمُوٓا۟ أَنَّكُمْ إِلَيْهِ تُحْشَرُونَ
+    en: And remember Allah during ˹these˺ appointed days. Whoever departs swiftly on the second day is not sinful, neither are those who stay behind ˹till the third—seeking additional reward˺, so long as they are mindful ˹of their Lord˺. And be mindful of Allah, and know that to Him you will ˹all˺ be gathered.
+  textSource:
+    site: quran.com
+    fetched: 2026-11-22
+    translator: Dr. Mustafa Khattab, The Clear Quran
+  reviewed:
+    by: MSalman5230
+    on: 2026-11-22
 - id: quran-9-36
-  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 9
   ayah: 36
   url: https://quran.com/9/36
+  excerpt:
+    ar: إِنَّ عِدَّةَ ٱلشُّهُورِ عِندَ ٱللَّهِ ٱثْنَا عَشَرَ شَهْرًا فِى كِتَـٰبِ ٱللَّهِ يَوْمَ خَلَقَ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ مِنْهَآ أَرْبَعَةٌ حُرُمٌ ۚ ذَٰلِكَ ٱلدِّينُ ٱلْقَيِّمُ ۚ فَلَا تَظْلِمُوا۟ فِيهِنَّ أَنفُسَكُمْ ۚ وَقَـٰتِلُوا۟ ٱلْمُشْرِكِينَ كَآفَّةً كَمَا يُقَـٰتِلُونَكُمْ كَآفَّةً ۚ وَٱعْلَمُوٓا۟ أَنَّ ٱللَّهَ مَعَ ٱلْمُتَّقِينَ
+    en: Indeed, the number of months ordained by Allah is twelve—in Allah’s Record since the day He created the heavens and the earth—of which four are sacred. That is the Right Way. So do not wrong one another during these months. And fight the polytheists together as they fight together against you. And know that Allah is with those mindful ˹of Him˺.
+  textSource:
+    site: quran.com
+    fetched: 2026-11-22
+    translator: Dr. Mustafa Khattab, The Clear Quran
+  reviewed:
+    by: MSalman5230
+    on: 2026-11-22
 - id: quran-24-61
   surah: 24
   ayah: 61
   url: https://quran.com/24/61
+  excerpt:
+    ar: لَّيْسَ عَلَى ٱلْأَعْمَىٰ حَرَجٌ وَلَا عَلَى ٱلْأَعْرَجِ حَرَجٌ وَلَا عَلَى ٱلْمَرِيضِ حَرَجٌ وَلَا عَلَىٰٓ أَنفُسِكُمْ أَن تَأْكُلُوا۟ مِنۢ بُيُوتِكُمْ أَوْ بُيُوتِ ءَابَآئِكُمْ أَوْ بُيُوتِ أُمَّهَـٰتِكُمْ أَوْ بُيُوتِ إِخْوَٰنِكُمْ أَوْ بُيُوتِ أَخَوَٰتِكُمْ أَوْ بُيُوتِ أَعْمَـٰمِكُمْ أَوْ بُيُوتِ عَمَّـٰتِكُمْ أَوْ بُيُوتِ أَخْوَٰلِكُمْ أَوْ بُيُوتِ خَـٰلَـٰتِكُمْ أَوْ مَا مَلَكْتُم مَّفَاتِحَهُۥٓ أَوْ صَدِيقِكُمْ ۚ لَيْسَ عَلَيْكُمْ جُنَاحٌ أَن تَأْكُلُوا۟ جَمِيعًا أَوْ أَشْتَاتًا ۚ فَإِذَا دَخَلْتُم بُيُوتًا فَسَلِّمُوا۟ عَلَىٰٓ أَنفُسِكُمْ تَحِيَّةً مِّنْ عِندِ ٱللَّهِ مُبَـٰرَكَةً طَيِّبَةً ۚ كَذَٰلِكَ يُبَيِّنُ ٱللَّهُ لَكُمُ ٱلْـَٔايَـٰتِ لَعَلَّكُمْ تَعْقِلُونَ
+    en: There is no restriction on the blind, or the disabled, or the sick. Nor on yourselves if you eat from your homes, or the homes of your fathers, or your mothers, or your brothers, or your sisters, or your paternal uncles, or your paternal aunts, or your maternal uncles, or your maternal aunts, or from the homes in your trust, or ˹the homes of˺ your friends. There is no blame on you eating together or separately. However, when you enter houses, greet one another with a greeting ˹of peace˺ from Allah, blessed and good. This is how Allah makes His revelations clear to you, so perhaps you will understand.
+  textSource:
+    site: quran.com
+    fetched: 2026-11-22
+    translator: Dr. Mustafa Khattab, The Clear Quran
