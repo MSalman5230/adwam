@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { error, log } from 'node:console';
-import { createWriteStream, mkdtempSync, readFileSync, realpathSync, rmSync } from 'node:fs';
+import { createWriteStream, mkdtempSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import process from 'node:process';
@@ -28,7 +28,9 @@ function checkPermissions(aapt2, apk) {
 async function checkBuild(aapt2) {
   let result;
   try {
-    result = JSON.parse(readFileSync(0, 'utf8'));
+    let input = '';
+    for await (const chunk of process.stdin.setEncoding('utf8')) input += chunk;
+    result = JSON.parse(input);
   } catch {
     throw new Error('EAS did not return a valid build result.');
   }
