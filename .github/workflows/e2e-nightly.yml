@@ -48,7 +48,7 @@ jobs:
       - name: Build the emulator app
         working-directory: apps/mobile
         run: |
-          sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0'
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-37.0' 'build-tools;37.0.0'
           pnpm exec expo prebuild --platform android --no-install
           cd android
           ./gradlew :app:assembleRelease -PreactNativeArchitectures=x86_64 -Pandroid.enableMinifyInReleaseBuilds=false --max-workers=2 --console=plain
