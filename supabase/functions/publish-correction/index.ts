@@ -1,10 +1,10 @@
+import { corsHeaders } from '@supabase/supabase-js/cors';
 import { errorReporter, serviceClient, triggerPushSender } from '../_lib/job-runtime.ts';
 import { dayDiff, hijriMonthStart } from '../_shared/core.mjs';
 
 const cors = {
-  'Access-Control-Allow-Origin': '*',
+  ...corsHeaders,
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
 };
 const report = errorReporter('publish-correction');
 const uuid = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
