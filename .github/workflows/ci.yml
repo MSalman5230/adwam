@@ -22,6 +22,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm server:prepare
       - run: pnpm check
+      - run: node --test scripts/staging-health.test.mjs
       - run: pnpm --filter @adwam/content calendar --check
       - run: pnpm --filter @adwam/mobile check:routes
 

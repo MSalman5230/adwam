@@ -27,7 +27,11 @@ if (current.status === 403) {
     const updated = await globalThis.fetch(url, { method: 'PATCH', headers, body: JSON.stringify(changes) });
     await updated.body?.cancel();
     if (updated.status === 403) {
-      process.stderr.write('The scoped token cannot update staging Auth. Configure the redirect and email template in Supabase.\n');
+      const settings = [];
+      if (changes.uri_allow_list) settings.push('the admin redirect URL');
+      if (changes.mailer_templates_magic_link_content) settings.push('the admin email code template');
+      if (changes.external_anonymous_users_enabled) settings.push('anonymous sign-in');
+      process.stderr.write(`The scoped token cannot update staging Auth. Configure ${settings.join(', ')} in Supabase.\n`);
     } else if (!updated.ok) {
       throw new Error(`Could not update staging Auth (${updated.status}).`);
     } else {
