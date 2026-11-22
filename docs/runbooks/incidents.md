@@ -4,8 +4,8 @@ Identify the project and record the UTC interval, the last healthy run, links to
 
 ## Weather job stopped
 
-1. Open the **Staging weather health** workflow and check the newest `weather-tick` row in `job_runs`. The workflow flags a last completed tick older than 45 minutes.
-2. In Supabase, check the scheduled job status, project pause status and Edge Function invocation errors. Check that the Vault URL matches the staging project and that both Vault and the function have the job key. A 401 points to a missing or mismatched key. [Scheduler setup](../development-setup.md#supabase-edge-function-secrets).
+1. Open the **Staging weather health** workflow and check the newest completed `weather-tick` row in `job_runs`. If it is missing or more than 45 minutes old, the workflow also checks whether the two scheduler entries exist in Vault.
+2. If an entry is missing, run the staging scheduler setup. Otherwise, check the scheduled job status, project status and Edge Function invocation errors in Supabase. Confirm that the Vault URL matches staging and that the job key in Vault matches the Edge Function secret. A 401 points to a missing or mismatched key. [Scheduler setup](../development-setup.md#server-secrets-supabase-edge-function-secrets-per-project)
 3. After restoring the failing dependency, wait for the next quarter-hour. Verify a finished tick with a plausible fetch count. Simulate staging rain and confirm the weather card, and the push when Android messaging credentials are available.
 
 ## Open-Meteo budget spent
