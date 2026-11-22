@@ -12,3 +12,4 @@ runner.mock('react-native-mmkv', () => ({
 }));
 
 runner.mock('../src/theme/isTestBuild', () => ({ isTestBuild: true }));
+runner.mock('react-native-reanimated', () => ({ useReducedMotion: () => false }));

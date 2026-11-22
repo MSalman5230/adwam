@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 14,
     marginTop: 16, marginBottom: 8, borderRadius: 14, borderWidth: 1,
   },
-  input: { minHeight: 46, flex: 1, padding: 0 },
+  input: { minHeight: 48, flex: 1, padding: 0 },
   empty: { paddingVertical: 14 },
 });

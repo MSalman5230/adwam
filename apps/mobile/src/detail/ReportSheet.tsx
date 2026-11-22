@@ -1,6 +1,6 @@
 import type { GroupedSunnah } from '@adwam/content/schema';
 import { useState } from 'react';
-import { Linking, StyleSheet, TextInput, View } from 'react-native';
+import { Linking, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
 
 import { Button } from '../components/controls';
 import { Sheet } from '../components/overlays';
@@ -15,6 +15,7 @@ export function ReportSheet({ entry, version, open, onClose }: {
   entry: GroupedSunnah; version: string; open: boolean; onClose: () => void;
 }) {
   const { palette } = useTheme();
+  const { fontScale } = useWindowDimensions();
   const [description, setDescription] = useState('');
   const [failed, setFailed] = useState(false);
   const close = () => { setFailed(false); onClose(); };
@@ -31,8 +32,8 @@ export function ReportSheet({ entry, version, open, onClose }: {
     <Sheet open={open} title={t('sheet.report.title')} lead={t('sheet.report.body')} onClose={close}>
       <View style={[styles.metadata, { backgroundColor: palette.paper2 }]}>
         {[entry.title, `${entry.group}.${entry.id}`, t('about.contentVersion', { version }),
-          t('about.appVersion', { version: appVersion })].map((line) => (
-          <Prose key={line} style={[typography.small, { color: palette.ink2 }]}>{line}</Prose>
+          t('about.appVersion', { version: appVersion })].map((line, index) => (
+          <Prose key={line} style={[typography.small, fontScale >= 1.5 && index === 0 && styles.metadataTitle, { color: palette.ink2 }]}>{line}</Prose>
         ))}
       </View>
       <TextInput accessibilityLabel={t('sheet.report.placeholder')} value={description} onChangeText={setDescription}
@@ -46,6 +47,7 @@ export function ReportSheet({ entry, version, open, onClose }: {
 
 const styles = StyleSheet.create({
   metadata: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 14, gap: 8, padding: 12, borderRadius: 12 },
+  metadataTitle: { width: '100%' },
   input: { minHeight: 88, borderWidth: 1, borderRadius: 12, padding: 12, textAlignVertical: 'top' },
   open: { marginTop: 12, alignSelf: 'flex-start' },
 });
