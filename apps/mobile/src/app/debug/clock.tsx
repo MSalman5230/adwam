@@ -127,5 +127,5 @@ const styles = StyleSheet.create({
   screen: { flex: 1 }, content: { gap: 12, paddingHorizontal: 20, paddingVertical: 16 },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   input: { minHeight: 48, minWidth: 88, borderWidth: 1, borderRadius: 12, paddingHorizontal: 12 },
-  control: { minHeight: 44, justifyContent: 'center', borderRadius: 12, paddingHorizontal: 12 },
+  control: { minHeight: 48, minWidth: 48, justifyContent: 'center', borderRadius: 12, paddingHorizontal: 12 },
 });

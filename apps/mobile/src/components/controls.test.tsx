@@ -30,6 +30,7 @@ vi.mock('react-native', async () => {
       }, children);
     },
     StyleSheet: { create: <T,>(styles: T) => styles, hairlineWidth: 1 },
+    useWindowDimensions: () => ({ fontScale: 1 }),
   };
 });
 vi.mock('../icons', () => ({ Crescent: () => null, Icon: () => null }));

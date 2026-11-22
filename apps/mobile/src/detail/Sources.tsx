@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   note: { borderLeftWidth: 2, paddingVertical: 2, paddingLeft: 14, marginBottom: 8 },
   rows: { marginTop: 4 },
   divider: { borderTopWidth: StyleSheet.hairlineWidth },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 46, paddingVertical: 8 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 48, paddingVertical: 8 },
   rowText: { flex: 1, gap: 4 },
   rowTitle: { fontFamily: 'SourceSans3_500Medium', fontSize: 15 },
   excerpt: { gap: 8, paddingBottom: 12 },

@@ -2,8 +2,7 @@ import catalog from '@adwam/content/catalog';
 import type { CivilDate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
-import { LayoutAnimation, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useReducedMotion } from 'react-native-reanimated';
+import { LayoutAnimation, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore } from 'zustand';
 
@@ -24,6 +23,7 @@ import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
 import { useClock, useReminderStores } from '../../state/useClock';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
+import { useDeviceReduceMotion } from '../../theme/useDeviceReduceMotion';
 import { ActiveCard, type ActiveReminder, type MakeupAction } from '../../today/ActiveCard';
 import { answerTodayNotice, undoTodayCorrection } from '../../today/notice-actions';
 
@@ -41,14 +41,13 @@ export default function TodayScreen() {
   const trackers = useStore(trackersStore, ({ value }) => value);
   const cached = useStore(serverCacheStore, ({ value }) => value);
   const now = useClock();
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useDeviceReduceMotion();
   const { location } = settings;
   const format = useMessageFormat(location?.timeZone);
   const correction = cached.correctionOffer ?? undefined;
   const state = selectReminderState(settings, trackers, cached, catalog.sunnahs);
   const view = state && selectToday(now, state, settings, correction);
   const updateNeeded = cached.config && needsServerUpdate(appVersion, cached.config.minAppVersion);
-  const showsWeather = view?.active.some(({ occurrence: { event } }) => event && 'weather' in event);
   const banner = view?.banner;
   const [snack, setSnack] = useState<Snack>();
   const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
@@ -135,8 +134,6 @@ export default function TodayScreen() {
             title={banner.title.replace('{{month}}', t('setup.hijri.monthName', { month: banner.hijri.month }))}
             body={banner.body} onPress={() => openItem(banner.item, banner.date)} />
           </View>}
-          {showsWeather && <Button label={t('about.weather')} variant="text"
-            style={styles.weatherCredit} onPress={() => { void Linking.openURL('https://open-meteo.com/').catch(() => {}); }} />}
           <SectionHeader title={t('today.activeTitle')} aside={view.active.length ? renderMessage(view.activeCount, format) : undefined} />
           {view.empty ? <View style={[styles.empty, { borderColor: palette.hair2 }]}>
             <Icon name="wb_twilight" color={palette.gold} />
@@ -183,6 +180,5 @@ const styles = StyleSheet.create({
   emptyText: { flex: 1, gap: 3 },
   coming: { borderWidth: 1, borderRadius: 16, overflow: 'hidden' },
   allUpcoming: { alignSelf: 'flex-end', marginTop: 8 },
-  weatherCredit: { alignSelf: 'flex-start', marginTop: 4 },
   snack: { position: 'absolute', bottom: 20, left: 12, right: 12 },
 });

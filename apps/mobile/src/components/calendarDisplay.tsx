@@ -1,5 +1,5 @@
 import { fmtClock, type dayLine } from '@adwam/core';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { Icon } from '../icons';
 import { renderMessage, t, type MessageFormat } from '../language/messages';
@@ -8,6 +8,7 @@ import { typography } from '../theme/typography';
 
 export function DayLine({ timeline, format }: { timeline: ReturnType<typeof dayLine>; format: MessageFormat }) {
   const { palette } = useTheme();
+  const largerText = useWindowDimensions().fontScale >= 1.5;
   const position = `${timeline.position * 100}%` as const;
   const caption = renderMessage(timeline.caption, format);
   const anchors = timeline.marks.map((mark) => ({
@@ -32,9 +33,9 @@ export function DayLine({ timeline, format }: { timeline: ReturnType<typeof dayL
           <View style={[styles.now, { backgroundColor: palette.green }]} />
         </View>
       </View>
-      <View style={styles.anchorLabels}>
+      <View style={[styles.anchorLabels, largerText && styles.largerLabels]}>
         {anchors.map((mark) => (
-          <View key={mark.name} style={styles.anchorLabel}>
+          <View key={mark.name} style={largerText ? styles.largeAnchor : styles.anchorLabel}>
             <Text style={[typography.prayerLabel, styles.center, { color: mark.name === 'maghrib' ? palette.gold : palette.ink }]}>
               {mark.label}
             </Text>
@@ -78,7 +79,9 @@ const styles = StyleSheet.create({
   nowRing: { position: 'absolute', top: -4, marginLeft: -11, width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
   now: { width: 14, height: 14, borderRadius: 7 },
   anchorLabels: { flexDirection: 'row', marginTop: 6 },
+  largerLabels: { flexWrap: 'wrap', rowGap: 8 },
   anchorLabel: { flex: 1, minWidth: 0 },
+  largeAnchor: { width: '50%', paddingHorizontal: 4 },
   center: { textAlign: 'center' },
   caption: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10 },
   captionText: { flexShrink: 1 },
