@@ -20,7 +20,7 @@ jest.mock('expo-notifications', () => ({
   getAllScheduledNotificationsAsync: async () => [],
 }));
 jest.mock('../src/services/crash-reporting', () => ({ canTestCrashReporting: false }));
-jest.mock('../src/services/local-supabase', () => ({ checkLocalSupabase: () => undefined }));
+jest.mock('../src/services/supabase', () => ({ checkLocalSupabase: () => undefined }));
 
 afterEach(async () => {
   await setFixedClock(null);

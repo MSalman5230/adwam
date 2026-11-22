@@ -5,6 +5,7 @@ import { useStore } from 'zustand';
 import { useNotificationRouting } from '../navigation/useNotificationRouting';
 import { startCrashReporting } from '../services/crash-reporting';
 import { useNotificationLifecycle } from '../services/notification-lifecycle';
+import { useServerSyncLifecycle } from '../services/server-sync-lifecycle';
 import { useForegroundClock, useReminderStores } from '../state/useClock';
 import { bundledFonts } from '../theme/fonts';
 import { isTestBuild } from '../theme/isTestBuild';
@@ -46,6 +47,7 @@ function Navigator() {
 export default function RootLayout() {
   useForegroundClock();
   useNotificationLifecycle();
+  useServerSyncLifecycle();
   return (
     <ThemeProvider>
       <Navigator />

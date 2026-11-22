@@ -15,6 +15,11 @@ function normalize(text: string): string {
 
 let index: CityIndex | undefined;
 
+export async function countryName(code: string) {
+  const { default: data } = await import('./geonames.generated.json');
+  return (data.countries as CityData['countries'])[code] ?? code;
+}
+
 async function loadCities(): Promise<CityIndex> {
   if (index) return index;
   const { default: data } = await import('./geonames.generated.json');
