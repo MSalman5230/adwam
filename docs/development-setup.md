@@ -42,7 +42,6 @@ Open-Meteo needs no account for the free API. The GeoNames city list is a free d
 | `EXPO_PUBLIC_SUPABASE_KEY` | The local publishable key | Staging publishable key | Production publishable key | The same places. Older projects call it the anon key. |
 | `EXPO_PUBLIC_SENTRY_DSN` | Empty, so Sentry is off | Sentry DSN | Sentry DSN | Sentry project settings. One project, tagged by environment. |
 | `EXPO_PUBLIC_POSTHOG_KEY` | Empty | Empty | PostHog project key | PostHog project settings |
-| `EXPO_PUBLIC_POSTHOG_HOST` | — | — | `https://eu.i.posthog.com` | — |
 | `APP_VARIANT` | `development` | `preview` | `production` | Set by each build profile. It picks the app ID (`com.msalman5230.adwam.dev`, `com.msalman5230.adwam.preview` or `com.msalman5230.adwam`) and the name, so all three can sit on one phone. |
 
 The Expo project ID also goes into the app config. `eas init` writes it, and it isn't secret.
@@ -100,6 +99,12 @@ Use two GitHub environments, `staging` and `production`. The production environm
 Each environment also holds its Supabase project ID as a plain variable.
 
 Staging updates run on Expo Workflows in Preview so the Sentry upload reads `SENTRY_AUTH_TOKEN` directly from EAS. Staging deploys set the app’s two public Supabase variables in EAS Preview from the staging project configuration.
+
+### Optional usage statistics
+
+The production-only EAS project variable is `EXPO_PUBLIC_POSTHOG_KEY`. Use a project on PostHog's EU host. In the project settings, enable **Discard client IP data**, turn off the GeoIP enrichment transformation, and leave session replay off. Confirm these settings before adding the key. The Preview and development apps keep the consent controls available while usage-statistics delivery stays off. The phone sends the country code from the selected city or `unknown` before a city is selected.
+
+The app records notification body taps. The Done action updates the tracker on the phone and stays out of analytics. Raw URLs, report text, and the Supabase install ID stay out of all events. Turning off the Privacy switch drops the pending queue and clears the analytics ID.
 
 ### Local files
 

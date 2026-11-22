@@ -9,6 +9,7 @@ import { useEffect, useRef } from 'react';
 import { handleReminderAction } from '../services/notification-actions';
 import { calendarNotification } from '../services/notification-request';
 import { syncServer } from '../services/server-sync';
+import { track } from '../services/usage-statistics';
 import { isTestBuild } from '../theme/isTestBuild';
 import { notificationRoute } from './notification-route';
 
@@ -33,6 +34,10 @@ export function useNotificationRouting(setupDone: boolean) {
       if (!server && data?.kind !== calendarNotification && !(isTestBuild && data?.debug === true)) return;
       const route = notificationRoute(data?.link);
       if (route) {
+        if (server || data?.kind === calendarNotification) {
+          const item = route.pathname === '/item/[id]' ? route.params.id : server ? 'date-correction' : 'friday-summary';
+          track({ event: 'notification_opened', properties: { item, button: 'open' } });
+        }
         if (server) void syncServer();
         router.navigate(route);
       }
