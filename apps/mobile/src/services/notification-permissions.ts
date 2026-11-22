@@ -12,8 +12,11 @@ export function notificationPermission(response: NotificationPermissionsStatus):
 
 export async function refreshNotificationPermissions() {
   if (!settingsStore.getState().value.setupDone) return;
-  const permission = notificationPermission(await getPermissionsAsync());
-  const nativeChannels = Platform.OS === 'android' ? await getNotificationChannelsAsync() : [];
+  const [response, nativeChannels] = await Promise.all([
+    getPermissionsAsync(),
+    Platform.OS === 'android' ? getNotificationChannelsAsync() : [],
+  ]);
+  const permission = notificationPermission(response);
   const { value, update } = settingsStore.getState();
   const { reminders } = value;
   if (!value.setupDone) return;
