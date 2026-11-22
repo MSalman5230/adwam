@@ -1,0 +1,9 @@
+appId: ${APP_ID}
+---
+- openLink: adwam://debug/clock
+- scrollUntilVisible:
+    element: ${MOMENT}
+    direction: DOWN
+- tapOn: ${MOMENT}
+- openLink: adwam://today
+- assertVisible: Today

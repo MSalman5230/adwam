@@ -1,0 +1,103 @@
+appId: ${APP_ID}
+name: Settings sheets, appearance, Sunnah sources and report
+---
+- runFlow: setup/in-app.yaml
+- openLink: 'adwam://settings?sheet=city'
+- assertVisible: Choose your city
+- tapOn: Search cities
+- inputText: London
+- tapOn: London
+- assertVisible: 'Location, London.*'
+
+- openLink: 'adwam://settings?sheet=prayer'
+- assertVisible: Calculation method
+- tapOn: Islamic Society of North America
+- scrollUntilVisible:
+    element: 'Ḥanafī'
+    direction: DOWN
+- tapOn: 'Ḥanafī'
+- pressKey: Back
+
+- openLink: 'adwam://settings?sheet=jumuah'
+- tapOn: Fixed time
+- assertVisible: 'Jumuʿah time'
+- pressKey: Back
+
+- openLink: 'adwam://settings?sheet=hijri'
+- tapOn: Tabular
+- tapOn: '\+1 day'
+- assertVisible: 'Accepted corrections'
+- pressKey: Back
+
+- openLink: 'adwam://settings?sheet=quiet'
+- assertVisible: Starts
+- assertVisible: Ends
+- tapOn:
+    text: Eclipses can notify in quiet hours
+    checked: false
+- assertVisible:
+    text: Eclipses can notify in quiet hours
+    checked: true
+- pressKey: Back
+
+- openLink: 'adwam://settings?sheet=pause'
+- tapOn: 7 days
+- pressKey: Back
+- assertVisible: 'Pause fasting reminders, Until .*'
+
+- openLink: 'adwam://settings?sheet=udhiyah'
+- tapOn: 'Yes, I.m offering one'
+- assertVisible: 'Uḍḥiyah this year, Yes.*'
+
+- openLink: 'adwam://settings?sheet=theme'
+- tapOn: Dark
+- pressKey: Back
+- openLink: adwam://today
+- assertVisible: Today
+- takeScreenshot: today-dark
+- openLink: 'adwam://settings?sheet=theme'
+- tapOn: Light
+- pressKey: Back
+- openLink: adwam://today
+- assertVisible: Today
+- takeScreenshot: today-light
+
+- openLink: 'adwam://settings?sheet=privacy'
+- assertVisible: Crash reports
+- assertVisible: Anonymous usage statistics
+- tapOn:
+    text: Anonymous usage statistics
+    checked: false
+- tapOn:
+    text: Anonymous usage statistics
+    checked: true
+- tapOn: Delete my data from the server
+- assertVisible: 'Delete server data\?'
+- tapOn: Cancel
+- pressKey: Back
+
+- openLink: adwam://about
+- assertVisible: Adwam
+- assertVisible: Sources
+- takeScreenshot: about
+
+- openLink: adwam://item/kahf
+- assertVisible: 'Sūrat al-Kahf'
+- assertVisible: What to do
+- scrollUntilVisible:
+    element: 'Abū Dāwūd 1047.*'
+    direction: DOWN
+- tapOn: 'Abū Dāwūd 1047.*'
+- scrollUntilVisible:
+    element: Read on Sunnah.com
+    direction: DOWN
+- takeScreenshot: sunnah-sources
+- scrollUntilVisible:
+    element: Report a problem with this item
+    direction: DOWN
+- tapOn: Report a problem with this item
+- assertVisible: Report a problem
+- assertVisible: Open the issue form
+- takeScreenshot: sunnah-report
+- pressKey: Back
+- assertNotVisible: Open the issue form

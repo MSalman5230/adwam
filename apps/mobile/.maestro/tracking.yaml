@@ -1,0 +1,47 @@
+appId: ${APP_ID}
+name: Done, Undo, fasting trackers and make-up days
+---
+- runFlow: setup/in-app.yaml
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Friday morning
+- tapOn: Done
+- assertVisible: Marked done
+- tapOn: Undo
+- assertVisible: Done
+- assertNotVisible: Marked done
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: White Days
+- assertVisible: White Days this month · 1 of 3
+- tapOn: Fasting today
+- assertVisible: 'Fast logged · White Days 2 of 3'
+- tapOn: Undo
+- assertVisible: White Days this month · 1 of 3
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Shawwāl, on a Monday
+- scrollUntilVisible:
+    element: Fasting today
+    direction: DOWN
+- tapOn: Fasting today
+- assertVisible: 'Fast logged · Shawwāl 4 of 6'
+- tapOn: Undo
+- assertNotVisible: 'Fast logged · Shawwāl 4 of 6'
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: End of Shaʿbān
+- scrollUntilVisible:
+    element: Log a make-up fast
+    direction: DOWN
+- tapOn: Log a make-up fast
+- assertVisible: 'Make-up fast logged · 2 left'
+- tapOn: Undo
+- assertVisible: '3 left'

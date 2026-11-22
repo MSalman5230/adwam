@@ -1,0 +1,61 @@
+appId: ${APP_ID}
+name: Open every fixed Moment
+---
+- runFlow: setup/in-app.yaml
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Friday morning
+- assertVisible: 'Friday preparation.*'
+- takeScreenshot: today-friday
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Friday afternoon, rain
+- assertVisible: 'Rain starts.*'
+- takeScreenshot: today-rain
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: A quiet Tuesday
+- assertVisible: Nothing special right now
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: White Days
+- assertVisible: 'White Days fast.*'
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: End of Shaʿbān
+- scrollUntilVisible:
+    element: 'Ramadan days to make up.*'
+    direction: DOWN
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Date correction offer
+- assertVisible: Keep my dates
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Last ten nights
+- assertVisible: '.*last ten.*'
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Shawwāl, on a Monday
+- assertVisible: '.*Shawwāl.*'
+
+- runFlow:
+    file: moment/select.yaml
+    env:
+      MOMENT: Mid Dhul-Qaʿdah
+- assertVisible: '.*Dhul-Qaʿdah.*'
