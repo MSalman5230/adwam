@@ -4,9 +4,11 @@ import {
   Equator,
   Horizon,
   KM_PER_AU,
+  NextGlobalSolarEclipse,
   NextLocalSolarEclipse,
   NextLunarEclipse,
   Observer,
+  SearchGlobalSolarEclipse,
   SearchLocalSolarEclipse,
   SearchLunarEclipse,
   SearchRiseSet,
@@ -87,8 +89,13 @@ export function eclipsesBetween(from: number, to: number, place: Coordinates): V
     }
   };
 
-  let solar = SearchLocalSolarEclipse(searchStart, observer);
-  while (solar.partial_begin.time.date.getTime() < to) {
+  // Local search may look years ahead. A worldwide eclipse is necessary for a local one.
+  // Leave two days around the interval for the difference between the global peak and local contacts.
+  const globalLimit = to + 2 * DAY_MS;
+  let solar = SearchGlobalSolarEclipse(searchStart).peak.date.getTime() < globalLimit
+    ? SearchLocalSolarEclipse(searchStart, observer)
+    : undefined;
+  while (solar && solar.partial_begin.time.date.getTime() < to) {
     const start = solar.partial_begin.time.date.getTime();
     const end = solar.partial_end.time.date.getTime();
     const central = solar.total_begin && solar.total_end
@@ -96,6 +103,7 @@ export function eclipsesBetween(from: number, to: number, place: Coordinates): V
           kind: solar.kind === EclipseKind.Annular ? 'annular' as const : 'total' as const }
       : undefined;
     add('solar', solar.peak.time.date.getTime(), { start, end }, central);
+    if (NextGlobalSolarEclipse(solar.peak.time).peak.date.getTime() >= globalLimit) break;
     solar = NextLocalSolarEclipse(solar.peak.time, observer);
   }
 

@@ -31,9 +31,10 @@ export function syncSchedule(): Promise<void> {
 async function reconcile() {
   const counts: ScheduleCounts = { planned: 0, added: 0, cancelled: 0, kept: 0, failed: 0 };
   try {
-    await registerNotificationPresentation();
-    await refreshNotificationPermissions();
-    const scheduled = await getAllScheduledNotificationsAsync();
+    const [scheduled] = await Promise.all([
+      getAllScheduledNotificationsAsync(),
+      registerNotificationPresentation().then(refreshNotificationPermissions),
+    ]);
     const { settings, trackers, serverCache } = deviceStores;
     const saved = settings.getState().value;
     const state = saved.setupDone && selectReminderState(saved, trackers.getState().value, serverCache.getState().value, catalog.sunnahs);
@@ -68,15 +69,15 @@ async function reconcile() {
       }
     }
 
-    for (const push of missing.values()) {
-      if (push.at <= Date.now()) continue;
+    await Promise.all(Array.from(missing.values(), async (push) => {
+      if (push.at <= Date.now()) return;
       try {
         await scheduleCalendarNotification(push);
         counts.added += 1;
       } catch {
         counts.failed += 1;
       }
-    }
+    }));
   } catch {
     counts.failed += 1;
   }
