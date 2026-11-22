@@ -2,6 +2,11 @@ name: Android preview build
 
 on:
   workflow_dispatch:
+    inputs:
+      build_id:
+        description: Check an existing signed Android Preview build
+        type: string
+        required: false
   schedule:
     - cron: '41 4 * * 1'
 
@@ -31,6 +36,8 @@ jobs:
       - name: Build and check the preview APK
         working-directory: apps/mobile
         shell: bash
+        env:
+          REQUESTED_BUILD_ID: ${{ inputs.build_id }}
         run: |
           bash scripts/verify-eas-account.sh
           shopt -s nullglob
@@ -41,6 +48,15 @@ jobs:
           fi
           build_result=$(mktemp "$RUNNER_TEMP/adwam-preview-build.XXXXXX")
           trap 'rm -f -- "$build_result"' EXIT
-          # A regular file prevents the CLI from truncating large JSON results when it exits.
-          eas build --profile preview --platform android --non-interactive --wait --json > "$build_result"
-          node scripts/check-preview-apk.mjs "${tools[-1]}" - < "$build_result"
+          if [[ -n "$REQUESTED_BUILD_ID" ]]; then
+            [[ "$REQUESTED_BUILD_ID" =~ ^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$ ]]
+            eas build:view "$REQUESTED_BUILD_ID" --json > "$build_result"
+            node scripts/check-preview-apk.mjs "${tools[-1]}" - < "$build_result"
+          else
+            message="GitHub Preview ${GITHUB_RUN_ID}/${GITHUB_RUN_ATTEMPT}"
+            eas build --profile preview --platform android --non-interactive --wait --message "$message" --json >/dev/null
+            bash scripts/verify-eas-account.sh
+            eas build:list --build-profile preview --platform android --git-commit-hash "$GITHUB_SHA" \
+              --status finished --limit 20 --json --non-interactive > "$build_result"
+            node scripts/check-preview-apk.mjs "${tools[-1]}" - "$message" < "$build_result"
+          fi
