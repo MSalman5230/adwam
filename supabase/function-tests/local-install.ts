@@ -33,7 +33,9 @@ export async function withLocalInstall<T>(run: (install: LocalInstall) => Promis
     });
     await removed.body?.cancel();
     const areaRemoved = await service.from('areas').delete().eq('id', area.id);
-    if (!removed.ok || areaRemoved.error) throw new Error('Could not clean up the local test install');
+    if ((!removed.ok && removed.status !== 404) || areaRemoved.error) {
+      throw new Error('Could not clean up the local test install');
+    }
   });
 }
 

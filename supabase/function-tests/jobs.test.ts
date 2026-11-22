@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { sendExpoPushes, type PushMessage } from '../functions/_lib/expo-push.ts';
 import { getForecast, planForecast } from '../functions/weather-tick/forecast.ts';
-import { simulateLocalRain } from './local-install.ts';
+import { simulateLocalRain, withLocalInstall } from './local-install.ts';
 import forecastFixture from './fixtures/open-meteo-berlin.json' with { type: 'json' };
 import ticketsFixture from './fixtures/expo-tickets.json' with { type: 'json' };
 
@@ -47,4 +47,18 @@ Deno.test('Expo throttling can retry and a lost response stays unconfirmed', asy
 
 Deno.test('local anonymous install sees its simulated rain card and one queued push', async () => {
   assert.deepEqual(await simulateLocalRain(), { card: true, reusedEvent: true, queued: 1 });
+});
+
+Deno.test('forgetting the local install removes its Auth user and invalidates its refresh token', async () => {
+  await withLocalInstall(async ({ app, service, id }) => {
+    const receipt = await app.rpc('forget_me_v1');
+    assert.equal(receipt.error, null);
+
+    const user = await service.auth.admin.getUserById(id);
+    assert.equal(user.error?.status, 404);
+
+    const refreshed = await app.auth.refreshSession();
+    assert.equal(refreshed.data.session, null);
+    assert.ok(refreshed.error);
+  });
 });
