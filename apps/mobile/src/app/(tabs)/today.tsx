@@ -18,6 +18,7 @@ import { useMessageFormat } from '../../language/useMessageFormat';
 import { appVersion } from '../../services/app-version';
 import { openNotificationSettings } from '../../services/notification-settings';
 import { needsServerUpdate } from '../../services/server-sync-payload';
+import { track } from '../../services/usage-statistics';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
 import { selectReminderState, selectToday } from '../../state/selectors';
 import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
@@ -100,10 +101,14 @@ export default function TodayScreen() {
     }
     const previous = settingsStore.getState().value;
     settingsStore.getState().update((value) => answerTodayNotice(value, id, action, year, correction));
+    if (id === 'usage' && action === 'share' && previous.usageSetup) {
+      track({ event: 'setup_completed', properties: previous.usageSetup });
+    }
     if (id === 'pause') setSnack({ message: t('snackbar.resumed') });
     if (id === 'udhiyah') setSnack({ message: t(action === 'yes' ? 'snackbar.udhiyahOn' : 'snackbar.udhiyahOff') });
     if (id === 'correction' && correction) {
       const accepted = action === 'accept';
+      track({ event: 'correction_answered', properties: { answer: accepted ? 'used' : 'kept' } });
       setSnack({
         message: accepted ? t('snackbar.dateAccepted', { month: correction.month, date: correction.start }) : t('snackbar.dateUnchanged'),
         undo: () => {

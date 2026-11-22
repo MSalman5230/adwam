@@ -8,6 +8,7 @@ import { Button, Switch } from '../components/controls';
 import { Sheet } from '../components/overlays';
 import { t, type MessageFormat } from '../language/messages';
 import { deleteServerData } from '../services/server-sync';
+import { track } from '../services/usage-statistics';
 import { supabase } from '../services/supabase';
 import { clockStore } from '../state/native';
 import type { Settings } from '../state/schema';
@@ -162,7 +163,10 @@ export function PrivacySheet({ settings, update, onClose }: SettingsProps) {
         <ToggleRow title={t('sheet.privacy.crash')} description={t('sheet.privacy.crashHint')} checked={settings.crashReports}
           onChange={(crashReports) => update((value) => ({ ...value, crashReports }))} />
         <ToggleRow title={t('sheet.privacy.usage')} description={t('sheet.privacy.usageHint')} checked={settings.usageStats}
-          onChange={(usageStats) => update((value) => ({ ...value, usageStats, usagePrompt: false }))} />
+          onChange={(usageStats) => {
+            update((value) => ({ ...value, usageStats, usagePrompt: false, usageSetup: undefined }));
+            if (usageStats && settings.usageSetup) track({ event: 'setup_completed', properties: settings.usageSetup });
+          }} />
       </View>
       <Button label={t('sheet.privacy.delete')} variant="outlined" style={styles.action} onPress={() => {
         setResult(undefined);

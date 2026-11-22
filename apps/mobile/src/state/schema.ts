@@ -47,6 +47,12 @@ const reminderPreferences = z.object({
   eclipseQuiet: z.boolean().default(false),
 });
 
+export const setupUsageSchema = z.object({
+  preset: z.enum(['recommended', 'inapp', 'custom']),
+  locationMode: z.enum(['city', 'current']),
+  notifications: z.enum(['unset', 'denied', 'granted']),
+});
+
 export const settingsSchema = z.object({
   setupDone: z.boolean().default(false),
   appearance: z.enum(['system', 'light', 'dark']).default('system'),
@@ -61,6 +67,7 @@ export const settingsSchema = z.object({
   correctionChoices: z.record(z.string(), z.enum(['accepted', 'declined'])).default({}),
   usageStats: z.boolean().default(false),
   usagePrompt: z.boolean().default(false),
+  usageSetup: setupUsageSchema.optional(),
   crashReports: z.boolean().default(true),
 });
 

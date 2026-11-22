@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { useStore } from 'zustand';
 
 import { useNotificationRouting } from '../navigation/useNotificationRouting';
+import { useUsageScreens } from '../navigation/useUsageScreens';
 import { startCrashReporting } from '../services/crash-reporting';
 import { useNotificationLifecycle } from '../services/notification-lifecycle';
 import { useServerSyncLifecycle } from '../services/server-sync-lifecycle';
@@ -48,6 +49,7 @@ export default function RootLayout() {
   useForegroundClock();
   useNotificationLifecycle();
   useServerSyncLifecycle();
+  useUsageScreens();
   return (
     <ThemeProvider>
       <Navigator />

@@ -16,6 +16,7 @@ import { CityPicker } from '../../location/CityPicker';
 import type { NamedCity } from '../../location/cities';
 import { locateCurrentCity } from '../../location/current-city';
 import { requestSetupNotifications } from '../../services/setup-notifications';
+import { track } from '../../services/usage-statistics';
 import { serverCacheStore, settingsStore, trackersStore } from '../../state/native';
 import type { Settings } from '../../state/schema';
 import { selectReminderState } from '../../state/selectors';
@@ -70,11 +71,14 @@ export default function SetupScreen() {
   const finish = (notifications: Settings['reminders']['notifications']) => {
     const state = selectReminderState(settingsStore.getState().value, trackersStore.getState().value,
       serverCacheStore.getState().value, catalog.sunnahs);
-    if (!state) return;
+    if (!state || !location) return;
     const reminders = applyPreset(state, preset === 'inapp' ? 'inapp' : 'recommended');
+    const properties = { preset, locationMode: location.source, notifications };
     settingsStore.getState().update((value) => ({
-      ...value, reminders: { ...value.reminders, ...reminders, notifications }, setupDone: true, usagePrompt: true,
+      ...value, reminders: { ...value.reminders, ...reminders, notifications }, setupDone: true,
+      usagePrompt: !value.usageStats, usageSetup: value.usageStats ? undefined : properties,
     }));
+    if (settings.usageStats) track({ event: 'setup_completed', properties });
     if (preset === 'custom') router.navigate({ pathname: '/reminders', params: { fromSetup: '1' } }, { withAnchor: true });
     else router.replace({ pathname: '/today', params: { setup: '1' } });
   };
