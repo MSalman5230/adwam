@@ -120,10 +120,10 @@ export function Chip({ label, selected, onPress }: { label: string; selected: bo
 export function Tag({ label, tone = 'sage', icon }: { label: string; tone?: 'sage' | 'gold' | 'rust'; icon?: IconName }) {
   const { palette } = useTheme();
   const [backgroundColor, color] = tone === 'rust' ? [palette.rustSoft, palette.rust]
-    : tone === 'gold' ? [palette.goldSoft, palette.gold] : [palette.sage, palette.onSage];
+    : tone === 'gold' ? [palette.goldSoft, palette.goldText] : [palette.sage, palette.onSage];
   return (
     <View style={[styles.tag, { backgroundColor }]}>
-      {icon && <Icon name={icon} size={14} color={color} />}
+      {icon && <Icon name={icon} size={14} color={tone === 'gold' ? palette.gold : color} />}
       <Text style={[typography.tag, styles.wrap, { color }]}>{label}</Text>
     </View>
   );
