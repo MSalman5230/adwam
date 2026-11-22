@@ -1,0 +1,7 @@
+{
+  "nodeModulesDir": "none",
+  "imports": {
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.119.2",
+    "@sentry/deno": "npm:@sentry/deno@8.55.0"
+  }
+}

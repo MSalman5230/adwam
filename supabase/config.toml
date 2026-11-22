@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.publish-correction]
 verify_jwt = false
+
+[functions.cleanup]
+verify_jwt = false
