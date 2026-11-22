@@ -25,7 +25,7 @@ function checkPermissions(aapt2, apk) {
   log('Preview APK passed the location and exact-alarm permission check.');
 }
 
-async function checkBuild(aapt2) {
+async function checkBuild(aapt2, expectedMessage) {
   let result;
   try {
     let input = '';
@@ -34,7 +34,8 @@ async function checkBuild(aapt2) {
   } catch {
     throw new Error('EAS did not return a valid build result.');
   }
-  const build = Array.isArray(result) ? result[0] : result;
+  const builds = Array.isArray(result) ? result : [result];
+  const build = expectedMessage ? builds.find((row) => row?.message === expectedMessage) : builds[0];
   const artifact = build?.artifacts?.applicationArchiveUrl ?? build?.artifacts?.buildUrl;
   if (build?.status !== 'FINISHED' || typeof artifact !== 'string' || !artifact.startsWith('https://')) {
     throw new Error('EAS did not return a finished preview APK.');
@@ -57,9 +58,9 @@ async function checkBuild(aapt2) {
 }
 
 try {
-  const [aapt2, source] = process.argv.slice(2);
+  const [aapt2, source, expectedMessage] = process.argv.slice(2);
   if (!aapt2 || !source) throw new Error('Provide the aapt2 executable and the APK path, or pass - to read the EAS result.');
-  if (source === '-') await checkBuild(aapt2);
+  if (source === '-') await checkBuild(aapt2, expectedMessage);
   else checkPermissions(aapt2, source);
 } catch (failure) {
   error(failure instanceof Error ? failure.message : 'Preview APK check failed.');
