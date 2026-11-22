@@ -147,7 +147,7 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
           <Button variant="text" style={styles.footerButton} label={t('about.weather')} icon="rainy"
             onPress={() => openLink('https://open-meteo.com/')} />
         )}
-        <Prose style={[typography.small, { color: palette.ink3 }]}>
+        <Prose style={[typography.small, { color: palette.paperCaption }]}>
           {t('detail.entryVersion', { id: `${entry.group}.${entry.id}`, version: catalog.version })}
         </Prose>
       </View>
@@ -164,7 +164,7 @@ function DetailStatus({ message, label }: { message: Msg; label: string }) {
   return (
     <View style={[styles.status, { backgroundColor: active ? palette.sage : soon ? palette.goldSoft : palette.paper2 }]}>
       <View aria-hidden style={[styles.statusDot, { backgroundColor: color }]} />
-      <Prose style={[typography.button, styles.statusLabel, { color }]}>{label}</Prose>
+      <Prose style={[typography.button, styles.statusLabel, { color: soon ? palette.goldText : color }]}>{label}</Prose>
     </View>
   );
 }

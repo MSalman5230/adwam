@@ -22,6 +22,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     owner: 'msalman5230',
     version: '0.1.0',
     scheme: 'adwam',
+    icon: './assets/icon.png',
     platforms: ['android'],
     userInterfaceStyle: 'automatic',
     runtimeVersion: { policy: 'fingerprint' },
@@ -32,6 +33,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: id,
+      adaptiveIcon: {
+        foregroundImage: './assets/icon-foreground.png',
+        monochromeImage: './assets/icon-monochrome.png',
+        backgroundColor: '#1E5B47',
+      },
       ...(process.env.GOOGLE_SERVICES_JSON && {
         googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
       }),

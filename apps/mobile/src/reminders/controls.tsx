@@ -37,7 +37,7 @@ export function PresetCard({ estimate, preset, onChange }: { estimate: PushEstim
   ].filter(Boolean).join(' · ');
   const more = other ? t('reminders.plus', { text: other }) : t('reminders.nothingElse');
   return <Panel style="summary">
-    <Prose style={[typography.overline, { color: palette.gold }]}>{t('reminders.total')}</Prose>
+    <Prose style={[typography.overline, { color: palette.goldText }]}>{t('reminders.total')}</Prose>
     <Prose accessibilityLiveRegion="polite" style={[typography.sheetTitle, styles.total]}>{none ? t('reminders.noPushes') : total}</Prose>
     <Prose style={[typography.supporting, styles.subtitle, { color: palette.ink2 }]}>{none ? t('reminders.allOnToday') : more}</Prose>
     <View style={styles.presetOptions}>
@@ -106,7 +106,7 @@ export function ReminderGroup({ group, state, year, onToggle, onChoice, onOpen, 
         const newMonth = group === 'yearly' && (!previous || monthOf(previous) !== month);
         const gated = Boolean(entry.rules?.includes('requires-udhiyah') && state.preferences.udhiyah?.[year] !== 'yes');
         return <View key={entry.id} style={index > 0 && !newMonth && [styles.divider, { borderColor: palette.hair }]}>
-          {newMonth && <Prose accessibilityRole="header" style={[typography.overline, styles.month, { color: palette.gold }]}>
+          {newMonth && <Prose accessibilityRole="header" style={[typography.overline, styles.month, { color: palette.goldText }]}>
             {month ? t('detail.hijriMonth', { month }) : t('reminders.throughYear')}
           </Prose>}
           <ReminderRow entry={entry} choice={choice} gated={gated} onChoice={onChoice} onOpen={onOpen} onUdhiyah={onUdhiyah} />
