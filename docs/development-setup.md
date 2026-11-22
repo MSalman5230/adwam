@@ -83,7 +83,7 @@ Supabase gives each Edge Function its own project URL and keys automatically. Af
 
 ### Correction admin sign-in
 
-Add `https://msalman5230.github.io/adwam/` to the staging project’s Auth redirect URLs. Set the staging magic-link email template to [the sign-in code template](../supabase/templates/admin-code.html). The owner and helper need existing, confirmed email users in `auth.users` and matching IDs in `public.admins`. Supabase’s built-in email sends to project organization members. Configure SMTP or invite the helper to the organization if their email is outside it.
+The staging deployment enables anonymous sign-in, adds `https://msalman5230.github.io/adwam/` to Auth redirect URLs, and installs [the sign-in code template](../supabase/templates/admin-code.html) when the scoped token has Auth Config read and write permissions. If the deployment reports missing Auth permissions, set those three options in the staging dashboard. The owner and helper need existing, confirmed email users in `auth.users` and matching IDs in `public.admins`. Supabase’s built-in email sends to project organization members. Configure SMTP or invite the helper to the organization if their email is outside it.
 
 To test the admin page locally, run `pnpm db:start`, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_KEY` from the local stack, then run `pnpm --filter @adwam/admin dev`. Open `http://127.0.0.1:5173/adwam/`. The local inbox at `http://127.0.0.1:54324` receives the sign-in code.
 
@@ -95,10 +95,11 @@ Use two GitHub environments, `staging` and `production`. The production environm
 |---|---|---|
 | `EXPO_TOKEN` | Both | Builds, updates and store uploads. Create a robot user in Expo for this. |
 | `SUPABASE_ACCESS_TOKEN` | Each its own | Deploying migrations and functions. A scoped token for that environment's project only, with Project Settings, API Keys, API Key Secrets, Migrations and Database on Read, and Edge Functions on Read-write. It expires within a year, so renew it before then. |
-| `SUPABASE_DB_PASSWORD` | Each its own | Running migrations |
-| `SENTRY_AUTH_TOKEN` | Both | Source maps for updates published from CI |
+| `SUPABASE_DB_PASSWORD` | Each its own | Running migrations when the scoped token cannot create a temporary database login |
 
 Each environment also holds its Supabase project ID as a plain variable.
+
+Staging updates run on Expo Workflows in Preview so the Sentry upload reads `SENTRY_AUTH_TOKEN` directly from EAS. Staging deploys set the app’s two public Supabase variables in EAS Preview from the staging project configuration.
 
 ### Local files
 

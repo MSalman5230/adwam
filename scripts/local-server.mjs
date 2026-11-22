@@ -18,6 +18,7 @@ const env = {
   ...process.env,
   SUPABASE_URL: values.API_URL,
   SUPABASE_SERVICE_ROLE_KEY: values.SERVICE_ROLE_KEY,
+  SUPABASE_SECRET_KEYS: '{}',
   ADWAM_LOCAL_ANON_KEY: values.ANON_KEY,
   ADWAM_JOB_KEY: randomBytes(32).toString('hex'),
   SENTRY_DSN: '',
