@@ -4,7 +4,7 @@ Production begins after the owner provisions its own Supabase project, scoped cr
 
 ## Before tagging
 
-1. Confirm the owner approved the content, privacy notice, licensing and store listing. Confirm the data-protection review and physical notification tests are complete and the release-blocker list is empty.
+1. Confirm the owner approved the content, privacy notice, licensing and store listing. Confirm the data-protection review and physical notification tests are complete and the release-blocker list is empty. [Play listing and Data safety review](../release/android/store-review.html) · [Privacy policy draft](../release/android/privacy-policy.html)
 2. Check out the intended release commit. Start local Supabase with `pnpm db:start`. Run `pnpm check`, `pnpm db:test`, `pnpm server:test`, and `pnpm --filter @adwam/content validate --release`. Run Android end-to-end tests on the same commit and retain the JUnit report and screenshots.
 3. Install the signed Preview and repeat offline Setup through Today, notification delivery and tap, push receipt, and the date-correction flow. Check that Sentry shows app filenames and line numbers for a Preview test crash.
 4. Confirm the Android target API against the [current Play requirement](https://support.google.com/googleplay/android-developer/answer/11926878). Compare the bundle manifest with the signed Preview and verify the package, version code, and required permissions. Confirm the native fingerprint and update channel.
