@@ -1,5 +1,5 @@
 import type { GroupedSunnah } from '@adwam/content/schema';
-import { detailState, todayState, upcomingRows, type CivilDate, type ReminderState, type UpcomingFilter } from '@adwam/core';
+import { detailState, todayState, upcomingRows, weatherArea, type CivilDate, type ReminderState, type UpcomingFilter } from '@adwam/core';
 
 import type { CorrectionOffer, ServerCache, Settings, Trackers } from './schema';
 
@@ -25,7 +25,7 @@ export const selectReminderState = memoizeLast((
     calendar: { place: location, prayer, hijri },
     preferences: reminders,
     tracking: { done: trackers.done, fastLog: trackers.fastLog, makeup: trackers.makeup ?? undefined },
-    events: cache.events,
+    events: !cache.areaId || cache.areaId === weatherArea(location).id ? cache.events : [],
     catalog,
   };
 });

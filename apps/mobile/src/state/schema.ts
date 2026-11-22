@@ -69,13 +69,24 @@ export const trackersSchema = z.object({
   makeup: z.int().nonnegative().nullable().default(null),
 });
 
+export const serverConfigSchema = z.object({
+  minAppVersion: z.string().regex(/^\d+\.\d+\.\d+(?:[-+][\w.+-]+)?$/),
+  weatherEnabled: z.boolean(), debugToolsEnabled: z.boolean(),
+});
+
+export const weatherEventSchema = z.object({
+  id: z.string(), start: z.number().finite(), end: z.number().finite(),
+  weather: z.enum(['rain-start', 'rain-stop', 'heavy-rain', 'thunder', 'wind']),
+  pushAt: z.number().finite().optional(),
+});
+
+export const serverCorrectionSchema = correctionOffer.omit({ region: true }).extend({ withdrawn: z.boolean() });
+
 export const serverCacheSchema = z.object({
   lastSyncedAt: z.number().finite().nullable().default(null),
-  events: z.array(z.object({
-    id: z.string(), start: z.number().finite(), end: z.number().finite(),
-    weather: z.enum(['rain-start', 'rain-stop', 'heavy-rain', 'thunder', 'wind']),
-    pushAt: z.number().finite().optional(),
-  })).default([]),
+  config: serverConfigSchema.nullable().default(null),
+  areaId: z.string().nullable().default(null),
+  events: z.array(weatherEventSchema).default([]),
   corrections: corrections.default([]),
   correctionOffer: correctionOffer.nullable().default(null),
 });

@@ -18,7 +18,7 @@ import { scheduleDebugPush } from '../../developer-tools/notification-test';
 import { t } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
 import { canTestCrashReporting, triggerPreviewTestCrash } from '../../services/crash-reporting';
-import { checkLocalSupabase, resetLocalSupabaseSession } from '../../services/local-supabase';
+import { checkLocalSupabase, resetLocalSupabaseSession } from '../../services/supabase';
 import { scheduledTime } from '../../services/notification-request';
 import { deviceStores, settingsStore } from '../../state/native';
 import { moments } from '../../state/moments';
