@@ -15,5 +15,9 @@ jobs:
       upload_sentry_sourcemaps: true
     hooks:
       before_update:
-        - name: Verify the EAS account
-          run: bash scripts/verify-eas-account.sh
+        - name: Verify the Adwam project
+          run: |
+            if [[ "${EAS_BUILD_PROJECT_ID:-}" != 'c4990a3f-ae86-48d7-9b21-98f73762b49b' ]]; then
+              echo 'This Preview update must run on the msalman5230 Adwam project.' >&2
+              exit 1
+            fi
