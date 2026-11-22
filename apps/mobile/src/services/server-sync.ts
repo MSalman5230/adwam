@@ -104,10 +104,10 @@ export async function simulateServerRain() {
 
 async function refresh() {
   if (!supabase) return true;
-  const payload = installSnapshot(settingsStore.getState().value);
-  if (!payload) return true;
   const id = await anonymousInstall();
   if (!id) return false;
+  const payload = installSnapshot(settingsStore.getState().value);
+  if (!payload) return true;
   const configResult = await supabase.rpc('config_v1');
   if (configResult.error) return false;
   const config = serverConfigSchema.parse(configResult.data);
