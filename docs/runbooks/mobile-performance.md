@@ -22,3 +22,14 @@ A bundled development APK on the Android 16 Pixel emulator used the London sched
 The calendar planner took 67–82 ms on these five launches. The first launch and full schedule rebuild exceeded the two-second and half-second targets. The Milestone 6.4 acceptance test still requires measurements on the low-end test phone.
 
 For that phone, record the model, Android version, signed build ID, five launch measurements and the result of adding the full schedule. Use the same city, notification preset and airplane mode for repeat runs.
+
+## Android startup fonts
+
+Two local x86-64 development APKs used release builds on the same Android 16 emulator in airplane mode. Each APK was installed twice for three process launches at a time. The test kept the setup state and measured from an Android launch marker to Today’s layout.
+
+| Font loading | Median startup (6 launches) | Startup range | APK bytes |
+| --- | ---: | ---: | ---: |
+| JavaScript at startup | 3,899 ms | 2,136–6,487 ms | 59,409,266 |
+| Embedded in the Android build | 3,378 ms | 1,934–4,977 ms | 59,311,501 |
+
+The emulator found all ten embedded font families at startup. The median improved by 521 ms in this run and still exceeded the two-second target. This comparison did not measure a full notification rebuild.

@@ -1,4 +1,3 @@
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { useStore } from 'zustand';
 
@@ -9,7 +8,6 @@ import { startCrashReporting } from '../services/crash-reporting';
 import { useNotificationLifecycle } from '../services/notification-lifecycle';
 import { useServerSyncLifecycle } from '../services/server-sync-lifecycle';
 import { useForegroundClock, useReminderStores } from '../state/useClock';
-import { bundledFonts } from '../theme/fonts';
 import { isTestBuild } from '../theme/isTestBuild';
 import { ThemeProvider, useTheme } from '../theme/ThemeProvider';
 import { DeviceMotionProvider, useDeviceReduceMotion } from '../theme/useDeviceReduceMotion';
@@ -24,9 +22,7 @@ function Navigator() {
   const reduced = useDeviceReduceMotion();
   const { settings } = useReminderStores();
   const setupDone = useStore(settings, ({ value }) => value.setupDone);
-  const [loaded, error] = useFonts(bundledFonts);
-  useNotificationRouting(setupDone && (loaded || !!error));
-  if (!loaded && !error) return null;
+  useNotificationRouting(setupDone);
   return (
     <Stack screenOptions={{ headerShown: false, animation: reduced ? 'none' : 'slide_from_right', contentStyle: { backgroundColor: palette.paper } }}>
       <Stack.Screen name="index" options={{ animation: 'none' }} />
