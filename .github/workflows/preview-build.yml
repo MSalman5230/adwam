@@ -39,5 +39,8 @@ jobs:
             echo 'Android build tools are missing.' >&2
             exit 1
           fi
-          eas build --profile preview --platform android --non-interactive --json |
-            node scripts/check-preview-apk.mjs "${tools[-1]}" -
+          build_result=$(mktemp "$RUNNER_TEMP/adwam-preview-build.XXXXXX")
+          trap 'rm -f -- "$build_result"' EXIT
+          # A regular file prevents the CLI from truncating large JSON results when it exits.
+          eas build --profile preview --platform android --non-interactive --wait --json > "$build_result"
+          node scripts/check-preview-apk.mjs "${tools[-1]}" - < "$build_result"
