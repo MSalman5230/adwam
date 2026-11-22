@@ -1,5 +1,6 @@
 - id: monthu
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Monday and Thursday fast
   short: Keep the voluntary fast.
@@ -57,7 +58,8 @@
         quiet: advance
       title: Thursday fast
 - id: kahf
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Sūrat al-Kahf
   short: Read al-Kahf and send extra ṣalawāt.
@@ -103,7 +105,8 @@
         anchor: morning
         quiet: delay
 - id: sajdah
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   title: "Friday Fajr: al-Sajdah and al-Insān"
   short: Recite them if you lead or pray Fajr yourself.
@@ -131,7 +134,8 @@
       check: done
       upcoming: false
 - id: friday-prep
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Friday preparation
   short: Ghusl, siwāk, clean clothes, arrive early.
@@ -174,7 +178,8 @@
           title: Friday · al-Kahf and preparation
           body: Ghusl, siwāk, clean clothes, arrive early. Read al-Kahf before Maghrib.
 - id: after-jumuah
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   title: Four rakʿahs after Jumuʿah
   short: Pray four rakʿahs, or two at home.
@@ -202,7 +207,8 @@
       check: done
       upcoming: false
 - id: last-hour
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Last hour of Friday
   short: Spend it in duʿāʾ.

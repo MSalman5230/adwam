@@ -1,4 +1,5 @@
 - id: tirmidhi-3451
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "3451"
   url: https://sunnah.com/tirmidhi:3451
@@ -18,6 +19,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: tirmidhi-3513
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "3513"
   url: https://sunnah.com/tirmidhi:3513
@@ -35,6 +37,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1032
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1032"
   url: https://sunnah.com/bukhari:1032
@@ -50,6 +53,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-846
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "846"
   url: https://sunnah.com/bukhari:846
@@ -65,6 +69,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1014
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1014"
   url: https://sunnah.com/bukhari:1014
@@ -80,6 +85,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: adab-723
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: adab
   number: "723"
   url: https://sunnah.com/adab:723
@@ -96,6 +102,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-899b
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 899b
   url: https://sunnah.com/muslim:899b
@@ -116,6 +123,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-1047
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "1047"
   url: https://sunnah.com/abudawud:1047
@@ -142,6 +150,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-1048
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "1048"
   url: https://sunnah.com/abudawud:1048
@@ -163,6 +172,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-14-125
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "2437"
   url: https://sunnah.com/abudawud/14/125
@@ -183,6 +193,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-2356
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "2356"
   url: https://sunnah.com/abudawud:2356
@@ -203,6 +214,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-2428
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "2428"
   url: https://sunnah.com/abudawud:2428
@@ -237,6 +249,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-345
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "345"
   url: https://sunnah.com/abudawud:345
@@ -326,6 +339,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-5097
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "5097"
   url: https://sunnah.com/abudawud:5097
@@ -351,6 +365,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: abudawud-5099
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: abudawud
   number: "5099"
   url: https://sunnah.com/abudawud:5099
@@ -372,6 +387,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1044
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1044"
   url: https://sunnah.com/bukhari:1044
@@ -403,6 +419,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-13-18
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "969"
   url: https://sunnah.com/bukhari/13/18
@@ -423,6 +440,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1503
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1503"
   url: https://sunnah.com/bukhari:1503
@@ -478,6 +496,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1923
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1923"
   url: https://sunnah.com/bukhari:1923
@@ -493,6 +512,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1950
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1950"
   url: https://sunnah.com/bukhari:1950
@@ -510,6 +530,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1957
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1957"
   url: https://sunnah.com/bukhari:1957
@@ -526,6 +547,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1969
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1969"
   url: https://sunnah.com/bukhari:1969
@@ -562,6 +584,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-1988
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "1988"
   url: https://sunnah.com/bukhari:1988
@@ -602,6 +625,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-2017
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "2017"
   url: https://sunnah.com/bukhari:2017
@@ -618,6 +642,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-2021
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "2021"
   url: https://sunnah.com/bukhari:2021
@@ -636,6 +661,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-2024
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "2024"
   url: https://sunnah.com/bukhari:2024
@@ -653,6 +679,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-2026
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "2026"
   url: https://sunnah.com/bukhari:2026
@@ -685,6 +712,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-5546
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "5546"
   url: https://sunnah.com/bukhari:5546
@@ -703,6 +731,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-5569
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "5569"
   url: https://sunnah.com/bukhari:5569
@@ -724,6 +753,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-6
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "6"
   url: https://sunnah.com/bukhari:6
@@ -745,6 +775,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-880
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "880"
   url: https://sunnah.com/bukhari:880
@@ -766,6 +797,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-883
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "883"
   url: https://sunnah.com/bukhari:883
@@ -788,6 +820,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-937
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "937"
   url: https://sunnah.com/bukhari:937
@@ -808,6 +841,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-953
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "953"
   url: https://sunnah.com/bukhari:953
@@ -824,6 +858,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: bukhari-986
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: bukhari
   number: "986"
   url: https://sunnah.com/bukhari:986
@@ -840,6 +875,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: ibnmajah-1388
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: ibnmajah
   number: "1388"
   url: https://sunnah.com/ibnmajah:1388
@@ -865,6 +901,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: ibnmajah-1390
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: ibnmajah
   number: "1390"
   url: https://sunnah.com/ibnmajah:1390
@@ -885,6 +922,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: malik-56-26
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: malik
   number: 56/26
   url: https://sunnah.com/malik/56/26
@@ -932,6 +970,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-1134a
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 1134a
   url: https://sunnah.com/muslim:1134a
@@ -950,6 +989,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-1141b
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 1141b
   url: https://sunnah.com/muslim:1141b
@@ -989,6 +1029,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-1160
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: "1160"
   url: https://sunnah.com/muslim:1160
@@ -1007,6 +1048,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-1162b
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 1162b
   url: https://sunnah.com/muslim:1162b
@@ -1049,6 +1091,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-1163a
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 1163a
   url: https://sunnah.com/muslim:1163a
@@ -1066,6 +1109,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-1164a
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 1164a
   url: https://sunnah.com/muslim:1164a
@@ -1112,6 +1156,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-1977g
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 1977g
   url: https://sunnah.com/muslim:1977g
@@ -1168,6 +1213,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-853
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: "853"
   url: https://sunnah.com/muslim:853
@@ -1186,6 +1232,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-879a
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 879a
   url: https://sunnah.com/muslim:879a
@@ -1205,6 +1252,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-881a
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: 881a
   url: https://sunnah.com/muslim:881a
@@ -1221,6 +1269,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: muslim-898
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: muslim
   number: "898"
   url: https://sunnah.com/muslim:898
@@ -1239,6 +1288,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: nasai-2424
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: nasai
   number: "2424"
   url: https://sunnah.com/nasai:2424
@@ -1258,6 +1308,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: tirmidhi-3585
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "3585"
   url: https://sunnah.com/tirmidhi:3585
@@ -1281,6 +1332,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: tirmidhi-497
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "497"
   url: https://sunnah.com/tirmidhi:497
@@ -1300,6 +1352,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: tirmidhi-530
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "530"
   url: https://sunnah.com/tirmidhi:530
@@ -1318,6 +1371,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: tirmidhi-542
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "542"
   url: https://sunnah.com/tirmidhi:542
@@ -1336,6 +1390,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: tirmidhi-747
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "747"
   url: https://sunnah.com/tirmidhi:747
@@ -1355,6 +1410,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: tirmidhi-807
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: tirmidhi
   number: "807"
   url: https://sunnah.com/tirmidhi:807
@@ -1375,6 +1431,7 @@
     fetched: 2026-11-21
     translator: English translation via Sunnah.com
 - id: urn-504320
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   collection: malik
   number: 10/2
   url: https://sunnah.com/urn/504320

@@ -1,4 +1,5 @@
 - id: quran-18
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 18
   label: Sūrat al-Kahf
   url: https://quran.com/18
@@ -7,14 +8,17 @@
   label: Sūrat al-Sajdah
   url: https://quran.com/32
 - id: quran-2-185
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 2
   ayah: 185
   url: https://quran.com/2/185
 - id: quran-2-203
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 2
   ayah: 203
   url: https://quran.com/2/203
 - id: quran-9-36
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   surah: 9
   ayah: 36
   url: https://quran.com/9/36

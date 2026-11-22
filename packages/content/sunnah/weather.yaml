@@ -1,5 +1,6 @@
 - id: rain
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Rain starts
   short: Say the duʿāʾ for beneficial rain.
@@ -30,7 +31,8 @@
         quiet: drop
       inlineDua: rain-beneficial
 - id: rain-stops
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   title: Rain stops
   short: Credit the rain to Allah.
@@ -50,7 +52,8 @@
         to:
           event: end
 - id: heavy-rain
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Heavy rain
   short: Ask for it around us, not upon us.
@@ -77,7 +80,8 @@
         body: Ask for it around us, not upon us.
         quiet: drop
 - id: thunder
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   title: Thunder
   short: Pause and glorify Allah.
@@ -101,7 +105,8 @@
         to:
           event: end
 - id: wind
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Strong wind or a storm
   short: Don’t curse the wind. Ask for its good.
@@ -132,7 +137,8 @@
         body: Don’t curse the wind. Ask for its good.
         quiet: drop
 - id: eclipse
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: push
   title: Solar or lunar eclipse
   short: Pray, make duʿāʾ, say takbīr and give charity.

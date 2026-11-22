@@ -1,5 +1,6 @@
 - id: sacred
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   title: Sacred months
   short: Increase good deeds and guard against wrongdoing.
@@ -33,7 +34,8 @@
         body: Increase good deeds and guard against wrongdoing.
         rank: 10
 - id: muharram
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: muharram
   tier: inapp
   title: Muḥarram
@@ -58,7 +60,8 @@
         body: The best month for voluntary fasting after Ramadan.
         rank: 5
 - id: ashura
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: muharram
   tier: push
   title: ʿĀshūrāʾ fast
@@ -112,7 +115,8 @@
       upcomingGroup:
         key: ashura
 - id: shaban
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: shaban
   tier: push
   title: Shaʿbān
@@ -160,7 +164,8 @@
         anchor: morning
         quiet: delay
 - id: ramadan-daily
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: ramadan
   tier: inapp
   title: Ramadan, daily
@@ -224,7 +229,8 @@
       upcomingGroup:
         key: iftar
 - id: last-ten
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: ramadan
   tier: push
   title: Last ten nights
@@ -298,7 +304,8 @@
             day: 20
       inlineDua: laylat-al-qadr
 - id: zakat
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: ramadan
   tier: push
   title: Zakāt al-fiṭr
@@ -347,7 +354,8 @@
             month: ramadan
             day: 27
 - id: eid-fitr-night
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: shawwal
   tier: inapp
   title: Eid takbīr
@@ -375,7 +383,8 @@
       startAnchor: from-maghrib
       endAnchor: eid-prayer
 - id: eid-fitr
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: shawwal
   tier: push
   title: Eid al-Fiṭr
@@ -413,7 +422,8 @@
         anchor: after-fajr
         quiet: delay
 - id: shawwal6
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: shawwal
   tier: push
   title: Six Shawwāl fasts
@@ -461,7 +471,8 @@
       upcomingGroup:
         key: shawwal
 - id: hair-nails
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: dhul-qadah
   tier: push
   title: Hair and nails, if offering uḍḥiyah
@@ -523,7 +534,8 @@
       upcomingGroup:
         key: hair
 - id: dh-ten
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: dhul-hijjah
   tier: push
   title: First ten days of Dhul-Ḥijjah
@@ -570,7 +582,8 @@
         anchor: morning
         quiet: delay
 - id: arafah
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: dhul-hijjah
   tier: push
   title: ʿArafah fast
@@ -631,7 +644,8 @@
         anchor: afternoon
         quiet: delay
 - id: eid-adha
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: dhul-hijjah
   tier: push
   title: Eid al-Aḍḥā
@@ -669,7 +683,8 @@
         anchor: after-fajr
         quiet: delay
 - id: takbir
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   month: dhul-hijjah
   tier: inapp
   title: Takbīr after prayers
@@ -732,7 +747,8 @@
         body: Days of eating, drinking and remembering Allah. No fasting.
         rank: 2
 - id: makeup
-  status: review
+  status: published
+  reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   title: Ramadan days to make up
   short: Log each make-up fast.
