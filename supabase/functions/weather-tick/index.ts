@@ -1,4 +1,4 @@
-import { serviceClient, serveJob } from '../_lib/job-runtime.ts';
+import { serviceClient, serveJob, triggerPushSender } from '../_lib/job-runtime.ts';
 import { decidePushes } from '../_shared/core.mjs';
 import { type Area, getForecast, planForecast, type Thresholds } from './forecast.ts';
 
@@ -94,5 +94,6 @@ serveJob('weather-tick', async (report) => {
     throw new Error('Weather run logging failed');
   }
   if (aborted) throw new Error('Weather tick did not complete');
+  if (counts.queued && !await triggerPushSender()) report('push dispatch deferred');
   return counts;
 });

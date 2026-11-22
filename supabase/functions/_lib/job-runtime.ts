@@ -20,8 +20,7 @@ function authorized(request: Request) {
 }
 
 export function serveJob(job: string, handler: (report: (operation: string) => void) => Promise<unknown>) {
-  const dsn = Deno.env.get('SENTRY_DSN');
-  if (dsn) Sentry.init({ dsn, defaultIntegrations: false, sendDefaultPii: false });
+  const reportErrors = errorReporter(job);
   Deno.serve(async (request) => {
     if (request.method !== 'POST') return new Response(null, { status: 405, headers: { Allow: 'POST' } });
     if (!authorized(request)) return new Response(null, { status: 401 });
@@ -32,12 +31,35 @@ export function serveJob(job: string, handler: (report: (operation: string) => v
       errors.add('job failed');
       return Response.json({ error: 'Job failed' }, { status: 500 });
     } finally {
-      for (const operation of errors) {
-        // Only static operation names reach logs or Sentry.
-        console.error(`${job}: ${operation}`);
-        if (dsn) Sentry.captureException(new Error(`${job}: ${operation}`));
-      }
-      if (dsn && errors.size) await Sentry.flush(2000);
+      if (errors.size) await reportErrors([...errors]);
     }
   });
+}
+
+export function errorReporter(job: string) {
+  const dsn = Deno.env.get('SENTRY_DSN');
+  if (dsn) Sentry.init({ dsn, defaultIntegrations: false, sendDefaultPii: false });
+  return async (operations: readonly string[]) => {
+    for (const operation of operations) {
+      // Only static operation names reach logs or Sentry.
+      console.error(`${job}: ${operation}`);
+      if (dsn) Sentry.captureException(new Error(`${job}: ${operation}`));
+    }
+    if (dsn) await Sentry.flush(2000);
+  };
+}
+
+export async function triggerPushSender() {
+  const url = Deno.env.get('SUPABASE_URL');
+  const secret = Deno.env.get('ADWAM_JOB_KEY');
+  if (!url || !secret) return false;
+  try {
+    const response = await fetch(new URL('/functions/v1/push-send', url), {
+      method: 'POST', headers: { Authorization: `Bearer ${secret}` }, signal: AbortSignal.timeout(20000),
+    });
+    await response.body?.cancel();
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
