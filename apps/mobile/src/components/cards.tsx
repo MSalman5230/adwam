@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   card: { borderWidth: 1, borderRadius: 16 },
   cardTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   cardMeta: { flexDirection: 'row', alignItems: 'center', flexShrink: 1, gap: 4 },
-  cardContent: { minHeight: 44, paddingHorizontal: 16, paddingVertical: 14, gap: 6 },
+  cardContent: { minHeight: 48, paddingHorizontal: 16, paddingVertical: 14, gap: 6 },
   cardContentWithFooter: { paddingBottom: 4 },
   cardDetails: { paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
   cardFoot: { marginHorizontal: 16, paddingBottom: 8, gap: 6 },

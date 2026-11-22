@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   content: { gap: 16, paddingHorizontal: 20, paddingVertical: 16 },
   controls: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  control: { minHeight: 44, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 20, alignSelf: 'flex-start' },
+  control: { minHeight: 48, minWidth: 48, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 20, alignSelf: 'flex-start' },
   panel: { padding: 12, borderWidth: 1, borderRadius: 16, gap: 8 },
   swatches: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   swatch: { flexBasis: '45%', flexGrow: 1, gap: 2 },

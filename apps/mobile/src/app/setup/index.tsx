@@ -96,7 +96,11 @@ export default function SetupScreen() {
       case 1: return <>
         <Text style={[typography.setupBody, { color: palette.ink2 }]}>{t('setup.location.body')}</Text>
         <SetupLocationDetails placeName={location?.name} />
-        {isTestBuild && <Link href="/debug" style={[styles.debug, typography.button, { color: palette.green }]}>{t('developerTools.title')}</Link>}
+        {isTestBuild && <Link href="/debug" asChild>
+          <Pressable accessibilityRole="link" style={styles.debug}>
+            <Text style={[typography.button, { color: palette.green }]}>{t('developerTools.title')}</Text>
+          </Pressable>
+        </Link>}
       </>;
       case 2: return calendar && location && <SetupHijriDate calendar={calendar} city={location.name} now={now} shift={hijri.shift}
         onShift={(shift) => settingsStore.getState().update((value) => ({ ...value, hijri: { ...value.hijri, shift } }))} />;
@@ -147,13 +151,13 @@ export default function SetupScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   top: { flexDirection: 'row', alignItems: 'center', height: 60, paddingLeft: 6, paddingRight: 20 },
-  back: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
+  back: { width: 48, height: 48, borderRadius: 24, justifyContent: 'center', alignItems: 'center' },
   progress: { flex: 1, flexDirection: 'row', justifyContent: 'flex-end', gap: 6 },
   progressBar: { width: 28, height: 4, borderRadius: 2 },
   content: { paddingHorizontal: 20, paddingBottom: 16 },
   overline: { marginTop: 22, marginBottom: 12 },
   title: { marginBottom: 8 },
-  debug: { marginTop: 14 },
+  debug: { marginTop: 14, minHeight: 48, justifyContent: 'center', alignSelf: 'flex-start' },
   skip: { alignSelf: 'center' },
   actions: { gap: 10, paddingHorizontal: 20, paddingVertical: 12 },
 });

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View, type ScrollViewProps } from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, View, useWindowDimensions, type ScrollViewProps } from 'react-native';
 
 import { Icon, type IconName } from '../icons';
 import { useTheme } from '../theme/ThemeProvider';
 import { typography } from '../theme/typography';
+import { useDeviceReduceMotion } from '../theme/useDeviceReduceMotion';
 
 type AppBarAction = { icon: IconName; label: string; onPress: () => void };
 
@@ -28,12 +29,18 @@ export function AppBar({ title, scrolled = false, staticTitle = false, start, en
 }) {
   const { palette } = useTheme();
   const visible = staticTitle || scrolled;
+  const { fontScale } = useWindowDimensions();
+  const reduced = useDeviceReduceMotion();
   const progress = useRef(new Animated.Value(visible ? 1 : 0)).current;
   useEffect(() => {
+    if (reduced) {
+      progress.setValue(visible ? 1 : 0);
+      return;
+    }
     const animation = Animated.timing(progress, { toValue: visible ? 1 : 0, duration: 200, useNativeDriver: true });
     animation.start();
     return () => animation.stop();
-  }, [progress, visible]);
+  }, [progress, reduced, visible]);
 
   return (
     <View style={[styles.appBar, { backgroundColor: palette.paper, borderBottomColor: scrolled ? palette.hair : 'transparent' }]}>
@@ -41,7 +48,7 @@ export function AppBar({ title, scrolled = false, staticTitle = false, start, en
       <Animated.View aria-hidden={!visible} style={[styles.grow, {
         opacity: progress, transform: [{ translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [5, 0] }) }],
       }]}>
-        <Text numberOfLines={1} style={[typography.appBar, { color: palette.ink }]}>{title}</Text>
+        <Text numberOfLines={fontScale >= 1.5 ? undefined : 1} style={[typography.appBar, { color: palette.ink }]}>{title}</Text>
       </Animated.View>
       {end.map((action) => <AppBarButton key={action.label} {...action} />)}
     </View>
@@ -78,9 +85,9 @@ export function SectionHeader({ title, aside }: { title: string; aside?: string 
   const { palette } = useTheme();
   return (
     <View style={styles.section}>
-      <Text accessibilityRole="header" style={[typography.sectionTitle, { color: palette.green }]}>{title}</Text>
+      <Text accessibilityRole="header" style={[typography.sectionTitle, styles.wrap, { color: palette.green }]}>{title}</Text>
       <View aria-hidden style={[styles.rule, { backgroundColor: palette.rule }]} />
-      {aside && <Text style={[typography.sectionAside, { color: palette.ink3 }]}>{aside}</Text>}
+      {aside && <Text style={[typography.sectionAside, styles.wrap, { color: palette.ink3 }]}>{aside}</Text>}
     </View>
   );
 }
@@ -90,8 +97,9 @@ const styles = StyleSheet.create({
     minHeight: 60, paddingHorizontal: 6, paddingRight: 10, gap: 4,
     flexDirection: 'row', alignItems: 'center', borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  action: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  action: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   grow: { flex: 1, minWidth: 0 },
+  wrap: { flexShrink: 1 },
   hero: { paddingTop: 18, paddingBottom: 16, borderBottomWidth: StyleSheet.hairlineWidth },
   heroSubtitle: { marginTop: 7 },
   subtitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
