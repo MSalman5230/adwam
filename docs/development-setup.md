@@ -143,8 +143,8 @@ This PC
 
 Use the Supabase CLI's local stack, not a plain Postgres.
 
-- **It's the whole service, not just a database.** `supabase start` runs everything the hosted service runs, in Docker: Postgres, sign-in (including anonymous sign-in), the API, Edge Functions, the Studio dashboard, and an inbox that catches the admin page's sign-in emails. A plain Postgres would have no sign-in, no API and no Edge Functions.
-- **The migrations build the database.** `supabase db reset` rebuilds it from scratch and loads seed data: test installs, areas and a sample correction.
+- **Start the local stack with `pnpm db:start`.** This prepares the shared engine and starts Postgres, sign-in, the API, Edge Functions, Studio and the local inbox in Docker.
+- **The migrations build the database.** `pnpm db:reset` rebuilds it and loads the local seed, which enables debug tools. Tests create their own installs and events.
 - **The database tests run against it,** with `supabase test db`.
 - **Jobs start by command, not on a schedule,** for example `pnpm server:tick`. A test can then control exactly when the weather job runs.
 - **Weather calls reach the real Open-Meteo,** which needs no key. Automated tests use recorded responses instead. The debug screen's "simulate rain" writes a fake rain event into the local database, so the whole path can be tested on a dry day.
@@ -175,7 +175,7 @@ Details:
 | Engine and content tests | `pnpm test` | Nothing else running |
 | Content check | `pnpm content:check` | Nothing else running |
 | Database access tests | `supabase test db` | Local Supabase |
-| Edge Function tests | `pnpm server:test` | Local Supabase |
+| Edge Function tests | `pnpm server:test` | Deno 2 and local Supabase started with `pnpm db:start` |
 | App screens on the emulator | `pnpm android` | Local Supabase and the emulator |
 | Native component tests | `pnpm --filter @adwam/mobile test:native` | Jest Expo and React Native Testing Library |
 | End-to-end flows | `maestro test` | The app on the emulator |

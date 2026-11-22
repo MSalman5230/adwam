@@ -36,7 +36,10 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm server:prepare
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: 'v2.6.3'
       - name: Start local Supabase
         run: pnpm db:start > /dev/null
       - run: pnpm db:test
+      - run: pnpm server:test

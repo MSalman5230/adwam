@@ -15,13 +15,13 @@
     "content:check": "pnpm --filter @adwam/content validate",
     "content:build": "pnpm --filter @adwam/content build",
     "android": "pnpm --filter @adwam/mobile --fail-if-no-match android",
-    "db:start": "supabase start",
+    "db:start": "pnpm server:prepare && supabase start",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "server:prepare": "pnpm --filter @adwam/core exec node scripts/prepare-server.mjs",
-    "server:test": "node scripts/pending.mjs server:test",
-    "server:tick": "node scripts/pending.mjs server:tick",
-    "server:simulate-rain": "node scripts/pending.mjs server:simulate-rain"
+    "server:test": "pnpm server:prepare && node scripts/local-server.mjs test",
+    "server:tick": "pnpm server:prepare && node scripts/local-server.mjs tick",
+    "server:simulate-rain": "node scripts/local-server.mjs simulate-rain"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
