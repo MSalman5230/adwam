@@ -3,6 +3,13 @@ name: PR title
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
+  # The Release workflow starts this on the Release PR's branch.
+  workflow_dispatch:
+    inputs:
+      title:
+        description: The pull request title to check
+        type: string
+        required: true
 
 permissions: {}
 
@@ -13,7 +20,7 @@ jobs:
     steps:
       - name: Check the type prefix
         env:
-          TITLE: ${{ github.event.pull_request.title }}
+          TITLE: ${{ github.event.pull_request.title || inputs.title }}
         run: |
           pattern='^(feat|fix|perf|content|revert|refactor|test|docs|ci|build|chore)(\([a-z0-9.-]+\))?!?: [^ ]'
           if [[ "$TITLE" =~ $pattern ]]; then

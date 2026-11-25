@@ -11,9 +11,13 @@ jobs:
   release-please:
     name: Release PR
     runs-on: ubuntu-latest
-    environment: release
     concurrency:
       group: adwam-release-pr
+    permissions:
+      actions: write
+      contents: write
+      issues: write
+      pull-requests: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
@@ -24,33 +28,29 @@ jobs:
         with:
           persist-credentials: false
       - name: Check the release settings
-        id: settings
-        env:
-          CLIENT_ID: ${{ vars.RELEASE_APP_CLIENT_ID }}
-        run: |
-          node scripts/check-release-config.mjs
-          if [[ -z "$CLIENT_ID" ]]; then
-            echo '::notice::The release-please GitHub App is not set up yet, so no Release PR was updated.'
-            echo 'ready=false' >> "$GITHUB_OUTPUT"
-          else
-            echo 'ready=true' >> "$GITHUB_OUTPUT"
-          fi
-      - uses: actions/create-github-app-token@v3
-        id: token
-        if: steps.settings.outputs.ready == 'true'
-        with:
-          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
-          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-issues: write
-          permission-pull-requests: write
+        run: node scripts/check-release-config.mjs
       - uses: googleapis/release-please-action@v5
         id: release
-        if: steps.settings.outputs.ready == 'true'
         with:
-          token: ${{ steps.token.outputs.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+      # Pull requests opened with GitHub's built-in token don't start other workflows,
+      # so start the checks master requires on the Release PR's branch.
+      - name: Run the required checks on the Release PR
+        if: steps.release.outputs.prs_created == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr=$(gh pr list --repo "$GITHUB_REPOSITORY" --label 'autorelease: pending' --state open --limit 1 --json headRefName,title)
+          branch=$(jq -er '.[0].headRefName' <<< "$pr")
+          title=$(jq -er '.[0].title' <<< "$pr")
+          if [[ "$branch" != release-please--* ]]; then
+            echo "Unexpected Release PR branch: $branch" >&2
+            exit 1
+          fi
+          gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$branch"
+          gh workflow run pr-title.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" -f title="$title"
+          echo "Started CI and the PR title check on $branch."
 
   plan:
     name: Release plan
