@@ -84,6 +84,8 @@ Supabase gives each Edge Function its own project URL and keys automatically. Af
 
 The staging deployment enables anonymous sign-in, adds `https://msalman5230.github.io/adwam/` to Auth redirect URLs, and installs [the sign-in code template](../supabase/templates/admin-code.html) when the scoped token has Auth Config read and write permissions. If the deployment reports missing Auth permissions, set those three options in the staging dashboard. The owner and helper need existing, confirmed email users in `auth.users` and matching IDs in `public.admins`. Supabase’s built-in email sends to project organization members. Configure SMTP or invite the helper to the organization if their email is outside it.
 
+If the admin receives a link instead of a numeric code, set the staging **Magic Link** email template to the [sign-in code template](../supabase/templates/admin-code.html), which renders `{{ .Token }}`. Request a fresh code after saving. The correction admin page expects a code, not the URL or session token from a clicked link.
+
 To test the admin page locally, run `pnpm db:start`, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_KEY` from the local stack, then run `pnpm --filter @adwam/admin dev`. Open `http://127.0.0.1:5173/adwam/`. The local inbox at `http://127.0.0.1:54324` receives the sign-in code.
 
 ### CI secrets (GitHub, repository settings)

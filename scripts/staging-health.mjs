@@ -32,19 +32,40 @@ const networkStatusQuery = `
   group by status_code order by status_code
 `;
 
+const pushChannels = ['weather', 'corrections', 'corrections-silent'];
+const pushStatuses = ['queued', 'sending', 'sent', 'failed'];
+const pushErrors = ['DeviceNotRegistered', 'ExpoUnauthorized', 'InvalidCredentials', 'MismatchSenderId',
+  'MessageTooBig', 'MessageRateExceeded', 'ReceiptExpired', 'DeliveryUnknown', 'Ineligible'];
+
+const pushSummaryQuery = `
+  select channel, status,
+         case when error_code in (${pushErrors.map((error) => `'${error}'`).join(', ')})
+           then error_code when error_code is not null then 'other' end as error,
+         count(*)::integer as pushes,
+         (count(*) filter (where status = 'sent' and receipt_checked_at is not null))::integer as receipts_ok
+  from public.push_outbox
+  where scheduled_at >= now() - interval '1 hour'
+  group by channel, status, error order by channel, status, error
+`;
+
 const cronJobs = ['adwam-weather-tick', 'adwam-push-send', 'adwam-push-receipts', 'adwam-cleanup'];
 const cronStatuses = ['starting', 'connecting', 'sending', 'running', 'succeeded', 'failed'];
 
-export async function stagingWeatherHealth() {
+function stagingQuery() {
   const { SUPABASE_PROJECT_ID: project, SUPABASE_ACCESS_TOKEN: token } = process.env;
-  if (!project || !/^[a-z0-9]{20}$/.test(project) || !token) return ['The staging project credentials are unavailable.'];
-  const queryDatabase = (query) => globalThis.fetch(
+  if (!project || !/^[a-z0-9]{20}$/.test(project) || !token) return;
+  return (query) => globalThis.fetch(
     `https://api.supabase.com/v1/projects/${project}/database/query/read-only`,
     {
       method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }), signal: AbortSignal.timeout(30000),
     },
   );
+}
+
+export async function stagingWeatherHealth() {
+  const queryDatabase = stagingQuery();
+  if (!queryDatabase) return ['The staging project credentials are unavailable.'];
   const response = await queryDatabase(healthQuery);
   if (!response.ok) {
     await response.body?.cancel();
@@ -63,6 +84,22 @@ export async function stagingWeatherHealth() {
   if (!Number.isSafeInteger(calls) || !Number.isSafeInteger(budget)) failures.push('Open-Meteo usage could not be read.');
   else if (calls > budget || (budget > 0 && calls === budget)) failures.push(`Open-Meteo usage reached ${calls} of ${budget} calls today.`);
   return failures;
+}
+
+export async function stagingPushSummary() {
+  const queryDatabase = stagingQuery();
+  const rows = queryDatabase && await diagnosticRows(queryDatabase, pushSummaryQuery);
+  if (!rows) return 'Staging push summary is unavailable.';
+  if (!rows.length) return 'No staging pushes in the last hour.';
+  const groups = rows.flatMap((row) => {
+    if (!pushChannels.includes(row?.channel) || !pushStatuses.includes(row.status) ||
+      !Number.isSafeInteger(row.pushes) || row.pushes < 1 || !Number.isSafeInteger(row.receipts_ok) ||
+      row.receipts_ok < 0 || row.receipts_ok > row.pushes) return [];
+    const error = row.error == null ? '' : ` (${pushErrors.includes(row.error) ? row.error : 'other'})`;
+    return [`${row.channel} ${row.status}${error} × ${row.pushes}, Expo receipts OK × ${row.receipts_ok}`];
+  });
+  return groups.length === rows.length ? `Staging pushes in the last hour. ${groups.join('. ')}.`
+    : 'Staging push summary did not return the expected counts.';
 }
 
 async function describeSchedulerSetup(queryDatabase) {

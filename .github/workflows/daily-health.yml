@@ -24,8 +24,9 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         with:
           script: |
-            const { stagingWeatherHealth } = await import(`${process.cwd()}/scripts/staging-health.mjs`);
+            const { stagingWeatherHealth, stagingPushSummary } = await import(`${process.cwd()}/scripts/staging-health.mjs`);
             const failures = await stagingWeatherHealth().catch(() => ['The staging health check could not reach Supabase.']);
+            if (context.eventName === 'workflow_dispatch') core.info(await stagingPushSummary());
             if (!failures.length) {
               core.info('Staging weather is current and within budget.');
               return;

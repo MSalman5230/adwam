@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import process from 'node:process';
 import { test } from 'node:test';
-import { stagingWeatherHealth } from './staging-health.mjs';
+import { stagingPushSummary, stagingWeatherHealth } from './staging-health.mjs';
 
 process.env.SUPABASE_PROJECT_ID = 'abcdefghijklmnopqrst';
 process.env.SUPABASE_ACCESS_TOKEN = 'test-fixture';
@@ -85,4 +85,29 @@ test('a failed optional query does not hide results from the other diagnostic', 
     'No completed weather tick was recorded.', 'Staging Vault entries are present.',
     'Cron run metadata is unavailable.', 'No pg_net response was recorded in the last 20 minutes.',
   ]);
+});
+
+test('the push summary reports only aggregate outcomes and confirmed receipts', async (context) => {
+  context.mock.method(globalThis, 'fetch', (_url, options) => {
+    const { query } = JSON.parse(options.body);
+    assert.match(query, /group by channel, status, error/);
+    assert.doesNotMatch(query, /\b(?:install_id|push_token|attempt_push_token|expo_receipt_id)\b/);
+    return Response.json([
+      { channel: 'weather', status: 'sent', pushes: 2, receipts_ok: 1, error: null },
+      { channel: 'corrections', status: 'failed', pushes: 1, receipts_ok: 0, error: 'InvalidCredentials' },
+      { channel: 'corrections-silent', status: 'failed', pushes: 1, receipts_ok: 0, error: 'unexpected detail' },
+    ]);
+  });
+  const summary = await stagingPushSummary();
+  assert.match(summary, /weather sent × 2, Expo receipts OK × 1/);
+  assert.match(summary, /corrections failed \(InvalidCredentials\) × 1/);
+  assert.match(summary, /corrections-silent failed \(other\) × 1/);
+  assert.doesNotMatch(summary, /unexpected detail/);
+});
+
+test('the manual push summary distinguishes no activity from an unavailable query', async (context) => {
+  const fetch = context.mock.method(globalThis, 'fetch', () => Response.json([]));
+  assert.equal(await stagingPushSummary(), 'No staging pushes in the last hour.');
+  fetch.mock.mockImplementation(() => new Response(null, { status: 502 }));
+  assert.equal(await stagingPushSummary(), 'Staging push summary is unavailable.');
 });
