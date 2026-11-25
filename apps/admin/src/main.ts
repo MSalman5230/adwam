@@ -2,6 +2,7 @@ import english from '@adwam/content/messages/en.json';
 import { dayDiff, hijriMonthStart, type CivilDate } from '@adwam/core';
 import { createClient } from '@supabase/supabase-js';
 
+import { adminLinkAuth, requestAdminLink, restoreAdminSignIn } from './sign-in';
 import './style.css';
 
 type Client = ReturnType<typeof adminClient>;
@@ -18,7 +19,7 @@ function element<T extends HTMLElement>(id: string) {
 }
 
 function adminClient(url: string, key: string) {
-  return createClient(url, key, { auth: { detectSessionInUrl: false } });
+  return createClient(url, key, { auth: adminLinkAuth });
 }
 
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -28,7 +29,6 @@ const status = element<HTMLParagraphElement>('status');
 const signIn = element('sign-in');
 const signOut = element<HTMLButtonElement>('sign-out');
 const emailForm = element<HTMLFormElement>('email-form');
-const codeForm = element<HTMLFormElement>('code-form');
 const workspace = element('workspace');
 const editor = element<HTMLFormElement>('correction-form');
 const reference = element('reference-date');
@@ -41,7 +41,6 @@ const months = english.calendar.month;
 const region = new Intl.DisplayNames(['en'], { type: 'region' });
 const dateFormatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const value = (name: string) => editor.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
-let signingInAs = '';
 let editing: string | undefined;
 let busy = false;
 
@@ -74,8 +73,6 @@ function signedOut() {
   signOut.hidden = true;
   signIn.hidden = !client;
   emailForm.hidden = false;
-  codeForm.hidden = true;
-  codeForm.reset();
   history.replaceChildren();
   edit();
 }
@@ -92,36 +89,12 @@ async function showWorkspace(db: Client) {
 emailForm.addEventListener('submit', (event) => {
   event.preventDefault();
   work(async (db) => {
-    const email = String(new FormData(emailForm).get('email')).trim();
-    const { error } = await db.auth.signInWithOtp({
-      email, options: { shouldCreateUser: false, emailRedirectTo: new URL(import.meta.env.BASE_URL, location.origin).href },
-    });
-    if (error) return announce('Couldn’t send a code. Check that you entered your admin email.', true);
-    signingInAs = email;
-    emailForm.hidden = true;
-    codeForm.hidden = false;
-    announce('Check your email for the sign-in code.');
-    element('code').focus();
+    const email = String(new FormData(emailForm).get('email'));
+    const { error } = await requestAdminLink(db.auth, email, new URL(import.meta.env.BASE_URL, location.origin));
+    if (error?.status === 429) return announce('A link was requested recently. Wait before trying again.', true);
+    if (error) return announce('Couldn’t send a link. Check that you entered your admin email.', true);
+    announce('Check your email. Open the sign-in link in this same browser.');
   });
-});
-
-codeForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  work(async (db) => {
-    const token = String(new FormData(codeForm).get('code')).trim();
-    const { error } = await db.auth.verifyOtp({ type: 'email', email: signingInAs, token });
-    if (error) return announce('That code didn’t work. Check it or request another code.', true);
-    codeForm.reset();
-    await showWorkspace(db);
-  });
-});
-
-element('change-email').addEventListener('click', () => {
-  codeForm.reset();
-  codeForm.hidden = true;
-  emailForm.hidden = false;
-  announce('');
-  element('email').focus();
 });
 
 signOut.addEventListener('click', () => work(async (db) => {
@@ -276,8 +249,15 @@ if (!client) {
 } else {
   signedOut();
   work(async (db) => {
-    const { data, error } = await db.auth.getSession();
-    if (error) return announce('Couldn’t restore the session. Sign in again to continue.', true);
-    if (data.session) await showWorkspace(db);
+    const returningWithCode = new URL(window.location.href).searchParams.has('code');
+    const state = await restoreAdminSignIn(db.auth, returningWithCode);
+    if (state === 'link-error' || new URL(window.location.href).searchParams.has('code')) {
+      window.history.replaceState(window.history.state, '', window.location.pathname);
+    }
+    if (state === 'link-error') {
+      return announce('That sign-in link didn’t work. Request a new link and open it in this same browser.', true);
+    }
+    if (state === 'session-error') return announce('Couldn’t restore the session. Sign in again to continue.', true);
+    if (state === 'signed-in') await showWorkspace(db);
   });
 }

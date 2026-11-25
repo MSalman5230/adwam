@@ -19,15 +19,7 @@
         <form id="email-form">
           <label for="email">Admin email</label>
           <input id="email" name="email" type="email" autocomplete="email" required />
-          <button type="submit">Send sign-in code</button>
-        </form>
-        <form id="code-form" hidden>
-          <label for="code">Code from your email</label>
-          <input id="code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" required />
-          <div class="actions">
-            <button type="submit">Sign in</button>
-            <button id="change-email" type="button" class="secondary">Change email</button>
-          </div>
+          <button type="submit">Send sign-in link</button>
         </form>
       </section>
       <div id="workspace" hidden>

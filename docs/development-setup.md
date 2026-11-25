@@ -82,11 +82,11 @@ Supabase gives each Edge Function its own project URL and keys automatically. Af
 
 ### Correction admin sign-in
 
-The staging deployment enables anonymous sign-in, adds `https://msalman5230.github.io/adwam/` to Auth redirect URLs, and installs [the sign-in code template](../supabase/templates/admin-code.html) when the scoped token has Auth Config read and write permissions. If the deployment reports missing Auth permissions, set those three options in the staging dashboard. The owner and helper need existing, confirmed email users in `auth.users` and matching IDs in `public.admins`. Supabase’s built-in email sends to project organization members. Configure SMTP or invite the helper to the organization if their email is outside it.
+The staging deployment enables anonymous app sign-in and configures `https://msalman5230.github.io/adwam/` as the Auth Site URL and an allowed Redirect URL when the scoped token has Auth Config read and write permissions. If the deployment reports missing Auth permissions, set those options in the staging dashboard. A link that still returns to `localhost:3000` needs the staging URL configuration corrected before the browser test.
 
-If the admin receives a link instead of a numeric code, set the staging **Magic Link** email template to the [sign-in code template](../supabase/templates/admin-code.html), which renders `{{ .Token }}`. Request a fresh code after saving. The correction admin page expects a code, not the URL or session token from a clicked link.
+Staging uses Supabase’s default Magic Link email with no custom SMTP. An approved admin needs an existing, confirmed email user in `auth.users`, a matching ID in `public.admins`, and an inbox eligible for Supabase’s built-in team email. The admin requests a link on the Date corrections page and opens it in the same browser, which exchanges the link for a session. No token is pasted into the page. Default email is restricted to team inboxes and rate-limited. [Supabase email limits](https://supabase.com/docs/guides/auth/auth-smtp)
 
-To test the admin page locally, run `pnpm db:start`, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_KEY` from the local stack, then run `pnpm --filter @adwam/admin dev`. Open `http://127.0.0.1:5173/adwam/`. The local inbox at `http://127.0.0.1:54324` receives the sign-in code.
+To test the admin page locally, run `pnpm db:start`, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_KEY` from the local stack, then run `pnpm --filter @adwam/admin dev`. Open `http://127.0.0.1:5173/adwam/`. Open the local inbox at `http://127.0.0.1:54324` in that browser to follow the sign-in link.
 
 ### CI secrets (GitHub, repository settings)
 
