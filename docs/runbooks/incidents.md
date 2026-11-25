@@ -25,3 +25,9 @@ Identify the project and record the UTC interval, the last healthy run, links to
 1. Verify which project paused. Ask its owner to resume it from Supabase and confirm the API responds.
 2. Verify the functions, Vault URL, job key, cron jobs, app configuration and the latest admin correction. Use the staging deploy workflow to reapply migrations and functions if needed.
 3. Confirm a new app sync and a finished weather tick. Re-run the health check when the jobs are configured. Local reminders continue on the phone during the outage.
+
+## Preview update slow or missing
+
+1. Each merge to `master` publishes a Preview update through an Expo workflow. On Expo's free plan the job can wait in Expo's queue for 40 minutes or more before it runs, then publish in about two minutes. The **Deploy staging** run waits up to 90 minutes for it.
+2. Check the job's state with `eas workflow:runs`, and its timings with `eas workflow:logs <job ID> --all-steps`. Its first step, `SPIN_UP_BUILDER`, shows when the queue ended. Don't cancel a queued job, because a new run joins the back of the same queue.
+3. Check `eas update:list --branch preview`. A missing update with the same fingerprint as the installed APK means publishing failed. Rerun **Deploy staging**. An update with a different fingerprint reaches only a new APK. See the `needs-new-build` label.
