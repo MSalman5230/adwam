@@ -1,5 +1,6 @@
 // Checks the release-please files before the Release workflow uses them:
-// every version file agrees with the manifest, and a one-off release-as is removed once released.
+// every version file agrees with the manifest, and a one-off release-as is removed once its tag exists.
+// RELEASE_TAGS lists the repository's release tags, one per line, such as v1.0.0.
 import { readFileSync } from 'node:fs';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -14,7 +15,7 @@ function compare(a, b) {
   return 0;
 }
 
-export function releaseConfigProblems({ config, manifest, rootPackage, mobilePackage, appConfig }) {
+export function releaseConfigProblems({ config, manifest, rootPackage, mobilePackage, appConfig, releasedTags = [] }) {
   const problems = [];
   const released = manifest['.'];
   if (!semver.test(released ?? '')) return ['The release manifest needs a version for the root package.'];
@@ -31,8 +32,10 @@ export function releaseConfigProblems({ config, manifest, rootPackage, mobilePac
   const releaseAs = config.packages?.['.']?.['release-as'];
   if (releaseAs !== undefined) {
     if (!semver.test(releaseAs)) problems.push(`release-as must be a version such as 1.0.0, not ${releaseAs}.`);
-    else if (compare(releaseAs, released) <= 0) {
-      problems.push(`Version ${released} is released, so remove "release-as": "${releaseAs}" from release-please-config.json.`);
+    else if (releasedTags.includes(`v${releaseAs}`)) {
+      problems.push(`v${releaseAs} is released, so remove "release-as": "${releaseAs}" from release-please-config.json.`);
+    } else if (compare(releaseAs, released) < 0) {
+      problems.push(`release-as ${releaseAs} is below the current version ${released}.`);
     }
   }
   return problems;
@@ -46,6 +49,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     rootPackage: JSON.parse(read('package.json')),
     mobilePackage: JSON.parse(read('apps/mobile/package.json')),
     appConfig: read('apps/mobile/app.config.ts'),
+    releasedTags: (process.env.RELEASE_TAGS ?? '').split(/\s+/).filter(Boolean),
   });
   for (const problem of problems) process.stderr.write(`${problem}\n`);
   if (problems.length) process.exitCode = 1;
