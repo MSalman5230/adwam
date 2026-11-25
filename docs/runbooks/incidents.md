@@ -17,7 +17,7 @@ Identify the project and record the UTC interval, the last healthy run, links to
 ## Pushes fail
 
 1. Confirm notification permission, the correct package and build, and the relevant Android channel. Test a local scheduled reminder to check the phone’s delivery settings.
-2. Check `push-send`, `push-receipts` and their `job_runs` counts. Inspect outbox statuses and Expo errors. Check the staging Expo access secret and Firebase messaging credentials for the Preview package.
+2. Run **Staging weather health** by hand for aggregate queue, delivery and receipt counts. Check `push-send`, `push-receipts` and their `job_runs` counts. If `EXPO_ACCESS_TOKEN` is missing, create an [Expo access token](https://expo.dev/settings/access-tokens) and save it under that name in the staging Edge Function secrets. It does not require an APK rebuild. Check Firebase messaging credentials for the Preview package if Expo returns an FCM credential error.
 3. A device that is no longer registered needs a refreshed token from the app. Delivery with an unknown outcome stays in that state so Adwam avoids sending a duplicate. Verify a fresh staging test with a known Preview install after the fix.
 
 ## Supabase project paused
