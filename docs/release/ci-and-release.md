@@ -139,7 +139,7 @@ The **Production rollout** button raises the active production update to 50% or 
 
 ### Production health
 
-A daily job in `production-monitor` runs the same weather and budget check as staging, on the production project. It opens an issue when something's wrong.
+The daily **Weather health** workflow runs the same weather and budget check on both projects. The production check uses `production-monitor`, and it opens its own issue when something's wrong.
 
 ### Correction admin page
 

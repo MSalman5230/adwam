@@ -1,23 +1,45 @@
 # Android app release
 
-> This draft predates the approved release flow in [CI and releases](ci-and-release.md), which replaces its tags with the Release PR and the **Ship update** button. Task M6.9 rewrites it.
+How a new version reaches Google Play. The design is in [CI and releases](ci-and-release.md). Over-the-air updates between releases are in [content-release.md](content-release.md).
 
-Production begins after the owner provisions its own Supabase project, scoped credentials, EAS settings, and the GitHub production environment. The owner approves production deploys in GitHub Actions. Use Preview for the release rehearsal.
+## Before merging the Release PR
 
-## Before tagging
+1. **Check the Release PR.** release-please keeps **chore: release x.y.z** open on GitHub. Check that the version and the changelog are right. If the number is wrong, an agent adds a `Release-As: x.y.z` footer to a commit.
+2. **Content.** The owner has approved any new or changed content, and `pnpm --filter @adwam/content validate --release` passes on `master`.
+3. **Staging.** Testers have used this code on the Preview app. If the reminder issue **Preview needs a new build** is open, press **Android preview build** first and test the new APK.
+4. **Play's target API.** Compare the app's target API with the [current Play requirement](https://support.google.com/googleplay/android-developer/answer/11926878).
+5. **Migrations.** Read the new migrations. Each one must keep the current Play version working, because some users will stay on it for weeks.
 
-1. Confirm the owner approved the content, privacy notice, licensing and store listing. Confirm the data-protection review and physical notification tests are complete and the release-blocker list is empty. [Play listing and Data safety review](android/store-review.html) · [Privacy notice](../../apps/admin/public/privacy/index.html)
-2. Check out the intended release commit. Start local Supabase with `pnpm db:start`. Run `pnpm check`, `pnpm db:test`, `pnpm server:test`, and `pnpm --filter @adwam/content validate --release`. Run Android end-to-end tests on the same commit and retain the JUnit report and screenshots.
-3. Install the signed Preview and repeat offline Setup through Today, notification delivery and tap, push receipt, and the date-correction flow. Check that Sentry shows app filenames and line numbers for a Preview test crash.
-4. Confirm the Android target API against the [current Play requirement](https://support.google.com/googleplay/android-developer/answer/11926878). Compare the bundle manifest with the signed Preview and verify the package, version code, and required permissions. Confirm the native fingerprint and update channel.
-5. Confirm the release note, migrations, the last known-good commit and update group, and the app version that can read the new backend schema.
+## Release
 
-## Publish and monitor
+1. **Merge the Release PR.** The **Release** workflow tags `vx.y.z`, creates the GitHub Release, and starts the plan.
+2. **Read the plan.** It confirms staging ran this code, shows the Android runtime, and lists the migrations that will run. The Android end-to-end tests also run before the production job.
+3. **Approve.** On the run page, click **Review deployments**, tick `production` and approve. The job:
+   1. deploys the production server
+   2. builds the signed app bundle, which uploads its source maps to Sentry
+   3. submits the bundle to Play's internal testing track
+4. **Release to internal testers.** Releases are uploaded as drafts. In Play Console → Test and release → Internal testing, open the draft and roll it out. Paste the GitHub Release's notes into "What's new".
+5. **Check the installed build.** Install it from the internal testing link and check:
+   - setup works, and Developer tools are absent
+   - the Android notification channels are right
+   - a weather push and a correction push arrive and open the right screens
+   - a Sentry test crash shows a readable stack
+6. **Promote it** in Play Console: to closed testing, then to production.
+   - Later releases start at 10% and rise to 50% and 100%. Before each increase, check crash-free sessions in Sentry, the **Weather health** workflow and push receipts.
+   - The first production release can't use a percentage rollout.
 
-1. Use the release tag for the approved commit. The production Actions run applies migrations, deploys functions, and creates the signed AAB after the owner approves it.
-2. For the first release, the owner uploads that bundle to Play internal testing and enables Play App Signing. Later uploads use the approved automation and the Play service account. [Play release steps](https://support.google.com/googleplay/android-developer/answer/9859348).
-3. Verify the installed Play build on a phone. Check setup, debug tools disabled, Android notification channels, weather, corrective push routing, and source maps. Monitor staging and production as separate projects.
-4. Collect closed-test feedback, address release blockers, and confirm the account meets the Play Console's testing requirement. After production access, roll out at 10%, 50% and 100% with owner approval at each step. Check crash-free sessions, the weather health workflow, and push receipts before increasing a rollout.
-5. If the new binary is unsafe to serve, halt the Play rollout and prepare a fixed bundle with a newer version code. If the issue affects a JavaScript or content update, follow [content release and rollback](content-release.md).
+Record in the GitHub Release: the build ID, version code, runtime, Play track and date, and the source map result.
 
-Record the tag, build ID, Android version code, runtime fingerprint, Play track and date, source-map result, and links to the checks in the release record.
+## If the new version is unsafe
+
+1. **Halt the rollout** in Play Console. Phones that already have the version keep it.
+2. **Fix it.** If the problem is in JavaScript or content and the runtime hasn't changed, ship a fix with **Ship update**. Otherwise merge the fix and release a new version through the next Release PR.
+3. **Record it** in a GitHub issue: what happened, the halted version and the fix.
+
+## First release only
+
+- **Play Console.** The app, store listing, Data safety answers and content rating are complete. [Store listing review](android/store-review.html)
+- **The upload key.** The first production build can't create it unattended. The owner runs `eas credentials --platform android` once, chooses the `production` profile, and lets EAS generate the key. Keep a downloaded backup. Play App Signing keeps the key that signs what users install.
+- **Draft releases.** The submit profile in `apps/mobile/eas.json` uploads drafts, because Play accepts only drafts until the app's first release.
+- **Remove `release-as` after 1.0.0.** Once `v1.0.0` exists, remove `"release-as": "1.0.0"` from `release-please-config.json`. The Release workflow fails until it's gone.
+- **The closed test.** A personal account needs at least 12 testers opted in for 14 days in a row, then an application for production access. [Account advice](google-play-account.md)

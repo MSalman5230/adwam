@@ -1,12 +1,12 @@
--- Run once in the staging SQL Editor after deploying the job functions.
--- Replace the project reference only. The generated key stays in Vault.
+-- Run once in each project's SQL Editor after its first deploy of the job functions.
+-- Set the project reference, and turn on debug tools only for staging. The generated key stays in Vault.
 do $$
 declare
-  project_url text := 'https://REPLACE-WITH-STAGING-PROJECT-REF.supabase.co';
+  project_url text := 'https://REPLACE-WITH-PROJECT-REF.supabase.co';
   existing_url text;
 begin
   if project_url !~ '^https://[a-z0-9]{20}\.supabase\.co$' then
-    raise exception 'Set the staging Supabase project URL first';
+    raise exception 'Set the Supabase project URL first';
   end if;
   select decrypted_secret into existing_url from vault.decrypted_secrets where name = 'adwam_project_url';
   if existing_url is not null and existing_url <> project_url then
@@ -22,4 +22,5 @@ begin
 end;
 $$;
 
-update public.app_config set debug_tools_enabled = true where singleton;
+-- true on staging, false on production.
+update public.app_config set debug_tools_enabled = false where singleton;

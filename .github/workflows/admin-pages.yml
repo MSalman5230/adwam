@@ -1,4 +1,4 @@
-name: Staging correction admin page
+name: Correction admin pages
 
 on:
   workflow_dispatch:
@@ -8,47 +8,108 @@ on:
       - 'apps/admin/**'
       - 'packages/core/**'
       - 'packages/content/messages/en.json'
-      - 'scripts/staging-public-config.mjs'
+      - 'scripts/supabase-public-config.mjs'
       - '.github/workflows/admin-pages.yml'
       - 'pnpm-lock.yaml'
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: adwam-admin-pages
 
 jobs:
-  build:
+  staging:
+    name: Staging page
     runs-on: ubuntu-latest
     environment: staging
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - uses: actions/configure-pages@v5
       - run: pnpm install --frozen-lockfile
       - name: Read the staging browser configuration
         env:
           SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        run: node scripts/staging-public-config.mjs VITE >> "$GITHUB_ENV"
+        run: node scripts/supabase-public-config.mjs VITE >> "$GITHUB_ENV"
       - run: pnpm --filter @adwam/admin build
-      - uses: actions/upload-pages-artifact@v4
+        env:
+          ADMIN_BASE: /adwam/staging/
+      - uses: actions/upload-artifact@v6
         with:
+          name: admin-staging
           path: apps/admin/dist
+          if-no-files-found: error
+
+  production:
+    name: Production page
+    runs-on: ubuntu-latest
+    environment: production-monitor
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Read the production browser configuration
+        if: vars.SUPABASE_PROJECT_ID != ''
+        env:
+          SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: node scripts/supabase-public-config.mjs VITE >> "$GITHUB_ENV"
+      - name: Build the production page
+        if: vars.SUPABASE_PROJECT_ID != ''
+        run: pnpm --filter @adwam/admin build
+        env:
+          ADMIN_BASE: /adwam/
+      - name: Use the waiting page until production exists
+        if: vars.SUPABASE_PROJECT_ID == ''
+        run: |
+          echo "::notice::Production isn't set up yet, so the root page says so."
+          mkdir -p apps/admin/dist
+          cp apps/admin/production-pending.html apps/admin/dist/index.html
+          cp -R apps/admin/public/privacy apps/admin/dist/privacy
+      - uses: actions/upload-artifact@v6
+        with:
+          name: admin-production
+          path: apps/admin/dist
+          if-no-files-found: error
 
   deploy:
-    needs: build
+    name: Deploy
+    needs: [staging, production]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/configure-pages@v5
+      - uses: actions/download-artifact@v7
+        with:
+          name: admin-production
+          path: site
+      - uses: actions/download-artifact@v7
+        with:
+          name: admin-staging
+          path: site/staging
+      - name: Check the privacy notice is still served
+        run: test -s site/privacy/index.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
       - uses: actions/deploy-pages@v4
         id: deployment
