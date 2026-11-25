@@ -142,7 +142,7 @@ export function Checkbox({ label, checked, onChange, disabled }: {
       onPress={() => onChange(!checked)}
       style={[styles.checkbox, disabled && styles.disabled]}
     >
-      <View style={[styles.box, { backgroundColor: checked ? palette.green : 'transparent', borderColor: checked ? palette.green : palette.hair2 }]}>
+      <View style={[styles.box, { backgroundColor: checked ? palette.green : 'transparent', borderColor: checked ? palette.green : palette.ink2 }]}>
         {checked && <Icon name="check" size={16} color={palette.onGreen} />}
       </View>
       <Text style={[typography.supporting, styles.wrap, { color: palette.ink }]}>{label}</Text>
