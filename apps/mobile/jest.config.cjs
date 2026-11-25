@@ -2,7 +2,9 @@ const preset = require('jest-expo/jest-preset');
 
 module.exports = {
   ...preset,
-  testMatch: ['<rootDir>/test/**/*.jest.tsx'],
+  // Absolute globs can misinterpret dot-prefixed directories in Windows worktrees.
+  testMatch: ['**/test/**/*.jest.tsx'],
+  passWithNoTests: false,
   moduleNameMapper: {
     ...preset.moduleNameMapper,
     '^@adwam/core$': '<rootDir>/../../packages/core/src/index.ts',
