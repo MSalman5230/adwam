@@ -6,17 +6,17 @@ Read [mobile-app-architecture.md](mobile-app-architecture.md) for how the system
 
 ## Where things stand
 
-Checked on 26 November 2026. Every version 1 feature is built and merged, and 70 of the 77 staging tasks are closed. The rest is proving the app on real phones and on staging. The owner accepted startup speed, and the privacy notice is published.
+Checked on 26 November 2026. Every version 1 feature is built and merged. On 26 November the owner finished the checks that needed real phones and an inbox, accepted startup speed, and the privacy notice was published. What's left is agent checks on staging and the final acceptance pass.
 
 | Milestone | Built | Still open |
 |---|---|---|
-| M0 Foundations | Workspace, CI, local Supabase, Expo app, issue tracking | M0.7 risk tests on real phones ([#10](https://github.com/MSalman5230/adwam/issues/10)) |
+| M0 Foundations | Workspace, CI, local Supabase, Expo app, issue tracking | — |
 | M1 Engine and content | Hijri calendar, prayer times, reminder rules, eclipses, weather detection, notification plan, content files and evidence | — |
 | M2 App shell and Today | Theme, components, saved state, navigation, Setup, Today, Sunnah detail, Sentry | — |
 | M3 Remaining screens | Upcoming, Settings and its sheets, Reminders, About, Developer tools | — |
-| M4 Local notifications | Channels, scheduling, Done and Later, background task, permission check | M4.8 a week on real phones ([#58](https://github.com/MSalman5230/adwam/issues/58)) |
+| M4 Local notifications | Channels, scheduling, Done and Later, background task, permission check | — |
 | M5 Server | Tables and access rules, app and admin RPCs, weather and push functions, corrections, admin page, staging deploys and health check | Staging checks for M5.12–M5.14 ([#70](https://github.com/MSalman5230/adwam/issues/70), [#71](https://github.com/MSalman5230/adwam/issues/71), [#72](https://github.com/MSalman5230/adwam/issues/72)) |
-| M6 Hardening | Accessibility, PostHog with consent, end-to-end tests, offline recovery, licence, privacy notice | M6.4 speed, accepted by the owner ([#76](https://github.com/MSalman5230/adwam/issues/76)), M6.6 content on phones ([#78](https://github.com/MSalman5230/adwam/issues/78)) |
+| M6 Hardening | Accessibility, PostHog with consent, end-to-end tests, offline recovery, licence, privacy notice | Content release checks for M6.6 ([#78](https://github.com/MSalman5230/adwam/issues/78)) |
 
 Already verified on 25 November 2026 with signed Preview `0.1.0` (version code `15`) against staging. Details are in the [staging acceptance runbook](runbooks/staging-acceptance.md).
 
@@ -27,53 +27,33 @@ Already verified on 25 November 2026 with signed Preview `0.1.0` (version code `
 
 [CI](https://github.com/MSalman5230/adwam/actions/runs/45045021999) · [Staging deploy](https://github.com/MSalman5230/adwam/actions/runs/45045021992) · [Admin Pages](https://github.com/MSalman5230/adwam/actions/runs/45045021916) · [Emulator end-to-end run](https://github.com/MSalman5230/adwam/actions/runs/45590303685) · [Weather health](https://github.com/MSalman5230/adwam/actions/runs/45660404476) · [Signed Preview APK](https://expo.dev/accounts/msalman5230/projects/adwam/builds/18d7dc7c-1dca-470f-b4c2-ecbaa08dc766)
 
+Done by the owner on 26 November 2026:
+
+- The week on real phones passed ([#58](https://github.com/MSalman5230/adwam/issues/58), [#10](https://github.com/MSalman5230/adwam/issues/10)). This also closes the milestone 0 risk tests.
+- The emailed sign-in link returns to the hosted admin page and signs the admin in.
+- The Arabic text keeps its letter joins and vowel marks on a real phone, and isn't clipped.
+- Startup is fast on a real phone with the signed Preview, so no speed work is planned ([#76](https://github.com/MSalman5230/adwam/issues/76)).
+- The [privacy notice](../apps/admin/public/privacy/index.html) is published at https://msalman5230.github.io/adwam/privacy/ ([PR #187](https://github.com/MSalman5230/adwam/pull/187)). It names Masood as the operator, with msalman5230@gmail.com for privacy requests.
+
 ## What's left
 
-### 1. A week on real phones
-
-[#58](https://github.com/MSalman5230/adwam/issues/58) and [#10](https://github.com/MSalman5230/adwam/issues/10). This is the longest item, so start it first.
-
-- **Owner:** make a Pixel, a Samsung, a Xiaomi and a low-end Android phone available for a week, each with the signed Preview APK. So far only a quick check on a Nothing Phone (2) has passed.
-- **Testers and agent:** follow the [Android reminder test](runbooks/notification-test.md): delivery and delay, Done and Later with the app closed, restart, app update, battery saver, and time-zone and daylight-saving changes.
-- **Done when:** each phone's results are in the runbook, and reminders arrive within 15 minutes or the owner has chosen a fix. This also closes the milestone 0 risk tests.
-
-### 2. Startup speed
-
-[#76](https://github.com/MSalman5230/adwam/issues/76).
-
-- **Accepted by the owner on 26 November 2026.** Startup was fast on the owner's phone with the signed Preview, so no speed work is planned. The emulator's slower times are in the [performance runbook](runbooks/mobile-performance.md) for reference.
-
-### 3. Staging checks still to record
+### 1. Staging checks still to record
 
 [#70](https://github.com/MSalman5230/adwam/issues/70), [#71](https://github.com/MSalman5230/adwam/issues/71) and [#72](https://github.com/MSalman5230/adwam/issues/72).
 
-- **Agent:** check that the emailed sign-in link returns to the hosted admin page and signs the admin in. [Correction admin sign-in](development-setup.md#correction-admin-sign-in)
 - **Agent:** record Expo's delivery receipts for the weather and correction pushes, using a manual run of **Weather health**.
 - **Agent:** check that an over-the-air Preview update reaches an installed Preview without losing settings or trackers, and that rolling back on the `preview` channel works.
+- **Agent:** check that About opens the privacy notice, and that the crash-report and usage-statistics switches work.
+- **Agent:** for [#78](https://github.com/MSalman5230/adwam/issues/78), check that `pnpm content:check --release` is green, the calendar is regenerated and the link check has no open issue.
 - **Done when:** each check is recorded in the [staging acceptance runbook](runbooks/staging-acceptance.md).
 
-### 4. Content on real phones
-
-[#78](https://github.com/MSalman5230/adwam/issues/78).
-
-- **Agent:** on real phones, check that the Arabic keeps its letter joins and vowel marks and isn't clipped. Quran.com's Uthmani text uses marks that ordinary Amiri may draw badly. If it does, use Amiri Quran for those verses. Check that every source link opens.
-- **Done when:** `pnpm content:check --release` is green, the calendar is regenerated, the link check has no open issue, and the phone check is recorded.
-
-### 5. Privacy notice
-
-[#79](https://github.com/MSalman5230/adwam/issues/79) and [PR #187](https://github.com/MSalman5230/adwam/pull/187).
-
-- **Published on 26 November 2026 (PR #187):** the [notice](../apps/admin/public/privacy/index.html) names Masood as the operator, with msalman5230@gmail.com for privacy requests. It's served at https://msalman5230.github.io/adwam/privacy/, and About links to it.
-- **Agent:** once the update reaches Preview, check that About opens the notice and that the crash-report and usage-statistics switches work.
-- **Done when:** About opens the published notice.
-
-### 6. Final acceptance pass
+### 2. Final acceptance pass
 
 - **Agent:** on the final signed Preview, check the light and dark screens against the prototype, TalkBack and 200% text, the offline paths, and a Sentry test crash with a readable stack. Run **Android end-to-end tests** on the same commit and fix any failure that repeats.
 - **Owner:** approve the results, including the suggested prayer method for each country (D7) and the eclipse note (D9).
 - **Done when:** the build ID, Android version code, native fingerprint, content version and update ID are recorded in the staging acceptance runbook.
 
-**Version 1 is complete on staging** when all six are recorded for one signed Preview build and no staging or app issue is open. No production or store work is needed.
+**Version 1 is complete on staging** when both are recorded for one signed Preview build and no staging or app issue is open. No production or store work is needed.
 
 ## Production CI and Google Play
 
