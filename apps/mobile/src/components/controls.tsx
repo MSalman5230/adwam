@@ -81,12 +81,13 @@ export function Segmented<Value extends string>({ options, value, onChange, labe
   );
 }
 
-export function Switch({ label, checked, onChange, disabled }: {
-  label: string; checked: boolean; onChange: (checked: boolean) => void; disabled?: boolean;
+export function Switch({ label, checked, onChange, disabled, testID }: {
+  label: string; checked: boolean; onChange: (checked: boolean) => void; disabled?: boolean; testID?: string;
 }) {
   const { palette } = useTheme();
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="switch"
       accessibilityLabel={label}
       accessibilityState={{ checked, disabled: Boolean(disabled) }}

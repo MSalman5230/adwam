@@ -30,26 +30,31 @@ name: Reminder choices, pause, presets and Upcoming filters
 
 - openLink: adwam://reminders
 - scrollUntilVisible:
-    element: 'Monthly'
+    element:
+      id: '.*reminders-group-monthly-switch'
     direction: DOWN
+    centerElement: true
 - tapOn:
-    text: Monthly
+    id: '.*reminders-group-monthly-switch'
     checked: true
 - tapOn:
-    text: Monthly
+    id: '.*reminders-group-monthly-switch'
     checked: false
-    rightOf: Monthly
+- assertVisible:
+    id: '.*reminders-group-monthly-switch'
+    checked: true
 - scrollUntilVisible:
-    element: Pause fasting reminders
+    element:
+      id: '.*reminders-pause-switch'
     direction: UP
+    centerElement: true
 - tapOn:
-    text: Pause fasting reminders
+    id: '.*reminders-pause-switch'
     checked: false
-    rightOf: Pause fasting reminders
 - assertVisible: 'Paused until .*'
 - tapOn: 3 days
 - tapOn:
-    text: Pause fasting reminders
+    id: '.*reminders-pause-switch'
     checked: true
 - assertVisible: For illness, travel or any reason. No questions.
 
