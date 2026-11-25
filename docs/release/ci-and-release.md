@@ -182,7 +182,7 @@ The owner creates these. Values go only into each service's own secret store, ne
 | Google Play | The app in Play Console. A Google Cloud service account with a JSON key, invited with only "Release apps to testing tracks" and "View app information". | EAS credentials, submissions key for `com.msalman5230.adwam` |
 | PostHog | A project on the EU host, set up as [development-setup.md](../development-setup.md#optional-usage-statistics) describes | `EXPO_PUBLIC_POSTHOG_KEY` above |
 | Sentry | An organization token for source maps, plus the org and project slugs | `staging` and `production` secret `SENTRY_AUTH_TOKEN`; variables `SENTRY_ORG` and `SENTRY_PROJECT` |
-| GitHub | A GitHub App for release-please, installed on this repository only, with Contents, Pull requests and Issues on read and write | `release` variable `RELEASE_APP_ID` and secret `RELEASE_APP_PRIVATE_KEY` |
+| GitHub | A GitHub App for release-please, installed on this repository only, with Contents, Pull requests and Issues on read and write | `release` variable `RELEASE_APP_CLIENT_ID` (the app's Client ID) and secret `RELEASE_APP_PRIVATE_KEY` |
 | GitHub | A machine account for agents, with the Write role and no reviewer rights | Its own `gh` login on the agents' PC |
 
 After the first production deploy, run the production scheduler SQL in the production SQL Editor. Copy `adwam_job_key` from Vault into the `ADWAM_JOB_KEY` secret. Add the admin's confirmed email user to `public.admins`. Debug tools stay off in production.
