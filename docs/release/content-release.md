@@ -1,5 +1,7 @@
 # Content release and rollback
 
+> This draft predates the approved release flow in [CI and releases](ci-and-release.md), which replaces its tags with the Release PR and the **Ship update** button. Task M6.9 rewrites it.
+
 This is for production, which doesn't exist yet. Until then, content fixes reach testers as a Preview update when they merge to `master`.
 
 ## Publish a content update
