@@ -31,10 +31,6 @@ enable_anonymous_sign_ins = true
 [auth.email]
 enabled = true
 
-[auth.email.template.magic_link]
-subject = "Adwam admin sign-in code"
-content_path = "./supabase/templates/admin-code.html"
-
 [functions.weather-tick]
 verify_jwt = false
 

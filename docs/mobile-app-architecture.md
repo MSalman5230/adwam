@@ -256,7 +256,7 @@ That covers roughly 1,000 areas. If the app outgrows that, the stack file's opti
 
 ### Date corrections
 
-1. **The owner or a helper signs in** to `apps/admin` with a code sent by email. It's a one-page site on a free static host.
+1. **The owner or a helper signs in** to `apps/admin` with a one-time link sent to an approved admin email. The link returns to the same browser to establish a session. It's a one-page site on a free static host.
 2. **They enter the correction:** the country, the Hijri month and the announced day 1, with a source link. The page shows the Umm al-Qura date, warns if the two differ by more than 2 days, and estimates how many installs would see a different date.
 3. **Publishing pushes to the installs it affects:** those in that country whose dates differ. For example, "Ramadan starts on Sunday in the United Kingdom. Your app says Monday."
 4. **Today's Date correction notice offers two buttons:** "Use Sunday" and "Keep my dates". Using it pins that month's start on the phone, with Undo. Settings, Hijri date lists the accepted corrections, and each one can be removed.
