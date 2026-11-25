@@ -1,0 +1,21 @@
+# Staging acceptance
+
+Use the signed Adwam Preview APK and the Supabase staging project. Record the EAS build ID, version code, update ID if applicable, and device. Follow the [Android reminder test](notification-test.md) separately for the physical-device week.
+
+1. Install Preview afresh, pick a city, choose Recommended, and allow notifications. Check that Today opens and the app syncs. For the push test, pick a city that is outside quiet hours now.
+2. In Settings → Developer tools, choose **Rain starting now** without setting a debug time or Moment. Check Today for the rain card. Background the app, then check that the next push-sender run delivers the notification, that tapping it opens the rain detail, and that Expo returns a receipt. Repeating the simulation should not add a second event or push for that install.
+3. Follow the [correction runbook](publish-correction.md) using a staging test region and test install. Verify the admin code, publish and withdraw, then check **Use**, **Keep my dates** and **Undo** in Preview. Do not send a simulated correction to unrelated testers.
+4. With a local tracker already populated, open Settings → Privacy → **Delete my data from the server**. Confirm, check that the app reports success and the rain is cleared, and recheck the tracker. Also confirm that the disposable anonymous Auth user is gone.
+5. Run **Staging weather health** after a quarter-hour boundary. A passing result requires a completed `weather-tick` and forecast calls below budget. Manual runs also log aggregate staging push outcomes and successful Expo receipts for the last hour, without identifiers. Receipts become eligible for checking 15 minutes after sending, then wait for the next scheduled `push-receipts` run. [Incident runbook](incidents.md)
+
+## 25 November 2026 verification
+
+Signed Android Preview `0.1.0`, version code `15`, on the Pixel 6 emulator. The APK and the latest listed Preview update group `1f6ddc70-6377-4c66-9b58-f987245e1aec` have the same native fingerprint, `cf9f1d596527b5f7019958cf7cc1a5a18e4a2411`. Update and rollback on a device are still to be verified. [EAS build](https://expo.dev/accounts/msalman5230/projects/adwam/builds/18d7dc7c-1dca-470f-b4c2-ecbaa08dc766)
+
+- Staging accepted a fresh anonymous sign-in and install sync. The app could read the config and corrections. The staging rain RPC returned a card and reused the same event on repeat. `forget_me_v1` removed the disposable test account from Auth.
+- The signed APK completed setup with London and notifications allowed. **Rain starting now** showed the rain on Today with Open-Meteo credit. No remote push was observed during this run.
+- On the signed APK, Privacy reported that server data was deleted. The previously logged Thursday fast stayed checked afterward.
+- Fresh In-app only setup reached Today in airplane mode. Today, the prayer anchors, the consent notice and the tab bar were readable in dark mode at Android font scale 2.0. This was a spot check, not the full accessibility pass.
+- The post-setup diagnostic found both Vault entries and successful cron invocations, but all six recent HTTP responses were 401. After the owner corrected `ADWAM_JOB_KEY`, staging weather health passed on both the diagnostic branch and `master`. [401 diagnostic](https://github.com/MSalman5230/adwam/actions/runs/45652654067) · [Passing master run](https://github.com/MSalman5230/adwam/actions/runs/45660404476)
+- A fresh Preview install choosing Stanley, Falkland Islands, with notifications allowed showed simulated rain and queued one weather push. The push stayed queued through the next sender cycle. No sender run completed and `EXPO_ACCESS_TOKEN` was missing from staging Edge Function secrets. Retry delivery and receipts once the Expo access token is configured. [Push diagnostic](https://github.com/MSalman5230/adwam/actions/runs/45662265949)
+- Staging accepted the admin sign-in request after the owner provisioned the Auth user. The email contained a magic link, so the Magic Link template still needed to render a numeric code. Admin sign-in and publishing require a fresh test with the code template. [Correction admin setup](../development-setup.md#correction-admin-sign-in)

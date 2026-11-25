@@ -1,10 +1,10 @@
 # Implementation plan
 
-This is the plan for building Adwam version 1, from an empty workspace to Google Play, then the App Store. It breaks [mobile-app-architecture.md](mobile-app-architecture.md) into tasks an agent can pick up one at a time: what to build, in what order, which files each task produces, and how to check it's done.
+This is the plan for finishing Adwam version 1 on Android and running it end to end on staging. It breaks [mobile-app-architecture.md](mobile-app-architecture.md) into tasks and checks. The deliverable is a signed Adwam Preview APK, installed directly from EAS, backed by Supabase staging and the staging correction admin page.
 
 It doesn't repeat the architecture's reasoning. Read the architecture for what each part is and why. Read this for the order, the tasks and the checks.
 
-Written on 21 November 2026. The owner approved the three specs below that were drafts the same day. This plan, the specs and the prototype all live in `docs/`, so the repository root holds only code and the files tools expect there.
+Written on 21 November 2026 and narrowed to staging on 25 November 2026. The owner approved the three specs below that were drafts on 21 November. Production infrastructure, Play Console, store submissions, store-only compliance material and iOS are deferred. Older release instructions in the specs and runbooks are reference only. They don't add staging requirements.
 
 ## Inputs
 
@@ -18,7 +18,7 @@ Written on 21 November 2026. The owner approved the three specs below that were 
 | [sunnah-content-format.md](sunnah-content-format.md) | The content files | Approved and committed |
 | [development-setup.md](development-setup.md) | Accounts, secrets, local tools, who does what | Approved and committed |
 
-**When files disagree,** the owner's decisions in the architecture come first, then the prototype for screens and behaviour, then the other specs. The disagreements found while writing this plan are settled under [Conflicts the plan settles](#conflicts-the-plan-settles). Whoever changes behaviour fixes the losing file in the same pull request, so the specs never drift apart.
+**When files disagree,** this plan governs delivery scope. For product behaviour, the owner's decisions in the architecture come first, then the prototype for screens and behaviour, then the other specs. The disagreements found while writing this plan are settled under [Conflicts the plan settles](#conflicts-the-plan-settles). Whoever changes behaviour fixes the losing file in the same pull request, so the specs never drift apart.
 
 **Line numbers** in this plan refer to `mobile-app-ui.html` at commit `c55c11a`. M0.2 edits the prototype, which shifts them. After that, search for the function by name, or read the old file with `git show c55c11a:mobile-app-ui.html`. That commit predates the move to `docs/`, so the file sat at the root.
 
@@ -34,7 +34,7 @@ An Android app, English only but ready for translation, with no account. Setup, 
 - **Before opening a PR,** run `pnpm check` and meet the [definition of done](#definition-of-done).
 - **Ask the owner** when a step needs an account, a payment, a secret, a legal judgement or a judgement about religious content. Secrets go through a secure secret prompt, never the chat.
 - **Never** type Arabic, hadith or Qurʾan text from memory, change a released Sunnah ID, run a production command, or commit a secret.
-- **Staging only until milestone 6.** The owner sets up production once everything works on staging (M6.9). Until then, create nothing for production: no Supabase project, secrets, builds or store uploads. The production build profile and update channel can exist in config, unused.
+- **Staging only through completion.** Create or change nothing for production. Existing production profiles, IDs and runbooks can stay as inactive references. Distribute signed Preview APKs directly, with no Play Console account or Play testing track required.
 
 Task sizes: **S** is one small PR, **M** one or two PRs, **L** several PRs.
 
@@ -43,17 +43,26 @@ Task sizes: **S** is one small PR, **M** one or two PRs, **L** several PRs.
 ```
          +- Core engine M1.1-M1.15 ---+- App shell and Today M2 -- Screens M3 --+
          |                            +- Local notifications M4 ----------------+
-   M0 ---+- Content M1.16-M1.20 -- owner reads it before production ------------+- Hardening M6 -- Android release M7 -- iOS M8
+   M0 ---+- Content M1.16-M1.20 -- approved catalogue and phone rendering ------+- Hardening M6 -- staging and Android app complete
          |                            +- Server M5: server side after M1, ------+
          |                               app side after M2                      |
-         +- Owner: accounts, Play Console, testers -----------------------------+
+         +- Owner: staging settings, Android test phones, privacy review -------+
 ```
 
-Three chains decide the release date. Each depends more on people and outside services than on the agents:
+The longest dependency is the week on real Android phones. Start that on the signed Preview while staging Auth and the weather scheduler are being configured. Once both are working, use the same build to verify rain, pushes, corrections and data deletion. A green deployment only proves the code reached staging. Closeout needs the behaviours below to work there.
 
-1. **Content review.** During development nothing waits for review: test builds show all content. Before production, the owner reads every Sunnah, duʿāʾ and source once (D5, M6.6), and only then is it published. Scripts copy the texts from sunnah.com and Quran.com (M1.17), so it's reading, not typing. Start once M1.17 is done, so it's finished before milestone 6 ends.
-2. **Google Play.** A personal account's identity check takes days. Then a closed test needs at least 12 testers opted in for 14 days in a row, and the production-access review takes more days. Open the account in milestone 4, recruit testers in milestone 5, and start the closed test when milestone 6 is nearly done.
-3. **Notifications on real phones.** The milestone 0 tests can change the notification library, which changes milestone 4.
+## Staging and app closeout
+
+Baseline checked on 25 November 2026 at `df7101a`. CI, staging deployment, the admin Pages deployment and the latest emulator suite passed. Signed Android Preview `0.1.0` (version code `15`) passed the permission check and contains Firebase app configuration. All 32 shipped content entries pass the published-content check. Record live staging and signed-device checks in the [staging acceptance runbook](runbooks/staging-acceptance.md). [CI](https://github.com/MSalman5230/adwam/actions/runs/45045021999) · [Staging deploy](https://github.com/MSalman5230/adwam/actions/runs/45045021992) · [Admin Pages](https://github.com/MSalman5230/adwam/actions/runs/45045021916) · [Latest emulator run](https://github.com/MSalman5230/adwam/actions/runs/45590303685) · [Signed Preview APK](https://expo.dev/accounts/msalman5230/projects/adwam/builds/18d7dc7c-1dca-470f-b4c2-ecbaa08dc766)
+
+| Remaining work | What needs to happen next | Evidence to close it |
+|---|---|---|
+| Staging Auth and admin (M5.12, M5.13) | Anonymous sign-in, install sync and data deletion pass against staging. A local fast log survived deletion. The approved admin address receives email. **Owner:** set the staging Magic Link template to send a numeric code. Follow [Correction admin sign-in](development-setup.md#correction-admin-sign-in). | **Agent:** confirm admin sign-in, then exercise publish, Use, Keep, Undo and withdrawal on staging. [#70](https://github.com/MSalman5230/adwam/issues/70) · [#71](https://github.com/MSalman5230/adwam/issues/71) |
+| Staging weather jobs and push (M5.10, M5.12, M5.14) | Both Vault entries are present and cron runs. The job key was corrected and weather health is green on `master`. Simulated rain reaches Today on the signed APK. | **Agent:** verify actual weather and correction pushes, tap routing, and Expo receipts. Use the manual health workflow's push summary to distinguish queued, sent and failed messages before changing Expo credentials. [Passing weather health](https://github.com/MSalman5230/adwam/actions/runs/45660404476) · [#72](https://github.com/MSalman5230/adwam/issues/72) · [#176](https://github.com/MSalman5230/adwam/issues/176) |
+| Android phone coverage and speed (M0.7, M4.8, M6.4) | **Owner:** make a Pixel, Samsung, Xiaomi and low-end Android phone available for the week. The runbook has a quick Nothing Phone (2) success but no completed week. Start independently of staging setup. | **Agent and testers:** record delivery and delay, Done and Later, reboot, update, battery saver, time-zone changes and background refresh in the [notification runbook](runbooks/notification-test.md). Close the outstanding [risk tests](spikes.md). Recheck the low-end startup and full schedule rebuild before closing [performance](runbooks/mobile-performance.md). [#10](https://github.com/MSalman5230/adwam/issues/10) · [#58](https://github.com/MSalman5230/adwam/issues/58) · [#76](https://github.com/MSalman5230/adwam/issues/76) |
+| App acceptance and privacy (M2.11, M3.7, M6) | **Agent:** run the signed Preview acceptance pass while the owner handles staging and phone access. Check light and dark screens against the prototype, TalkBack and large text, content rendering, offline paths, a compatible Preview update and a readable Sentry test crash. Stabilize any repeatable emulator failures. **Owner:** confirm the privacy notice's operator/contact and review its data and consent wording. | Document the checks on the final Preview build, resolve any regressions and make the approved privacy notice reachable from About. The catalog is already approved and published in the repo. What remains there is phone rendering and link checks. [#78](https://github.com/MSalman5230/adwam/issues/78) · [#79](https://github.com/MSalman5230/adwam/issues/79) |
+
+**Done means** the M0–M6 in-scope exit checks are recorded for a signed Preview build, with no unresolved staging or app blockers. Keep the build/version, update ID, CI links, staging health run and device results with the corresponding issues or runbooks. No production or store checks are needed to close the plan.
 
 ## Conflicts the plan settles
 
@@ -79,7 +88,7 @@ Three chains decide the release date. Each depends more on people and outside se
 
 ## Decisions for the owner
 
-On 21 November 2026 the owner approved the drafts (D1), chose the app IDs (D2) and took on the content review (D5). For the development phase, the owner accepted every other default below. Each one is confirmed or changed before the production release, in milestone 6.
+On 21 November 2026 the owner approved the drafts (D1), chose the app IDs (D2) and took on the content review (D5). For development and staging, the owner accepted every other default below. Resolve any outstanding decision that affects the Android app during staging closeout.
 
 | # | Question | Needed by | Answer, or the accepted default |
 |---|---|---|---|
@@ -87,11 +96,11 @@ On 21 November 2026 the owner approved the drafts (D1), chose the app IDs (D2) a
 | D2 | App IDs and domain (architecture, open question 1) | M0.4 | `com.msalman5230.adwam` for production, `com.msalman5230.adwam.preview` and `com.msalman5230.adwam.dev` for test builds. No domain for now: the privacy policy and admin page use GitHub Pages. |
 | D3 | Licences for the code and the content (open question 2) | M6 | The owner chose noncommercial use with credit to MSalman5230 for Adwam's original app, code, text and artwork. Third-party material keeps its own terms. [Adwam Noncommercial Licence](../LICENSE) |
 | D4 | Analytics consent (open question 3) | M6 | Off until the user agrees |
-| D5 | Content reviewer (open question 4) | M6.6 | The owner. During development, content isn't held for review: entries stay in `review`, and test builds show them all. Before production, the owner reads every entry once, and only then is it marked published. |
+| D5 | Content reviewer (open question 4) | M6.6 | The owner. Test builds can show content in `review`. The staging acceptance catalogue uses entries that the owner has reviewed and that are marked `published`. |
 | D6 | Where the usage-statistics question goes | M0.2 | A one-time notice on Today right after setup, "Share anonymous usage statistics?", with Share and No thanks and neither preselected. Setup stays under a minute, and users who pick In-app only, who skip step 4, still see it. |
-| D7 | Prayer methods offered, and the method suggested for each country | M1.4 | The prototype's five, plus adhan-js's Turkey (Diyanet), Singapore (also suggested for Malaysia and Indonesia), Dubai, Kuwait, Qatar and Moonsighting Committee. The prototype suggests Muslim World League for Türkiye, Malaysia and Indonesia, which local users would likely find wrong. The owner checks the country table before production. |
+| D7 | Prayer methods offered, and the method suggested for each country | M1.4 | The prototype's five, plus adhan-js's Turkey (Diyanet), Singapore (also suggested for Malaysia and Indonesia), Dubai, Kuwait, Qatar and Moonsighting Committee. The prototype suggests Muslim World League for Türkiye, Malaysia and Indonesia, which local users would likely find wrong. Include the country table in staging app sign-off. |
 | D8 | The rule for high latitudes | M1.4 | Angle-based, as in the prototype |
-| D9 | The eclipse cloud-cover flag | M1.16 | Leave it out of version 1, because the phone has no cloud forecast for an eclipse it computed itself. Reword the eclipse note, and the owner checks the new wording before production. |
+| D9 | The eclipse cloud-cover flag | M1.16 | Leave it out of version 1, because the phone has no cloud forecast for an eclipse it computed itself. Include the revised eclipse note in staging app sign-off. |
 | D10 | Penumbral lunar eclipses (architecture, gap 1) | M1.13 | Leave them out |
 | D11 | Eclipse pushes and the one-weather-push-a-day limit (gap 2) | M1.12 | The limit counts weather only |
 | D12 | Report a problem without a GitHub account (gap 3) | M2.10 | An "Email instead" link once the owner sets up an address. GitHub only until then. |
@@ -110,7 +119,7 @@ adwam/
     plan.md                         this file
     *.md, mobile-app-ui.html        the specs and the prototype
     spikes.md                       milestone 0 test results and the paths chosen
-    runbooks/                       release, content release, rollback, corrections, incidents, phone tests
+    runbooks/                       Preview updates and rollback, corrections, incidents, phone tests
   packages/content/
     sources/                        the sunnah.com and Quran.com texts the content quotes, copied once (M1.17)
   tools/
@@ -163,9 +172,9 @@ A PR is done when:
 
 **Owner:**
 
-- Log in the command-line tools on this PC, once, all as **MSalman5230**. GitHub's `gh` already is. Expo's `eas` is logged in as another account, so run `eas logout`, then `eas login`. Don't log in the Supabase CLI: local Supabase needs no login, and CI uses a scoped token (development-setup.md, "CI secrets").
+- Log in the command-line tools on this PC as **MSalman5230**, if needed. Before each `gh` or `eas` command, verify the active account. Don't log in the Supabase CLI: local Supabase needs no login, and CI uses a scoped token (development-setup.md, "CI secrets").
 - Create the Supabase staging project on the free tier.
-- In GitHub, create the `staging` environment and add its secrets from development-setup.md, "CI secrets". The `production` environment stays empty until milestone 6. Turn on branch protection for `master` once CI exists.
+- In GitHub, create the `staging` environment and add its secrets from development-setup.md, "CI secrets". Turn on branch protection for `master` once CI exists.
 - Have Docker Desktop running when the agent needs local Supabase.
 - For the risk tests, find a Samsung and a Xiaomi phone, your own or a tester's.
 
@@ -200,7 +209,7 @@ The prototype stays the single design reference, so new screens and wording go i
 - **Do:**
   - Create `apps/mobile` with the latest stable Expo SDK, TypeScript, Expo Router and the New Architecture.
   - `app.config.ts` reads `APP_VARIANT` for the name ("Adwam", "Adwam Preview", "Adwam Dev"), the Android package (`com.msalman5230.adwam`, with `.preview` or `.dev` added, as in D2) and the `adwam` link scheme. The runtime version uses the fingerprint policy. Updates are checked at launch without delaying it. `android.blockedPermissions` removes `ACCESS_FINE_LOCATION`, `ACCESS_BACKGROUND_LOCATION`, `SCHEDULE_EXACT_ALARM` and `USE_EXACT_ALARM`.
-  - `eas.json` with `development`, `preview` and `production` profiles, the `preview` and `production` update channels, and version codes kept by EAS that increase on their own. Run `eas init`.
+  - `eas.json` with `development` and `preview` profiles, the `preview` update channel, and version codes kept by EAS that increase on their own. Leave any existing production profile unused.
   - A config plugin that allows plain HTTP only in development builds.
   - Install the native modules now, so there's one early rebuild: expo-dev-client, expo-notifications, expo-background-task, expo-location, expo-updates, expo-font, expo-localization, expo-intent-launcher, react-native-mmkv, react-native-svg, @gorhom/bottom-sheet with its gesture and animation libraries, and @sentry/react-native, which stays off until M2.11.
   - `.env.example` listing every variable in development-setup.md.
@@ -234,8 +243,8 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 
 ### M0.8 Tracking · S
 
-- **Do:** GitHub milestones M0 to M8, one issue per task named with its ID, and labels such as `core`, `content`, `app`, `server`, `owner`, `needs-new-build` and `release-blocker`. Issue forms: `content-problem.yml`, with fields for the item, its ID, the content version, the app version and a description, all fillable from the URL, and a general bug form.
-- **Done when:** every task in this plan has an issue.
+- **Do:** Track active M0–M6 work in GitHub, one issue per task named with its ID, and labels such as `core`, `content`, `app`, `server`, `owner`, `needs-new-build` and `release-blocker`. Issue forms: `content-problem.yml`, with fields for the item, its ID, the content version, the app version and a description, all fillable from the URL, and a general bug form.
+- **Done when:** every in-scope task has an issue. Deferred work keeps its original IDs and does not count against staging closeout.
 
 **Exit check:** the development build signs in to local Supabase, CI is green on `master`, every risk has a chosen path, and the owner has approved the updated prototype.
 
@@ -368,7 +377,7 @@ Throwaway code on `spike-*` branches. Each result and the chosen path go into `d
 
 #### M1.17 Duʿāʾ and evidence · L
 
-Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobody types Arabic. The owner reads the result before production (D5).
+Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobody types Arabic. The owner reads the result before entries are marked published (D5).
 
 - **Needs:** M1.6, D16.
 - **Do:**
@@ -402,7 +411,7 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 **Goal:** Setup through Today works on a phone, offline.
 
-**Owner:** create the Sentry organisation with EU data storage, and a project. Put its DSN in EAS as `EXPO_PUBLIC_SENTRY_DSN` for preview and production, and `SENTRY_AUTH_TOKEN` as an EAS secret. Install the preview build on your own phone and send feedback.
+**Owner:** configure the EU Sentry project in EAS Preview with `EXPO_PUBLIC_SENTRY_DSN` and the `SENTRY_AUTH_TOKEN` secret. Install the Preview build on your own phone and send feedback.
 
 ### M2.1 Theme, type and language · M
 
@@ -510,7 +519,7 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 ### M3.6 Debug screen · M
 
 - **Do:** in development and preview builds only: the date and time, the Moments, a jump to the next push, simulated weather (on the phone for now, through the server in M5), a simulated correction offer, the planned and scheduled notifications, "fire the next notification in 10 seconds", a full reset, and the theme gallery.
-- **Done when:** a build check proves the production bundle has no debug route.
+- **Done when:** the tools work in Preview and the existing CI route-isolation check passes. This check does not require a production build or deployment.
 
 ### M3.7 Visual review · M
 
@@ -522,7 +531,7 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 **Goal:** a week of reminders arrives correctly on every test phone.
 
-**Owner:** open the Google Play Console personal account now, because the identity check takes days. Arrange the test phones: a Pixel, a Samsung, a Xiaomi and a low-end phone.
+**Owner:** arrange the test phones: a Pixel, a Samsung, a Xiaomi and a low-end phone. Use the signed APK from EAS directly.
 
 ### M4.1 Channels and buttons · S
 
@@ -564,10 +573,9 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 **Owner:**
 
-- Create a Firebase project with an Android app for each app ID in D2. Upload its service account key to EAS's credentials, and store `google-services.json` as an EAS file variable.
-- Create an Expo access token and turn on Expo's enhanced push security. Add it to Supabase's secrets as `EXPO_ACCESS_TOKEN`, along with the functions' `SENTRY_DSN`.
-- Name the admins, the owner and the helper, with their email addresses. Supabase's built-in email only reaches members of the Supabase organisation, so invite the helper or set up an email service on its free tier.
-- Start recruiting 15–20 testers, including Samsung and Xiaomi owners.
+- Configure Firebase Cloud Messaging for the Preview package only. Store `google-services.json` as an EAS Preview file variable and upload the matching FCM V1 service account credential to EAS. The existing signed APK already has the Firebase app configuration. Verify the delivery credential before adding or replacing it.
+- Use an Expo access token with Expo's enhanced push security, and store it in the staging project's Edge Function secrets as `EXPO_ACCESS_TOKEN`, alongside the functions' `SENTRY_DSN`. Do not share their values.
+- Configure staging Auth, and confirm the approved admin email accounts. Supabase's built-in email only reaches members of the Supabase organisation, so invite the helper or set up SMTP if needed.
 
 ### M5.1 Tables and access · M
 
@@ -607,7 +615,7 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 ### M5.10 Cleanup and schedules · S
 
-- The daily cleanup. `pg_cron` starts every job through `pg_net`, with a key from Supabase Vault that a short SQL script sets once per project. The owner runs it on staging now, and on production in M6.9.
+- The daily cleanup. `pg_cron` starts every job through `pg_net`, with a key from Supabase Vault. The owner runs [the scheduler setup SQL](../supabase/setup-staging-jobs.sql) once on staging and copies the Vault key directly into `ADWAM_JOB_KEY` in the staging Edge Function secrets.
 
 ### M5.11 Function tests · M
 
@@ -632,15 +640,15 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 ### M5.14 Staging deploys and health check · S
 
-- On merge to `master`, deploy migrations and functions to staging and publish an update to the preview channel. A daily workflow reads the last weather-tick run and the day's Open-Meteo calls on staging, and on production once it exists, and opens an issue if either is wrong. This also stops the free projects from pausing.
+- On merge to `master`, deploy migrations and functions to staging and publish an update to the preview channel. A daily workflow reads the last weather-tick run and the day's Open-Meteo calls on staging and opens an issue if either is wrong. A passing deploy does not replace this health check.
 
 **Exit check (architecture):** simulated rain on staging reaches a phone as a push and a card, and a correction published on the admin page is offered on a phone and applied. One install can't read another's data.
 
-## Milestone 6: Hardening
+## Milestone 6: Staging and Android hardening
 
-**Goal:** no release blockers.
+**Goal:** finish the Android app and prove it works on staging using the signed Preview build.
 
-**Owner:** set up production, now that everything works on staging: the Supabase production project, a second Supabase token scoped to it, and the `production` environment's secrets in GitHub, with yourself as a required reviewer. Create PostHog on its EU host, with the project key in EAS for production only. Confirm or change the accepted defaults, D3 and D4 especially. Arrange a check of the consent approach with someone who knows data-protection law. Approve the privacy policy and the store listing. Read through all the content (M6.6).
+**Owner:** review the final app and staging privacy notice, confirm its operator/contact details and arrange review of its data handling and consent wording. Supply the remaining device coverage from M4.8. The content read-through has already happened. Review any changes that come out of acceptance testing.
 
 ### M6.1 Accessibility · M
 
@@ -648,68 +656,46 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 ### M6.2 PostHog · M
 
-- The React Native library on the EU host, off until the user agrees (D4). No IP addresses, location lookup, session replay or touch capture. A typed `track()` function that accepts only the architecture's events and properties, with a test proving the forbidden ones can't get through. The app version, content version, platform and country on every event. Screen views from the router. The question from D6, and the switch in Privacy.
+- The React Native library targets the EU host and stays off until the user agrees (D4). No IP addresses, location lookup, session replay or touch capture. A typed `track()` function accepts only the architecture's events and properties, with a test proving the forbidden ones can't get through. The app version, content version, platform and country are on every event. Verify the one-time question (D6), the Privacy switch, tracking only after opt-in, and queue and ID cleanup on opt-out. Use tests or a test transport for delivery, and keep live collection off in ordinary Preview builds as documented in [development setup](development-setup.md#optional-usage-statistics). A live PostHog project is not needed to finish staging.
 
 ### M6.3 End-to-end tests · M
 
-- Maestro flows for every setup path, ticking with Undo, logging fasts and the trackers, make-up days, reminder choices, presets and groups, the pause, every sheet, the detail and report sheets, Upcoming's filters, the theme, and the Moments through the debug screen. They run every night on an emulator in CI, and before every release.
+- Maestro flows for every setup path, ticking with Undo, logging fasts and the trackers, make-up days, reminder choices, presets and groups, the pause, every sheet, the detail and report sheets, Upcoming's filters, the theme, and the Moments through the debug screen. Run nightly on an emulator in CI and on the commit chosen for final Preview. Fix any repeatable failure. The emulator uses local Supabase, so log a separate signed-device pass against staging.
 
 ### M6.4 Speed and size · S
 
-- Today shows within 2 seconds of launch on the low-end phone, and scheduling takes under half a second. Record the app's size and the sizes of `content.json` and the city list.
+- Today shows within 2 seconds of launch on the low-end phone, and scheduling takes under half a second. Measure both a full rebuild and a steady-state reconciliation on the signed Preview. Record the APK's size and the sizes of `content.json` and the city list in the [performance runbook](runbooks/mobile-performance.md).
 
 ### M6.5 Robustness · S
 
 - An error screen that reports to Sentry. Every screen works offline. Damaged storage falls back to defaults, keeping trackers where it can.
 
-### M6.6 Content ready to ship · M
+### M6.6 Content acceptance · M
 
-- The owner reads every entry. The agent then marks each one published, with the owner as reviewer, so `content:check --release` passes. The calendar regenerated, and the link check clean. The Arabic checked on real phones: Amiri's letter joins and vowel marks intact and not clipped. Quran.com's Uthmani text uses marks that ordinary Amiri may draw badly; if it does, verses use Amiri Quran instead.
+- Keep the owner-reviewed catalogue published and `pnpm content:check --release` green. The flag validates publication status only and does not deploy anything. Keep the calendar regenerated and the link check clean. On real phones, check that Amiri's letter joins and vowel marks are intact and not clipped. Quran.com's Uthmani text uses marks that ordinary Amiri may draw badly. If it does, use Amiri Quran for those verses.
 
-### M6.7 Privacy and store material · M
+### M6.7 In-app privacy and notice · M
 
-- The privacy policy page, on GitHub Pages or the domain, and About's final text. The Data safety answers: approximate location, device IDs, crash logs and app interactions. The store listing, screenshots taken by the end-to-end tests, a feature graphic, an adaptive icon from the crescent mark, the content-rating answers, and the target API level Google Play requires at the time.
+- Finish About's privacy text and the [privacy notice draft](release/android/privacy-policy.html) for what the staging app actually sends and stores. Put the approved notice on GitHub Pages or the chosen domain and link it from About. Verify that the crash-report and consent switches work and that server-data deletion clears the server-side install and cache while preserving local trackers. Store metadata is deferred.
 
 ### M6.8 Licences · S
 
 - Licence files per D3, and credits in About and the README.
 
-### M6.9 Production pipeline · M
+### Final staging acceptance
 
-- The release workflow deploys migrations and functions to production after the owner's approval. Cron jobs and the Vault key on production. EAS's production variables. Production's `app_config`, with debug tools off. The runbooks in `docs/runbooks/`: app release, content release and rollback, publishing a correction, and incidents (the weather job stopped, the Open-Meteo budget spent, pushes failing, a project paused).
+- Record the signed Preview build, Android version code, native fingerprint, content version and update ID. Confirm Preview installs directly and can receive a fingerprint-compatible update without losing settings or trackers. Document the last known-good Preview update and how to roll back on that channel only. Make sure the [correction](runbooks/publish-correction.md) and [incident](runbooks/incidents.md) procedures work against staging.
+- Use the final Preview to verify offline Setup through Today, core reminders and trackers, all screens and sheets, TalkBack and large type, server settings sync, weather card and push, correction offer and withdrawal, server-data deletion, and a Preview Sentry crash with a readable stack. Record the physical device and staging results referenced in [Staging and app closeout](#staging-and-app-closeout).
 
-**Exit check:** no release blockers: every earlier exit check still holds, no issue labelled `release-blocker` is open, all content is published, and the data-protection check is done.
+**Exit check:** every in-scope exit check holds on the final Preview and its staging backend. No staging or app blocker is open. The built-in content is approved, the staging privacy notice is accessible, and actual delivery and performance are verified on the test devices.
 
-## Milestone 7: Android release
+## Deferred work
 
-**Goal:** live on Google Play.
+These IDs stay in GitHub for reference. None is a stopping condition for the Android app and staging work.
 
-### M7.1 First upload · S
-
-- A release tag builds production. The owner uploads the first build to internal testing by hand and sets up Play App Signing. Later uploads go through `eas submit` with the Play service account.
-
-### M7.2 Closed test · M
-
-- The owner invites 15–20 testers, so that at least 12 stay opted in for 14 days in a row. Agents sort feedback into issues and ship fixes as over-the-air updates where they can.
-
-### M7.3 Production · S
-
-- The owner applies for production access. The rollout goes to 10%, then 50%, then 100%, watching crash-free sessions in Sentry, the health check and push receipts.
-
-### M7.4 Content releases · S
-
-- A content tag publishes an over-the-air update to 10%, then 100%. If something's wrong, the previous update is republished, as the runbook describes.
-
-## Milestone 8: iOS
-
-**Goal:** live on the App Store.
-
-**Owner:** an Apple Developer account ($99 a year, or a nonprofit waiver), App Store Connect, and an APNs key and an App Store Connect API key in EAS.
-
-- iOS settings: the bundle ID, permission texts, approximate location and the notification buttons.
-- The 60-pending limit checked on a device, and the background task on iOS's scheduler.
-- An iOS pass on the screens: safe areas, swipe back, sheets and Dynamic Type.
-- Sentry and PostHog on iOS, TestFlight testing, App privacy labels, and review submission.
+- **M6.9:** production infrastructure, credentials, live analytics, and deploy and content-release pipelines.
+- **M7:** Play Console, Play App Signing, store listing and Data safety, closed testing, production access and rollout, and production over-the-air content releases.
+- **M8:** iOS, TestFlight and App Store submission.
 
 ## CI workflows
 
@@ -718,10 +704,8 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 | `ci.yml` | Pull request | `pnpm check`, database tests, function tests, the calendar up-to-date check, the prototype match when core or content changes, and Expo's fingerprint check, which labels the PR `needs-new-build` |
 | `deploy-staging.yml` | Merge to `master` | `server:prepare`, staging migrations and functions, and an update to the preview channel |
 | `preview-build.yml` | By hand, and weekly | A preview APK, with the permission check from M4.7 |
-| `release.yml` | Tag `v*` | After approval: production migrations and functions, a production build, and an upload to internal testing |
-| `content-release.yml` | Tag `content-*` | If the fingerprint is unchanged, an update to production at 10% |
 | `e2e-nightly.yml` | Nightly | The Maestro suite on an emulator, against local Supabase |
-| `daily-health.yml` | Daily | The weather job and the Open-Meteo budget, on staging, and on production from M6.9 |
+| `daily-health.yml` | Daily and by hand | The staging weather job and the Open-Meteo budget |
 | `weekly-links.yml` | Weekly | The source link check |
 | `admin-pages.yml` | Changes in `apps/admin` | Builds and deploys the admin page |
 
@@ -735,8 +719,9 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 | App components and screens | jest-expo and Testing Library, with a fixed clock | Every PR |
 | Database access | pgTAP through `supabase test db` | Every PR |
 | Edge Functions | Deno tests with recorded responses | Every PR |
-| End to end | Maestro on an emulator | Nightly, and before each release |
-| Notifications on real phones | The runbook's checklist | M0, M4 and before release |
+| End to end | Maestro on an emulator | Nightly and on the final Preview commit |
+| Staging integration | Signed Preview, Supabase staging and the staging admin page | M5 and final acceptance |
+| Notifications on real phones | The runbook's checklist | M0, M4 and final acceptance |
 
 ## Risks
 
@@ -744,36 +729,34 @@ The architecture's milestone 0 risks are covered by M0.7. These are the plan's o
 
 | Risk | Effect | Response |
 |---|---|---|
-| The owner's read-through comes late | Content that isn't published can't ship to production | Start once M1.17 is done, one section at a time. Scripts copy the texts, so it's reading, not typing. Development never waits for it. |
+| A content change has not been reviewed | The signed acceptance build would include unapproved material | Use the reviewed catalogue for final acceptance and review changes with the owner. Scripts copy the texts, so it's reading, not typing. |
 | sunnah.com blocks the one-time copy | Evidence stays empty | The script runs once, slowly, and its copies are committed. If it's blocked, the owner requests the API key early. |
-| A translator or publisher objects to their text being quoted | That text has to come out | Every excerpt records its translator and site, and About credits them. Swapping a text for Adwam's own rendering is a content update. |
+| A copied excerpt loses its source or translation credit | Readers cannot verify it | Keep the excerpt check, source links and translator credits intact. The owner has confirmed the rights to the included copied content. |
 | Approximate notifications arrive late | Short-window reminders miss their window | Measured in M0.7, with options for the owner |
 | Supabase's anonymous sign-in is abused | Fake installs and wasted pushes | Supabase's sign-in rate limits, the cleanup job, install counts in the health check, and CAPTCHA later if needed |
 | A content or app update meets older saved data | Settings or ticks lost or broken | Versioned stores with migrations, fingerprint runtime versions, and snapshot tests of tick keys |
 | A mistake in religious content | Users lose trust | Review before publishing, Report a problem on every item, and fixes within days through updates |
-| The closed test slips | The launch slips | Recruit early, with more testers than needed |
-| Consent or Data safety is wrong | Store or legal trouble | Opt-in by default, a legal check, and an allowlist in code |
+| Device coverage slips | Vendor-specific delivery and low-end performance stay unverified | Start the device week while staging is being configured. Use direct EAS APK installs. |
+| Consent or privacy wording is wrong | Testers are misinformed about what the app sends | Require opt-in for analytics, keep Preview collection off, test the allowlist and review the privacy notice. |
 
 ## Owner checklist
 
 | When | What | How long it takes |
 |---|---|---|
 | Before M0 | Done: drafts approved, app IDs chosen, defaults accepted | — |
-| M0 | Switching `eas` to MSalman5230, Supabase staging, the GitHub environments and staging secrets, branch protection on `master`, Docker, two phones for the risk tests | About an hour, plus finding phones |
+| M0 | Expo and GitHub logins as MSalman5230, Supabase staging, the GitHub staging environment and secrets, branch protection on `master`, Docker and phones for any remaining risk tests | As needed |
 | M1 | Nothing | — |
 | M2 | Sentry, with its DSN and token in EAS. Try the preview build. | Half an hour |
 | M3 | Approve the screens | — |
-| M4 | Google Play Console account, and the four test phones | Days for the identity check |
-| M5 | Firebase, the FCM key and `google-services.json` in EAS, the Expo access token, Supabase secrets on staging, the admins, testers | Recruiting takes days |
-| M6 | The production project and its secrets, PostHog, confirming the defaults, the legal check, the privacy policy, the store listing, the content read-through | The legal check may take weeks |
-| M7 | First upload, closed test, production access, rollout approvals | At least 14 days, plus Google's review |
-| M8 | Apple account, APNs and App Store Connect keys | Days |
+| M4 | Four Android test phones or testers with the signed Preview APK | One week of measured delivery |
+| M5 | Staging Auth and admin email, scheduler setup in Vault and the matching Edge Function secret, confirmation of the staging push credentials | Next scheduled weather run to verify setup |
+| M6 | Review app acceptance results and the privacy notice, and confirm its operator/contact details and consent wording | In parallel with phone tests |
 
 ## After version 1
 
 - A sunnah.com API key from the owner. The fetch script then reads new hadith from the API, and compares the API's text with the stored copies.
 - Translations as overlay files, then an Arabic interface written right to left.
 - A month grid on Upcoming.
-- Location-based reminders, which need background location and Google Play's approval.
+- Location-based reminders, which need background location and a separate permissions review.
 - MET Norway as a weather backup, or a private copy of Open-Meteo.
 - The eclipse cloud-cover flag.
