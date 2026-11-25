@@ -1,5 +1,9 @@
 import process from 'node:process';
 
+// The project to check: staging by default, production when ADWAM_ENVIRONMENT=production.
+const environment = () => (process.env.ADWAM_ENVIRONMENT === 'production' ? 'production' : 'staging');
+const Environment = () => (environment() === 'production' ? 'Production' : 'Staging');
+
 const healthQuery = `
   select
     max(finished_at) as last_tick,
@@ -56,7 +60,7 @@ const pushWorkerQuery = `
 const cronJobs = ['adwam-weather-tick', 'adwam-push-send', 'adwam-push-receipts', 'adwam-cleanup'];
 const cronStatuses = ['starting', 'connecting', 'sending', 'running', 'succeeded', 'failed'];
 
-function stagingRequest() {
+function projectRequest() {
   const { SUPABASE_PROJECT_ID: project, SUPABASE_ACCESS_TOKEN: token } = process.env;
   if (!project || !/^[a-z0-9]{20}$/.test(project) || !token) return;
   return (path, query) => globalThis.fetch(`https://api.supabase.com/v1/projects/${project}/${path}`, {
@@ -65,18 +69,18 @@ function stagingRequest() {
   });
 }
 
-export async function stagingWeatherHealth() {
-  const request = stagingRequest();
-  if (!request) return ['The staging project credentials are unavailable.'];
+export async function weatherHealth() {
+  const request = projectRequest();
+  if (!request) return [`The ${environment()} project credentials are unavailable.`];
   const queryDatabase = (query) => request('database/query/read-only', query);
   const response = await queryDatabase(healthQuery);
   if (!response.ok) {
     await response.body?.cancel();
-    return [`Supabase did not return the staging health query (HTTP ${response.status}).`];
+    return [`Supabase did not return the ${environment()} health query (HTTP ${response.status}).`];
   }
   const observed = await response.json();
   const row = observed[0];
-  if (!row || row.calls_today == null || row.daily_budget == null) return ['The staging health query did not return its expected counts.'];
+  if (!row || row.calls_today == null || row.daily_budget == null) return [`The ${environment()} health query did not return its expected counts.`];
   const failures = [];
   const last = Date.parse(row.last_tick);
   if (!Number.isFinite(last)) failures.push('No completed weather tick was recorded.');
@@ -89,13 +93,13 @@ export async function stagingWeatherHealth() {
   return failures;
 }
 
-export async function stagingPushSummary() {
-  const request = stagingRequest();
-  if (!request) return 'Staging push summary is unavailable.';
+export async function pushSummary() {
+  const request = projectRequest();
+  if (!request) return `${Environment()} push summary is unavailable.`;
   const queryDatabase = (query) => request('database/query/read-only', query);
   const rows = await diagnosticRows(queryDatabase, pushSummaryQuery);
-  if (!rows) return 'Staging push summary is unavailable.';
-  if (!rows.length) return 'No staging pushes in the last hour.';
+  if (!rows) return `${Environment()} push summary is unavailable.`;
+  if (!rows.length) return `No ${environment()} pushes in the last hour.`;
   const groups = rows.flatMap((row) => {
     if (!pushChannels.includes(row?.channel) || !pushStatuses.includes(row.status) ||
       !Number.isSafeInteger(row.pushes) || row.pushes < 1 || !Number.isSafeInteger(row.receipts_ok) ||
@@ -103,8 +107,8 @@ export async function stagingPushSummary() {
     const error = row.error == null ? '' : ` (${pushErrors.includes(row.error) ? row.error : 'other'})`;
     return [`${row.channel} ${row.status}${error} × ${row.pushes}, Expo receipts OK × ${row.receipts_ok}`];
   });
-  if (groups.length !== rows.length) return 'Staging push summary did not return the expected counts.';
-  const summary = `Staging pushes in the last hour. ${groups.join('. ')}.`;
+  if (groups.length !== rows.length) return `${Environment()} push summary did not return the expected counts.`;
+  const summary = `${Environment()} pushes in the last hour. ${groups.join('. ')}.`;
   if (!rows.some((row) => row.status === 'queued' || row.status === 'sending')) return summary;
   const [workers, network, secrets] = await Promise.all([
     diagnosticRows(queryDatabase, pushWorkerQuery),
@@ -114,26 +118,26 @@ export async function stagingPushSummary() {
   const workerSummary = workers ? ['push-send', 'push-receipts'].map((job) => {
     const finished = Date.parse(workers.find((row) => row?.job === job)?.last_finished);
     return `${job} last completed: ${Number.isFinite(finished) ? new Date(finished).toISOString() : 'none recorded'}.`;
-  }).join(' ') : 'Staging push worker runs are unavailable.';
+  }).join(' ') : `${Environment()} push worker runs are unavailable.`;
   const tokenStatus = secrets?.some((item) => item?.name === 'EXPO_ACCESS_TOKEN') ? 'present'
     : secrets ? 'missing' : 'unavailable';
-  return `${summary} ${workerSummary} ${describeNetwork(network)} Staging EXPO_ACCESS_TOKEN presence: ${tokenStatus}.`;
+  return `${summary} ${workerSummary} ${describeNetwork(network)} ${Environment()} EXPO_ACCESS_TOKEN presence: ${tokenStatus}.`;
 }
 
 async function describeSchedulerSetup(queryDatabase) {
-  const unavailable = 'The health check could not verify staging Vault setup. Check the scheduler setup in the incident runbook.';
+  const unavailable = `The health check could not verify ${environment()} Vault setup. Check the scheduler setup in the incident runbook.`;
   const [vault] = await diagnosticRows(queryDatabase, vaultQuery) ?? [];
   if (typeof vault?.has_project_url !== 'boolean' || typeof vault.has_job_key !== 'boolean') return [unavailable];
   const missing = [];
   if (!vault.has_project_url) missing.push('adwam_project_url');
   if (!vault.has_job_key) missing.push('adwam_job_key');
-  if (missing.length) return [`Missing staging Vault entries: ${missing.join(', ')}. Run supabase/setup-staging-jobs.sql and set ADWAM_JOB_KEY for the Edge Functions.`];
+  if (missing.length) return [`Missing ${environment()} Vault entries: ${missing.join(', ')}. Run supabase/setup-jobs.sql and set ADWAM_JOB_KEY for the Edge Functions.`];
   const [cron, network] = await Promise.all([
     diagnosticRows(queryDatabase, cronQuery),
     diagnosticRows(queryDatabase, networkStatusQuery),
   ]);
   return [
-    'Staging Vault entries are present.',
+    `${Environment()} Vault entries are present.`,
     cron ? cronJobs.map((job) => describeCron(job, cron)).join(' ') : 'Cron run metadata is unavailable.',
     describeNetwork(network),
   ];
@@ -171,6 +175,6 @@ function describeNetwork(rows) {
       && row.status_code >= 100 && row.status_code <= 599) ? `HTTP ${row.status_code}` : null;
     return status ? [`${status} × ${row.responses}`] : [];
   });
-  return statuses.length ? `Staging-wide pg_net responses in the last 20 minutes: ${statuses.join(', ')}.`
+  return statuses.length ? `${Environment()}-wide pg_net responses in the last 20 minutes: ${statuses.join(', ')}.`
     : 'No pg_net response was recorded in the last 20 minutes.';
 }

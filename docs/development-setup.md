@@ -78,11 +78,11 @@ These are uploaded once in expo.dev. They aren't environment variables.
 | `SENTRY_DSN` | Error reports from the Edge Functions |
 | `ADWAM_JOB_KEY` | Authorizes scheduled jobs. Copy the value of `adwam_job_key` from this project’s Vault into Edge Function secrets. |
 
-Supabase gives each Edge Function its own project URL and keys automatically. After the staging functions are deployed, run [the scheduler setup SQL](../supabase/setup-staging-jobs.sql) in the staging SQL Editor with that project’s URL. It generates a key in Vault. Copy the key directly from the Vault dashboard into the `ADWAM_JOB_KEY` Edge Function secret. Check that `weather-tick` records a finished run on the next quarter-hour.
+Supabase gives each Edge Function its own project URL and keys automatically. After a project's first deploy of the functions, run [the scheduler setup SQL](../supabase/setup-jobs.sql) in that project's SQL Editor with its URL. Set `debug_tools_enabled` to `true` on staging only. The SQL generates a key in Vault. Copy the key directly from the Vault dashboard into the `ADWAM_JOB_KEY` Edge Function secret. Check that `weather-tick` records a finished run on the next quarter-hour.
 
 ### Correction admin sign-in
 
-The staging deployment enables anonymous app sign-in and configures `https://msalman5230.github.io/adwam/` as the Auth Site URL and an allowed Redirect URL when the scoped token has Auth Config read and write permissions. If the deployment reports missing Auth permissions, set those options in the staging dashboard. A link that still returns to `localhost:3000` needs the staging URL configuration corrected before the browser test.
+Each deployment enables anonymous app sign-in and configures its admin page as the Auth Site URL and an allowed Redirect URL: `https://msalman5230.github.io/adwam/staging/` for staging and `https://msalman5230.github.io/adwam/` for production. It does this when the scoped token has Auth Config read and write permissions. If the deployment reports missing Auth permissions, set those options in the staging dashboard. A link that still returns to `localhost:3000` needs the staging URL configuration corrected before the browser test.
 
 Staging uses Supabase’s default Magic Link email with no custom SMTP. An approved admin needs an existing, confirmed email user in `auth.users`, a matching ID in `public.admins`, and an inbox eligible for Supabase’s built-in team email. The admin requests a link on the Date corrections page and opens it in the same browser, which exchanges the link for a session. No token is pasted into the page. Default email is restricted to team inboxes and rate-limited. [Supabase email limits](https://supabase.com/docs/guides/auth/auth-smtp)
 

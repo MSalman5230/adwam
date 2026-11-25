@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import process from 'node:process';
 import { test } from 'node:test';
-import { stagingPushSummary, stagingWeatherHealth } from './staging-health.mjs';
+import { pushSummary, weatherHealth } from './server-health.mjs';
 
 process.env.SUPABASE_PROJECT_ID = 'abcdefghijklmnopqrst';
 process.env.SUPABASE_ACCESS_TOKEN = 'test-fixture';
@@ -10,7 +10,7 @@ test('a healthy weather tick does not need the Vault diagnostic', async (context
   const fetch = context.mock.method(globalThis, 'fetch', () =>
     Response.json([{ last_tick: new Date().toISOString(), calls_today: 1, daily_budget: 100 }]));
 
-  assert.deepEqual(await stagingWeatherHealth(), []);
+  assert.deepEqual(await weatherHealth(), []);
   assert.equal(fetch.mock.callCount(), 1);
 });
 
@@ -25,7 +25,7 @@ test('a missing tick identifies missing Vault entries without reading their valu
     return Response.json([{ has_project_url: true, has_job_key: false }]);
   });
 
-  const failures = await stagingWeatherHealth();
+  const failures = await weatherHealth();
   assert.equal(fetch.mock.callCount(), 2);
   assert.equal(failures[0], 'No completed weather tick was recorded.');
   assert.match(failures[1], /^Missing staging Vault entries: adwam_job_key\./);
@@ -38,7 +38,7 @@ test('a denied Vault query preserves the stale tick and budget failures', async 
       ? Response.json([{ last_tick, calls_today: 100, daily_budget: 100 }])
       : new Response(null, { status: 403 }));
 
-  const failures = await stagingWeatherHealth();
+  const failures = await weatherHealth();
   assert.equal(failures.length, 3);
   assert.match(failures[0], /last completed weather tick/);
   assert.match(failures[1], /could not verify staging Vault setup/);
@@ -62,7 +62,7 @@ test('configured Vault reports cron progress and aggregate HTTP statuses, never 
     return Response.json([{ status_code: 401, responses: 4 }, { status_code: null, responses: 1 }]);
   });
 
-  const failures = await stagingWeatherHealth();
+  const failures = await weatherHealth();
   assert.equal(fetch.mock.callCount(), 4);
   assert.equal(failures[0], 'No completed weather tick was recorded.');
   assert.equal(failures[1], 'Staging Vault entries are present.');
@@ -81,7 +81,7 @@ test('a failed optional query does not hide results from the other diagnostic', 
     if (options.body.includes('cron.job_run_details')) return new Response(null, { status: 403 });
     return Response.json([]);
   });
-  assert.deepEqual(await stagingWeatherHealth(), [
+  assert.deepEqual(await weatherHealth(), [
     'No completed weather tick was recorded.', 'Staging Vault entries are present.',
     'Cron run metadata is unavailable.', 'No pg_net response was recorded in the last 20 minutes.',
   ]);
@@ -98,7 +98,7 @@ test('the push summary reports only aggregate outcomes and confirmed receipts', 
       { channel: 'corrections-silent', status: 'failed', pushes: 1, receipts_ok: 0, error: 'unexpected detail' },
     ]);
   });
-  const summary = await stagingPushSummary();
+  const summary = await pushSummary();
   assert.match(summary, /weather sent × 2, Expo receipts OK × 1/);
   assert.match(summary, /corrections failed \(InvalidCredentials\) × 1/);
   assert.match(summary, /corrections-silent failed \(other\) × 1/);
@@ -107,9 +107,9 @@ test('the push summary reports only aggregate outcomes and confirmed receipts', 
 
 test('the manual push summary distinguishes no activity from an unavailable query', async (context) => {
   const fetch = context.mock.method(globalThis, 'fetch', () => Response.json([]));
-  assert.equal(await stagingPushSummary(), 'No staging pushes in the last hour.');
+  assert.equal(await pushSummary(), 'No staging pushes in the last hour.');
   fetch.mock.mockImplementation(() => new Response(null, { status: 502 }));
-  assert.equal(await stagingPushSummary(), 'Staging push summary is unavailable.');
+  assert.equal(await pushSummary(), 'Staging push summary is unavailable.');
 });
 
 test('a queued push reports worker progress and only the presence of the Expo secret', async (context) => {
@@ -122,7 +122,7 @@ test('a queued push reports worker progress and only the presence of the Expo se
     if (options.body.includes('net._http_response')) return Response.json([{ status_code: 500, responses: 4 }]);
     return Response.json([{ channel: 'weather', status: 'queued', pushes: 1, receipts_ok: 0, error: null }]);
   });
-  const summary = await stagingPushSummary();
+  const summary = await pushSummary();
   assert.match(summary, /push-send last completed: none recorded/);
   assert.match(summary, /HTTP 500 × 4/);
   assert.match(summary, /EXPO_ACCESS_TOKEN presence: present/);

@@ -1,0 +1,111 @@
+name: Production rollout
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to do with the production update that is rolling out
+        type: choice
+        options:
+          - Raise to 50%
+          - Raise to 100%
+          - Undo
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Rollout plan
+    runs-on: ubuntu-latest
+    environment: production-monitor
+    timeout-minutes: 20
+    outputs:
+      group: ${{ steps.find.outputs.group }}
+    steps:
+      - name: Require master
+        if: github.ref != 'refs/heads/master'
+        run: |
+          echo '::error::Run Production rollout from master.'
+          exit 1
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: '27.11.0'
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: pnpm install --frozen-lockfile
+      - name: Find the update that is rolling out
+        id: find
+        working-directory: apps/mobile
+        env:
+          APP_VARIANT: production
+          ACTION: ${{ inputs.action }}
+        run: |
+          bash scripts/verify-eas-account.sh
+          updates=$(eas update:list --branch production --platform android --limit 25 --json --non-interactive)
+          rollout=$(jq -c '[(.currentPage // [])[] | select(.rolloutPercentage != null and .rolloutPercentage < 100)][0] // empty' <<< "$updates")
+          if [[ -z "$rollout" ]]; then
+            echo '::error::No production update is rolling out.'
+            exit 1
+          fi
+          group=$(jq -er '.group' <<< "$rollout")
+          [[ "$group" =~ ^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$ ]]
+          echo "group=$group" >> "$GITHUB_OUTPUT"
+          {
+            echo "### $ACTION"
+            echo
+            echo "[Update group $group](https://expo.dev/accounts/msalman5230/projects/adwam/updates/$group) is at $(jq -r '.rolloutPercentage' <<< "$rollout")%."
+            echo
+            echo "$(jq -r '.message' <<< "$rollout")"
+            echo
+            if [[ "$ACTION" == Undo ]]; then
+              echo 'After approval, the previous update is published again. Phones that took this one switch back after their next check and restart.'
+            else
+              echo "After approval, the rollout changes to ${ACTION#Raise to }."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  production:
+    name: Production
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    concurrency:
+      group: adwam-production
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: '27.11.0'
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: pnpm install --frozen-lockfile
+      - name: Change the rollout
+        working-directory: apps/mobile
+        env:
+          APP_VARIANT: production
+          ACTION: ${{ inputs.action }}
+          GROUP: ${{ needs.plan.outputs.group }}
+        run: |
+          bash scripts/verify-eas-account.sh
+          case "$ACTION" in
+            'Raise to 50%') eas update:edit "$GROUP" --rollout-percentage 50 --non-interactive ;;
+            'Raise to 100%') eas update:edit "$GROUP" --rollout-percentage 100 --non-interactive ;;
+            Undo) eas update:revert-update-rollout --group "$GROUP" --message "Undo from GitHub run $GITHUB_RUN_ID" --non-interactive ;;
+            *) echo "Unknown action: $ACTION" >&2; exit 1 ;;
+          esac
+          echo "Done: $ACTION for update group $GROUP." >> "$GITHUB_STEP_SUMMARY"

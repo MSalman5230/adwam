@@ -48,7 +48,7 @@ Already verified on 25 November 2026 with signed Preview `0.1.0` (version code `
 [#70](https://github.com/MSalman5230/adwam/issues/70), [#71](https://github.com/MSalman5230/adwam/issues/71) and [#72](https://github.com/MSalman5230/adwam/issues/72).
 
 - **Agent:** check that the emailed sign-in link returns to the hosted admin page and signs the admin in. [Correction admin sign-in](development-setup.md#correction-admin-sign-in)
-- **Agent:** record Expo's delivery receipts for the weather and correction pushes, using a manual run of **Staging weather health**.
+- **Agent:** record Expo's delivery receipts for the weather and correction pushes, using a manual run of **Weather health**.
 - **Agent:** check that an over-the-air Preview update reaches an installed Preview without losing settings or trackers, and that rolling back on the `preview` channel works.
 - **Done when:** each check is recorded in the [staging acceptance runbook](runbooks/staging-acceptance.md).
 
@@ -251,10 +251,12 @@ These are the workflows today. [CI and releases](release/ci-and-release.md) desc
 | `deploy-staging.yml` | Merges to `master` | Staging migrations and functions, then an update to the `preview` channel published from GitHub's runner with Sentry source maps. Opens or closes the **Preview needs a new build** issue. |
 | `preview-build.yml` | By hand, from `master` | A signed Preview APK, or the existing build when one matches the native fingerprint. Fails on exact-alarm or precise-location permissions, posts the install link and closes the reminder. |
 | `e2e-nightly.yml` | Nightly, by hand, and PRs that change the flows | The Maestro suite on an emulator, against local Supabase |
-| `daily-health.yml` | Daily, and by hand | The staging weather job and the Open-Meteo budget. Manual runs also summarise push outcomes. |
+| `daily-health.yml` | Daily, and by hand | **Weather health**: the weather job and the Open-Meteo budget on staging, and on production once it exists. Manual runs also summarise push outcomes. |
 | `weekly-links.yml` | Weekly | The source link check |
-| `admin-pages.yml` | Admin page changes on `master`, and by hand | Builds and deploys the admin page to GitHub Pages |
-| `release.yml` | Merges to `master` | release-please updates the **Release x.y.z** PR, once the `release` environment has its GitHub App. Merging that PR tags the release. |
+| `admin-pages.yml` | Admin page changes on `master`, and by hand | Builds both correction pages for GitHub Pages: production at `/adwam/`, or a waiting page until production exists, and staging at `/adwam/staging/` |
+| `release.yml` | Merges to `master` | release-please updates the **Release x.y.z** PR, once the `release` environment has its GitHub App. Merging that PR tags the release, runs the plan and the end-to-end tests, and after the owner's approval deploys the production server and sends the app bundle to Play internal testing. |
+| `ship-update.yml` | By hand, from `master` | **Ship update**: after the owner's approval, deploys the production server and publishes an over-the-air update to 10% of phones, or deploys the server only |
+| `production-rollout.yml` | By hand, from `master` | **Production rollout**: after the owner's approval, raises the rolling update to 50% or 100%, or undoes it |
 | `pr-title.yml` | Pull requests | Requires a type at the start of the PR title |
 
 ## Documents
