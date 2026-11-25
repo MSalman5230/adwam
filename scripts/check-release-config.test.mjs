@@ -45,10 +45,13 @@ test('a missing version marker in the app config is reported', () => {
   assert.match(releaseConfigProblems(input)[0], /app\.config\.ts has version none/);
 });
 
-test('release-as is allowed until that version is released', () => {
+test('release-as is allowed until its tag exists', () => {
   assert.deepEqual(releaseConfigProblems(files('0.1.0', '1.0.0')), []);
-  assert.deepEqual(releaseConfigProblems(files('1.0.0', '1.0.0')), [
-    'Version 1.0.0 is released, so remove "release-as": "1.0.0" from release-please-config.json.',
+  // The Release PR raises every version file to 1.0.0 before the tag exists.
+  assert.deepEqual(releaseConfigProblems(files('1.0.0', '1.0.0')), []);
+  assert.deepEqual(releaseConfigProblems({ ...files('1.0.0', '1.0.0'), releasedTags: ['v0.9.0', 'v1.0.0'] }), [
+    'v1.0.0 is released, so remove "release-as": "1.0.0" from release-please-config.json.',
   ]);
+  assert.deepEqual(releaseConfigProblems(files('1.1.0', '1.0.0')), ['release-as 1.0.0 is below the current version 1.1.0.']);
   assert.match(releaseConfigProblems(files('1.0.0', 'one'))[0], /must be a version/);
 });

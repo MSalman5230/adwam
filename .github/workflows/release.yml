@@ -28,7 +28,10 @@ jobs:
         with:
           persist-credentials: false
       - name: Check the release settings
-        run: node scripts/check-release-config.mjs
+        run: |
+          RELEASE_TAGS=$(git ls-remote --tags --refs origin 'v*' | sed 's#.*refs/tags/##')
+          export RELEASE_TAGS
+          node scripts/check-release-config.mjs
       - uses: googleapis/release-please-action@v5
         id: release
         with:
