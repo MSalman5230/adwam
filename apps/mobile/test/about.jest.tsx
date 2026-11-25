@@ -24,6 +24,8 @@ it('shows the app and content versions, privacy text and external links', async 
     for (const section of ['sources', 'privacy', 'credits', 'sourceCode'] as const) {
       expect(screen.getByRole('header', { name: t(`about.${section}`) })).toBeOnTheScreen();
     }
+    await fireEvent.press(screen.getByRole('link', { name: t('about.privacyNotice') }));
+    expect(openURL).toHaveBeenLastCalledWith('https://msalman5230.github.io/adwam/privacy/');
     await fireEvent.press(screen.getByRole('link', { name: t('about.quran') }));
     expect(openURL).toHaveBeenLastCalledWith('https://quran.com/');
     await fireEvent.press(screen.getByRole('link', { name: t('about.repository') }));

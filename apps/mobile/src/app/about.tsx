@@ -19,6 +19,8 @@ const credits = [
   { label: 'about.quran', url: 'https://quran.com/' },
 ] as const;
 
+const privacyNoticeUrl ='https://msalman5230.github.io/adwam/privacy/';
+
 export default function AboutScreen() {
   const open = async (url: string) => {
     try {
@@ -34,6 +36,9 @@ export default function AboutScreen() {
     <SectionHeader title={t('about.privacy')} />
     <Prose>{t('about.privacyBody')}</Prose>
     <Prose style={styles.paragraph}>{t('about.diagnostics')}</Prose>
+    <View style={styles.paragraph}>
+      <ExternalLink label={t('about.privacyNotice')} onPress={() => { void open(privacyNoticeUrl); }} />
+    </View>
     <SectionHeader title={t('about.credits')} />
     {credits.map(({ label, url }) => <ExternalLink key={label} label={t(label)} onPress={() => { void open(url); }} />)}
     <SectionHeader title={t('about.sourceCode')} />
