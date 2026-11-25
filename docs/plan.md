@@ -41,15 +41,16 @@ Done by the owner on 26 November 2026:
 
 [#70](https://github.com/MSalman5230/adwam/issues/70), [#71](https://github.com/MSalman5230/adwam/issues/71) and [#72](https://github.com/MSalman5230/adwam/issues/72).
 
-- **Agent:** record Expo's delivery receipts for the weather and correction pushes, using a manual run of **Weather health**.
-- **Agent:** check that an over-the-air Preview update reaches an installed Preview without losing settings or trackers, and that rolling back on the `preview` channel works.
-- **Agent:** check that About opens the privacy notice, and that the crash-report and usage-statistics switches work.
-- **Agent:** for [#78](https://github.com/MSalman5230/adwam/issues/78), check that `pnpm content:check --release` is green, the calendar is regenerated and the link check has no open issue.
+- **Recorded:** **Weather health** showed successful Expo weather receipts. The owner accepted this result for the shared correction receipt path. Expo had already accepted a real correction push.
+- **Recorded:** an over-the-air update and rollback worked on signed Preview. Settings and trackers stayed, and the channel returned to the latest `master` bundle.
+- **Recorded:** About opened the published privacy notice, both controls worked, and usage statistics stayed opt-in.
+- **Recorded:** for [#78](https://github.com/MSalman5230/adwam/issues/78), the release content check passed, the generated calendar was current, and no source-link issue was open.
 - **Done when:** each check is recorded in the [staging acceptance runbook](runbooks/staging-acceptance.md).
 
 ### 2. Final acceptance pass
 
-- **Agent:** on the final signed Preview, check the light and dark screens against the prototype, TalkBack and 200% text, the offline paths, and a Sentry test crash with a readable stack. Run **Android end-to-end tests** on the same commit and fix any failure that repeats.
+- **Recorded:** on signed Preview, checked light and dark screens against the prototype, TalkBack and 200% text, and the offline paths.
+- **Agent:** retest the checkbox contrast fix after it deploys, and record **Android end-to-end tests** for the tested commit. The Sentry stack is pending owner confirmation.
 - **Owner:** approve the results, including the suggested prayer method for each country (D7) and the eclipse note (D9).
 - **Done when:** the build ID, Android version code, native fingerprint, content version and update ID are recorded in the staging acceptance runbook.
 
