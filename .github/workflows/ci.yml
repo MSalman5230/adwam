@@ -4,6 +4,8 @@ on:
   pull_request:
   push:
     branches: [master]
+  # The Release workflow starts this on the Release PR's branch.
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -104,11 +104,13 @@ Do the tasks in this order.
 
 [#192](https://github.com/MSalman5230/adwam/issues/192)
 
-- **Agent:** add release-please with `1.0.0` as the first release, the PR title check and the new PR rules below.
-- **Owner:**
-  - Create the release-please GitHub App and the `release` environment.
-  - Allow only squash merges, using the PR title.
+- **Agent:**
+  - Add release-please with `1.0.0` as the first release, the PR title check and the new PR rules below.
+  - Run release-please with GitHub's built-in token, and start the required checks on its PR.
+  - Allow GitHub Actions to create pull requests.
+  - Allow only squash merges, using the PR title and description.
   - Make the PR title check required on `master`.
+- **Owner:** don't merge the Release PR until production is set up (M6.12). Merging it tags the release and starts the production run.
 - **Done when:** a Release PR opens, runs CI and shows `1.0.0`.
 
 ### M6.9 Production workflows
@@ -254,7 +256,7 @@ These are the workflows today. [CI and releases](release/ci-and-release.md) desc
 | `daily-health.yml` | Daily, and by hand | **Weather health**: the weather job and the Open-Meteo budget on staging, and on production once it exists. Manual runs also summarise push outcomes. |
 | `weekly-links.yml` | Weekly | The source link check |
 | `admin-pages.yml` | Admin page changes on `master`, and by hand | Builds both correction pages for GitHub Pages: production at `/adwam/`, or a waiting page until production exists, and staging at `/adwam/staging/` |
-| `release.yml` | Merges to `master` | release-please updates the **Release x.y.z** PR, once the `release` environment has its GitHub App. Merging that PR tags the release, runs the plan and the end-to-end tests, and after the owner's approval deploys the production server and sends the app bundle to Play internal testing. |
+| `release.yml` | Merges to `master` | release-please updates the **Release x.y.z** PR and starts CI and the PR title check on it. Merging that PR tags the release, runs the plan and the end-to-end tests, and after the owner's approval deploys the production server and sends the app bundle to Play internal testing. |
 | `ship-update.yml` | By hand, from `master` | **Ship update**: after the owner's approval, deploys the production server and publishes an over-the-air update to 10% of phones, or deploys the server only |
 | `production-rollout.yml` | By hand, from `master` | **Production rollout**: after the owner's approval, raises the rolling update to 50% or 100%, or undoes it |
 | `pr-title.yml` | Pull requests | Requires a type at the start of the PR title |

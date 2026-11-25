@@ -47,7 +47,6 @@ Each environment holds its own secrets. Only `master` can deploy to any of them.
 | Environment | What it holds | Rule |
 |---|---|---|
 | `staging` | Staging deploy token and database password, `EXPO_TOKEN`, the Sentry upload token | `master` only |
-| `release` | The release-please GitHub App's ID and private key | `master` only |
 | `production` | Production deploy token and database password, `EXPO_TOKEN`, the Sentry upload token | `master` only. The owner must approve every run. Administrators can't bypass it. |
 | `production-monitor` | A read-only Supabase token and an Expo token with the Viewer role | `master` only, no approval. It's for checks and plans that change nothing. |
 | `github-pages` | Nothing | GitHub Pages deploys |
@@ -112,7 +111,7 @@ The task ID goes at the end, for example `feat: speed and size (M6.4)`.
 - **Changing the number.** To use a different version, an agent adds a `Release-As: x.y.z` line to a commit, as release-please documents.
 - **The first release is `1.0.0`.** The changelog starts at the commit that adds release-please.
 - **Merging the Release PR** creates the `vx.y.z` tag and the GitHub Release, then starts the production run.
-- **Its own token.** release-please uses a GitHub App token. PRs opened with GitHub's built-in token don't trigger CI, and `master` requires CI to pass.
+- **The token.** release-please uses GitHub's built-in workflow token, so there's no app or key to look after. PRs opened with that token don't start other workflows. So the Release workflow starts CI and the PR title check on the Release PR's branch itself, and `master`'s required checks still run. The repository allows GitHub Actions to create pull requests for this.
 
 ## Production
 
@@ -184,7 +183,6 @@ The owner creates these. Values go only into each service's own secret store, ne
 | Google Play | The app in Play Console. A Google Cloud service account with a JSON key, invited with only "Release apps to testing tracks" and "View app information". | EAS credentials, submissions key for `com.msalman5230.adwam` |
 | PostHog | A project on the EU host, set up as [development-setup.md](../development-setup.md#optional-usage-statistics) describes | `EXPO_PUBLIC_POSTHOG_KEY` above |
 | Sentry | An organization token for source maps, plus the org and project slugs | `staging` and `production` secret `SENTRY_AUTH_TOKEN`; variables `SENTRY_ORG` and `SENTRY_PROJECT` |
-| GitHub | A GitHub App for release-please, installed on this repository only, with Contents, Pull requests and Issues on read and write | `release` variable `RELEASE_APP_CLIENT_ID` (the app's Client ID) and secret `RELEASE_APP_PRIVATE_KEY` |
 | GitHub | A machine account for agents, with the Write role and no reviewer rights | Its own `gh` login on the agents' PC |
 
 After the first production deploy, run the production scheduler SQL in the production SQL Editor. Copy `adwam_job_key` from Vault into the `ADWAM_JOB_KEY` secret. Add the admin's confirmed email user to `public.admins`. Debug tools stay off in production.
