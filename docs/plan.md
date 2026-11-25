@@ -6,7 +6,7 @@ Read [mobile-app-architecture.md](mobile-app-architecture.md) for how the system
 
 ## Where things stand
 
-Checked on 26 November 2026. Every version 1 feature is built and merged. On 26 November the owner finished the checks that needed real phones and an inbox, accepted startup speed, and the privacy notice was published. What's left is agent checks on staging and the final acceptance pass.
+Checked on 26 November 2026. Every version 1 feature is built and merged. The owner finished the checks that needed real phones and an inbox, and accepted startup speed. The privacy notice is live. The agent checks are recorded. The owner's final approval is still open.
 
 | Milestone | Built | Still open |
 |---|---|---|
@@ -50,7 +50,7 @@ Done by the owner on 26 November 2026:
 ### 2. Final acceptance pass
 
 - **Recorded:** on signed Preview, checked light and dark screens against the prototype, TalkBack and 200% text, and the offline paths. A Sentry test crash showed a readable stack.
-- **Agent:** retest the checkbox contrast and the Reminders title after deployment. Confirm a green **Android end-to-end tests** run with the reminder switch selector fix.
+- **Recorded:** the checkbox contrast and Reminders title passed the signed Preview recheck. **Android end-to-end tests** passed with the reminder switch selector fix.
 - **Owner:** approve the results, including the suggested prayer method for each country (D7) and the eclipse note (D9).
 - **Done when:** the build ID, Android version code, native fingerprint, content version and update ID are recorded in the staging acceptance runbook.
 
