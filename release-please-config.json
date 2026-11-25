@@ -1,0 +1,87 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "include-component-in-tag": false,
+  "pull-request-title-pattern": "chore: release ${version}",
+  "pull-request-header": "Merging this PR releases this version: after the owner approves the production run, it builds the app and sends it to Google Play internal testing.",
+  "changelog-sections": [
+    {
+      "type": "feat",
+      "section": "Features"
+    },
+    {
+      "type": "fix",
+      "section": "Fixes"
+    },
+    {
+      "type": "content",
+      "section": "Content"
+    },
+    {
+      "type": "perf",
+      "section": "Performance"
+    },
+    {
+      "type": "revert",
+      "section": "Reverts"
+    },
+    {
+      "type": "refactor",
+      "section": "Refactoring",
+      "hidden": true
+    },
+    {
+      "type": "test",
+      "section": "Tests",
+      "hidden": true
+    },
+    {
+      "type": "docs",
+      "section": "Documentation",
+      "hidden": true
+    },
+    {
+      "type": "ci",
+      "section": "CI",
+      "hidden": true
+    },
+    {
+      "type": "build",
+      "section": "Build",
+      "hidden": true
+    },
+    {
+      "type": "chore",
+      "section": "Chores",
+      "hidden": true
+    }
+  ],
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "adwam",
+      "release-as": "1.0.0",
+      "changelog-path": "CHANGELOG.md",
+      "exclude-paths": [
+        ".github",
+        "apps/admin",
+        "docs",
+        "scripts",
+        "supabase",
+        "tools",
+        "AGENTS.md",
+        "README.md"
+      ],
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "apps/mobile/package.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "generic",
+          "path": "apps/mobile/app.config.ts"
+        }
+      ]
+    }
+  }
+}

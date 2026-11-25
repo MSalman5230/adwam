@@ -180,7 +180,7 @@ iOS, TestFlight and the App Store. [#86](https://github.com/MSalman5230/adwam/is
 
 ## Working rules
 
-- **One task, one pull request.** Name the branch after the task, such as `m6-speed`, and start the PR title with its ID, such as "M6.4 Speed and size". Track progress in the GitHub issues, not in this file.
+- **One task, one pull request.** Name the branch after the task, such as `m6-speed`. Start the PR title with its type and end it with the task ID, such as `feat: speed and size (M6.4)`. The types, and which ones make a release, are in [CI and releases](release/ci-and-release.md#pull-request-titles). PRs are squash-merged, so the title becomes the commit on `master` and the changelog line. Track progress in the GitHub issues, not in this file.
 - **Before opening a PR,** run `pnpm check` and meet the definition of done.
 - **Ask the owner** when a step needs an account, a payment, a secret, a legal judgement or a judgement about religious content.
 - **Production only through CI.** Create or change nothing in production by hand. Production changes run only from GitHub Actions, after the owner approves them. Distribute signed Preview APKs directly from EAS.
@@ -254,6 +254,8 @@ These are the workflows today. [CI and releases](release/ci-and-release.md) desc
 | `daily-health.yml` | Daily, and by hand | The staging weather job and the Open-Meteo budget. Manual runs also summarise push outcomes. |
 | `weekly-links.yml` | Weekly | The source link check |
 | `admin-pages.yml` | Admin page changes on `master`, and by hand | Builds and deploys the admin page to GitHub Pages |
+| `release.yml` | Merges to `master` | release-please updates the **Release x.y.z** PR, once the `release` environment has its GitHub App. Merging that PR tags the release. |
+| `pr-title.yml` | Pull requests | Requires a type at the start of the PR title |
 
 ## Documents
 
