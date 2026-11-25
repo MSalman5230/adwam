@@ -7,8 +7,6 @@ on:
         description: Check an existing signed Android Preview build
         type: string
         required: false
-  schedule:
-    - cron: '41 4 * * 1'
 
 permissions:
   contents: read
