@@ -6,6 +6,7 @@ import { Button, Checkbox, Chip, Segmented, Stepper, Switch, Tag } from './contr
 
 const controls = vi.hoisted(() => ({
   presses: [] as { label?: string; disabled?: boolean; press?: () => void }[],
+  mode: 'light' as 'light' | 'dark',
 }));
 
 vi.mock('react-native', async () => {
@@ -17,10 +18,14 @@ vi.mock('react-native', async () => {
     accessibilityState?: { checked?: boolean; selected?: boolean; disabled?: boolean };
     disabled?: boolean;
     onPress?: () => void;
+    style?: ({ borderColor?: string } | false | undefined)[];
   };
   return {
     Text: ({ children }: MockProps) => createElement('span', null, children),
-    View: ({ children, accessibilityRole: role, accessibilityLabel: label }: MockProps) => createElement('div', { role, 'aria-label': label }, children),
+    View: ({ children, accessibilityRole: role, accessibilityLabel: label, style }: MockProps) => {
+      const border = Array.isArray(style) ? style.flatMap((entry) => entry && entry.borderColor ? [entry.borderColor] : []).at(-1) : undefined;
+      return createElement('div', { role, 'aria-label': label, 'data-border-color': border }, children);
+    },
     Pressable: ({ children, disabled, onPress: press, accessibilityRole: role, accessibilityLabel: label, accessibilityState }: MockProps) => {
       controls.presses.push({ label, disabled, press });
       return createElement('button', {
@@ -36,12 +41,12 @@ vi.mock('react-native', async () => {
 vi.mock('../icons', () => ({ Crescent: () => null, Icon: () => null }));
 vi.mock('../theme/ThemeProvider', async () => {
   const { colors } = await import('../theme/tokens');
-  return { useTheme: () => ({ palette: colors.light }) };
+  return { useTheme: () => ({ palette: colors[controls.mode] }) };
 });
 vi.mock('../theme/Text', () => ({ Prose: ({ children }: { children: string }) => children }));
 vi.mock('../language/messages', () => ({ t: (key: string) => key === 'common.fewer' ? 'Fewer' : 'More' }));
 
-beforeEach(() => { controls.presses.length = 0; });
+beforeEach(() => { controls.presses.length = 0; controls.mode = 'light'; });
 
 it.each(['filled', 'outlined', 'tonal', 'text'] as const)('renders the %s button with its label and action', (variant) => {
   const press = vi.fn();
@@ -73,6 +78,15 @@ it('shows and changes checkbox and switch states', () => {
   expect(html).toContain('role="switch" aria-label="Notifications" aria-checked="false"');
   controls.presses.forEach(({ press }) => press?.());
   expect(change.mock.calls).toEqual([[false], [true]]);
+});
+
+it.each([
+  ['light', '#56615A'],
+  ['dark', '#AEB5AC'],
+] as const)('uses the prototype ink outline for unchecked boxes in %s mode', (mode, border) => {
+  controls.mode = mode;
+  const html = renderToStaticMarkup(<Checkbox label="Done" checked={false} onChange={vi.fn()} />);
+  expect(html).toContain(`data-border-color="${border}"`);
 });
 
 it('labels chips and tags and exposes the selected chip to assistive technology', () => {
