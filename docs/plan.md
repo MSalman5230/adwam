@@ -703,7 +703,7 @@ These IDs stay in GitHub for reference. None is a stopping condition for the And
 |---|---|---|
 | `ci.yml` | Pull request | `pnpm check`, database tests, function tests, the calendar up-to-date check, the prototype match when core or content changes, and Expo's fingerprint check, which labels the PR `needs-new-build` |
 | `deploy-staging.yml` | Merge to `master` | `server:prepare`, staging migrations and functions, and an update to the preview channel |
-| `preview-build.yml` | By hand, and weekly | A preview APK, with the permission check from M4.7 |
+| `preview-build.yml` | By hand | A preview APK, with the permission check from M4.7 |
 | `e2e-nightly.yml` | Nightly | The Maestro suite on an emulator, against local Supabase |
 | `daily-health.yml` | Daily and by hand | The staging weather job and the Open-Meteo budget |
 | `weekly-links.yml` | Weekly | The source link check |
