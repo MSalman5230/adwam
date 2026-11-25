@@ -49,8 +49,8 @@ Done by the owner on 26 November 2026:
 
 ### 2. Final acceptance pass
 
-- **Recorded:** on signed Preview, checked light and dark screens against the prototype, TalkBack and 200% text, and the offline paths.
-- **Agent:** retest the checkbox contrast and the Reminders title after deployment. Confirm a green **Android end-to-end tests** run with the reminder switch selector fix. The Sentry stack is pending owner confirmation.
+- **Recorded:** on signed Preview, checked light and dark screens against the prototype, TalkBack and 200% text, and the offline paths. A Sentry test crash showed a readable stack.
+- **Agent:** retest the checkbox contrast and the Reminders title after deployment. Confirm a green **Android end-to-end tests** run with the reminder switch selector fix.
 - **Owner:** approve the results, including the suggested prayer method for each country (D7) and the eclipse note (D9).
 - **Done when:** the build ID, Android version code, native fingerprint, content version and update ID are recorded in the staging acceptance runbook.
 
