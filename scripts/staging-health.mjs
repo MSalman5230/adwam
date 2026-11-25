@@ -48,24 +48,27 @@ const pushSummaryQuery = `
   group by channel, status, error order by channel, status, error
 `;
 
+const pushWorkerQuery = `
+  select job, max(finished_at) as last_finished from public.job_runs
+  where job in ('push-send', 'push-receipts') group by job order by job
+`;
+
 const cronJobs = ['adwam-weather-tick', 'adwam-push-send', 'adwam-push-receipts', 'adwam-cleanup'];
 const cronStatuses = ['starting', 'connecting', 'sending', 'running', 'succeeded', 'failed'];
 
-function stagingQuery() {
+function stagingRequest() {
   const { SUPABASE_PROJECT_ID: project, SUPABASE_ACCESS_TOKEN: token } = process.env;
   if (!project || !/^[a-z0-9]{20}$/.test(project) || !token) return;
-  return (query) => globalThis.fetch(
-    `https://api.supabase.com/v1/projects/${project}/database/query/read-only`,
-    {
-      method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }), signal: AbortSignal.timeout(30000),
-    },
-  );
+  return (path, query) => globalThis.fetch(`https://api.supabase.com/v1/projects/${project}/${path}`, {
+    method: query ? 'POST' : 'GET', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: query ? JSON.stringify({ query }) : undefined, signal: AbortSignal.timeout(30000),
+  });
 }
 
 export async function stagingWeatherHealth() {
-  const queryDatabase = stagingQuery();
-  if (!queryDatabase) return ['The staging project credentials are unavailable.'];
+  const request = stagingRequest();
+  if (!request) return ['The staging project credentials are unavailable.'];
+  const queryDatabase = (query) => request('database/query/read-only', query);
   const response = await queryDatabase(healthQuery);
   if (!response.ok) {
     await response.body?.cancel();
@@ -87,8 +90,10 @@ export async function stagingWeatherHealth() {
 }
 
 export async function stagingPushSummary() {
-  const queryDatabase = stagingQuery();
-  const rows = queryDatabase && await diagnosticRows(queryDatabase, pushSummaryQuery);
+  const request = stagingRequest();
+  if (!request) return 'Staging push summary is unavailable.';
+  const queryDatabase = (query) => request('database/query/read-only', query);
+  const rows = await diagnosticRows(queryDatabase, pushSummaryQuery);
   if (!rows) return 'Staging push summary is unavailable.';
   if (!rows.length) return 'No staging pushes in the last hour.';
   const groups = rows.flatMap((row) => {
@@ -98,8 +103,21 @@ export async function stagingPushSummary() {
     const error = row.error == null ? '' : ` (${pushErrors.includes(row.error) ? row.error : 'other'})`;
     return [`${row.channel} ${row.status}${error} × ${row.pushes}, Expo receipts OK × ${row.receipts_ok}`];
   });
-  return groups.length === rows.length ? `Staging pushes in the last hour. ${groups.join('. ')}.`
-    : 'Staging push summary did not return the expected counts.';
+  if (groups.length !== rows.length) return 'Staging push summary did not return the expected counts.';
+  const summary = `Staging pushes in the last hour. ${groups.join('. ')}.`;
+  if (!rows.some((row) => row.status === 'queued' || row.status === 'sending')) return summary;
+  const [workers, network, secrets] = await Promise.all([
+    diagnosticRows(queryDatabase, pushWorkerQuery),
+    diagnosticRows(queryDatabase, networkStatusQuery),
+    diagnosticRows(() => request('secrets')),
+  ]);
+  const workerSummary = workers ? ['push-send', 'push-receipts'].map((job) => {
+    const finished = Date.parse(workers.find((row) => row?.job === job)?.last_finished);
+    return `${job} last completed: ${Number.isFinite(finished) ? new Date(finished).toISOString() : 'none recorded'}.`;
+  }).join(' ') : 'Staging push worker runs are unavailable.';
+  const tokenStatus = secrets?.some((item) => item?.name === 'EXPO_ACCESS_TOKEN') ? 'present'
+    : secrets ? 'missing' : 'unavailable';
+  return `${summary} ${workerSummary} ${describeNetwork(network)} Staging EXPO_ACCESS_TOKEN presence: ${tokenStatus}.`;
 }
 
 async function describeSchedulerSetup(queryDatabase) {

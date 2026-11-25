@@ -111,3 +111,20 @@ test('the manual push summary distinguishes no activity from an unavailable quer
   fetch.mock.mockImplementation(() => new Response(null, { status: 502 }));
   assert.equal(await stagingPushSummary(), 'Staging push summary is unavailable.');
 });
+
+test('a queued push reports worker progress and only the presence of the Expo secret', async (context) => {
+  context.mock.method(globalThis, 'fetch', (url, options) => {
+    if (url.endsWith('/secrets')) {
+      assert.equal(options.method, 'GET');
+      return Response.json([{ name: 'EXPO_ACCESS_TOKEN', value: 'not-for-output' }]);
+    }
+    if (options.body.includes('public.job_runs')) return Response.json([]);
+    if (options.body.includes('net._http_response')) return Response.json([{ status_code: 500, responses: 4 }]);
+    return Response.json([{ channel: 'weather', status: 'queued', pushes: 1, receipts_ok: 0, error: null }]);
+  });
+  const summary = await stagingPushSummary();
+  assert.match(summary, /push-send last completed: none recorded/);
+  assert.match(summary, /HTTP 500 × 4/);
+  assert.match(summary, /EXPO_ACCESS_TOKEN presence: present/);
+  assert.doesNotMatch(summary, /not-for-output/);
+});
