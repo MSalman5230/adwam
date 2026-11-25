@@ -28,6 +28,7 @@ Identify the project and record the UTC interval, the last healthy run, links to
 
 ## Preview update slow or missing
 
-1. Each merge to `master` publishes a Preview update through an Expo workflow. On Expo's free plan the job can wait in Expo's queue for 40 minutes or more before it runs, then publish in about two minutes. The **Deploy staging** run waits up to 90 minutes for it.
-2. Check the job's state with `eas workflow:runs`, and its timings with `eas workflow:logs <job ID> --all-steps`. Its first step, `SPIN_UP_BUILDER`, shows when the queue ended. Don't cancel a queued job, because a new run joins the back of the same queue.
-3. Check `eas update:list --branch preview`. A missing update with the same fingerprint as the installed APK means publishing failed. Rerun **Deploy staging**. An update with a different fingerprint reaches only a new APK. See the `needs-new-build` label.
+1. Each merge to `master` publishes a Preview update from GitHub's runner, a few minutes after the staging backend deploys. Open the **Deploy staging** run. Its summary links the update group and shows its runtime.
+2. If the run failed, read the **Publish the Android Preview update** step and rerun the workflow once the cause is fixed.
+3. If the run shows a runtime that no installed APK has, the native code changed. The open **Preview needs a new build** issue says so. Press **Android preview build**, and install the new APK.
+4. A phone applies a downloaded update the next time the app starts, so close the app fully and open it again before deciding an update is missing.

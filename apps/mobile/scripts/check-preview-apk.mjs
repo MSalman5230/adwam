@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { error, log } from 'node:console';
-import { createWriteStream, mkdtempSync, realpathSync, rmSync } from 'node:fs';
+import { appendFileSync, createWriteStream, mkdtempSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import process from 'node:process';
@@ -55,6 +55,27 @@ async function checkBuild(aapt2, expectedMessage) {
   } finally {
     if (dirname(realpathSync(directory)) === temp) rmSync(directory, { recursive: true, force: true });
   }
+  report(build);
+}
+
+// In GitHub Actions, hand the checked build to later steps and show testers its install page.
+function report(build) {
+  const { GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: summary } = process.env;
+  if (!/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(build.id ?? '')) throw new Error('EAS did not return a build ID.');
+  const page = `https://expo.dev/accounts/msalman5230/projects/adwam/builds/${build.id}`;
+  const runtime = /^[a-f0-9]{40}$/.test(build.runtime?.version ?? '') ? build.runtime.version : 'unknown';
+  if (output) appendFileSync(output, `build_id=${build.id}\nruntime=${runtime}\n`);
+  if (summary) {
+    appendFileSync(summary, [
+      '### Adwam Preview APK',
+      '',
+      `[Open the install page](${page}) on the phone to install it over the current Preview app.`,
+      '',
+      `Version ${build.appVersion ?? 'unknown'}, build ${build.appBuildVersion ?? 'unknown'}, runtime \`${runtime}\``,
+      '',
+    ].join('\n'));
+  }
+  log(`Preview build: ${page}`);
 }
 
 try {

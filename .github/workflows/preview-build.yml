@@ -18,8 +18,16 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     environment: staging
-    timeout-minutes: 60
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      issues: write
     steps:
+      - name: Require master
+        if: github.ref != 'refs/heads/master'
+        run: |
+          echo 'Build Preview APKs from master, so they match what staging runs.' >&2
+          exit 1
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
@@ -31,11 +39,23 @@ jobs:
           eas-version: '27.11.0'
           token: ${{ secrets.EXPO_TOKEN }}
       - run: pnpm install --frozen-lockfile
-      - name: Build and check the preview APK
+      - name: Resolve the Android runtime
+        id: runtime
+        working-directory: apps/mobile
+        env:
+          APP_VARIANT: preview
+        run: |
+          runtime=$(pnpm exec expo-updates runtimeversion:resolve --platform android --workflow managed |
+            jq -er '.runtimeVersion | select(test("^[a-f0-9]{40}$"))')
+          echo "Android Preview runtime: $runtime"
+          echo "runtime=$runtime" >> "$GITHUB_OUTPUT"
+      - name: Build or reuse the Preview APK, and check it
+        id: build
         working-directory: apps/mobile
         shell: bash
         env:
           REQUESTED_BUILD_ID: ${{ inputs.build_id }}
+          RUNTIME: ${{ steps.runtime.outputs.runtime }}
         run: |
           bash scripts/verify-eas-account.sh
           shopt -s nullglob
@@ -50,11 +70,40 @@ jobs:
             [[ "$REQUESTED_BUILD_ID" =~ ^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$ ]]
             eas build:view "$REQUESTED_BUILD_ID" --json > "$build_result"
             node scripts/check-preview-apk.mjs "${tools[-1]}" - < "$build_result"
-          else
-            message="GitHub Preview ${GITHUB_RUN_ID}/${GITHUB_RUN_ATTEMPT}"
-            eas build --profile preview --platform android --non-interactive --wait --message "$message" --json >/dev/null
-            bash scripts/verify-eas-account.sh
-            eas build:list --build-profile preview --platform android --git-commit-hash "$GITHUB_SHA" \
-              --status finished --limit 20 --json --non-interactive > "$build_result"
-            node scripts/check-preview-apk.mjs "${tools[-1]}" - "$message" < "$build_result"
+            exit 0
           fi
+          eas build:list --build-profile preview --platform android --status finished \
+            --runtime-version "$RUNTIME" --limit 1 --json --non-interactive > "$build_result"
+          if jq -e 'length > 0' "$build_result" >/dev/null; then
+            echo "A finished Preview build already has runtime $RUNTIME, so no new build is needed."
+            node scripts/check-preview-apk.mjs "${tools[-1]}" - < "$build_result"
+            exit 0
+          fi
+          message="GitHub Preview ${GITHUB_RUN_ID}/${GITHUB_RUN_ATTEMPT}"
+          bash scripts/verify-eas-account.sh
+          eas build --profile preview --platform android --non-interactive --wait --message "$message" --json >/dev/null
+          bash scripts/verify-eas-account.sh
+          eas build:list --build-profile preview --platform android --git-commit-hash "$GITHUB_SHA" \
+            --status finished --limit 20 --json --non-interactive > "$build_result"
+          node scripts/check-preview-apk.mjs "${tools[-1]}" - "$message" < "$build_result"
+      - name: Compare the build's runtime with this runner's
+        if: inputs.build_id == ''
+        env:
+          RUNTIME: ${{ steps.runtime.outputs.runtime }}
+          BUILD_RUNTIME: ${{ steps.build.outputs.runtime }}
+        run: |
+          if [[ "$BUILD_RUNTIME" != "$RUNTIME" ]]; then
+            echo "EAS built runtime $BUILD_RUNTIME, but GitHub resolved $RUNTIME. Preview updates published from GitHub won't reach this build." >&2
+            exit 1
+          fi
+      - name: Close the Preview build reminder
+        if: inputs.build_id == ''
+        uses: actions/github-script@v8
+        env:
+          RUNTIME: ${{ steps.runtime.outputs.runtime }}
+          BUILD_ID: ${{ steps.build.outputs.build_id }}
+        with:
+          script: |
+            const { syncPreviewReminder } = await import(`${process.cwd()}/scripts/preview-reminder.mjs`);
+            const result = await syncPreviewReminder({ github, context, runtime: process.env.RUNTIME, buildId: process.env.BUILD_ID });
+            core.info(`Preview build reminder: ${result}.`);
