@@ -248,8 +248,8 @@ These are the workflows today. [CI and releases](release/ci-and-release.md) desc
 | Workflow | When | What it runs |
 |---|---|---|
 | `ci.yml` | Pull requests and merges to `master` | `pnpm check`, the calendar and route checks, database and function tests, and the Android fingerprint check, which labels the PR `needs-new-build` |
-| `deploy-staging.yml` | Merges to `master` | Staging migrations and functions, and an update to the `preview` channel |
-| `preview-build.yml` | By hand | A signed Preview APK, failing on exact-alarm or precise-location permissions |
+| `deploy-staging.yml` | Merges to `master` | Staging migrations and functions, then an update to the `preview` channel published from GitHub's runner with Sentry source maps. Opens or closes the **Preview needs a new build** issue. |
+| `preview-build.yml` | By hand, from `master` | A signed Preview APK, or the existing build when one matches the native fingerprint. Fails on exact-alarm or precise-location permissions, posts the install link and closes the reminder. |
 | `e2e-nightly.yml` | Nightly, by hand, and PRs that change the flows | The Maestro suite on an emulator, against local Supabase |
 | `daily-health.yml` | Daily, and by hand | The staging weather job and the Open-Meteo budget. Manual runs also summarise push outcomes. |
 | `weekly-links.yml` | Weekly | The source link check |

@@ -97,10 +97,11 @@ Use the GitHub environments in [CI and releases](release/ci-and-release.md#githu
 | `EXPO_TOKEN` | Both | Builds, updates and store uploads. Create a robot user in Expo for this. |
 | `SUPABASE_ACCESS_TOKEN` | Each its own | Deploying migrations and functions. A scoped token for that environment's project only, with Project Settings, API Keys, API Key Secrets, Migrations and Database on Read, and Edge Functions on Read-write. It expires within a year, so renew it before then. |
 | `SUPABASE_DB_PASSWORD` | Each its own | Running migrations when the scoped token cannot create a temporary database login |
+| `SENTRY_AUTH_TOKEN` | `staging` and `production` | Uploading the source maps of over-the-air updates. A Sentry organization token. |
 
 Each environment also holds its Supabase project ID as a plain variable.
 
-Staging updates run on Expo Workflows in Preview so the Sentry upload reads `SENTRY_AUTH_TOKEN` directly from EAS. Staging deploys set the app’s two public Supabase variables in EAS Preview from the staging project configuration.
+Staging updates are published from GitHub's runner, not Expo Workflows, so they don't wait in Expo's free queue. The `staging` environment therefore also holds the secret `SENTRY_AUTH_TOKEN`, and the variables `SENTRY_ORG` and `SENTRY_PROJECT`, for the update's source maps. Staging deploys set the app’s two public Supabase variables in EAS Preview from the staging project configuration.
 
 ### Optional usage statistics
 

@@ -22,7 +22,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm server:prepare
       - run: pnpm check
-      - run: node --test scripts/staging-health.test.mjs
+      - run: node --test scripts/*.test.mjs
       - run: pnpm --filter @adwam/content calendar --check
       - run: pnpm --filter @adwam/mobile check:routes
 
@@ -69,6 +69,7 @@ jobs:
         run: |
           runtime=$(pnpm exec expo-updates runtimeversion:resolve --platform android --workflow managed |
             jq -er '.runtimeVersion | select(test("^[a-f0-9]{40}$"))')
+          echo "Proposed Android Preview runtime: $runtime"
           echo "runtime=$runtime" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v7
         with:
