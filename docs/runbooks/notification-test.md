@@ -15,8 +15,9 @@ Open Settings → Developer tools, scroll to Scheduled notifications, and tap **
 5. Dismiss Adwam from Recents before a reminder with Done arrives. Press Done from the shade and check that the app stays closed and the tick is saved when you next open it. Do the same with Later on a different reminder whose window will stay open for another hour. Check that there is one copy and record when it arrives.
 6. Change the phone’s time zone and check the next planned time. The schedule should still follow the city selected in Adwam. Select a different city and check that the plan uses the new city’s prayer times.
 7. Test a daylight-saving transition with a city that observes it, using a disposable test phone if changing the system date. Check the reminders before and after the change against the local time for the selected city.
+8. While reminders are pending, install a newer signed Preview APK over the app. Check that the next reminder arrives before you reopen Adwam.
 
-Use Android’s posted time and the planned time for the same reminder when recording a delay. Record missed reminders as well as late ones. The risk check uses 15 minutes as its delay threshold.
+Use Android’s posted time and the planned time for the same reminder when recording a delay. Record missed reminders as well as late ones. The risk check uses 15 minutes as its delay threshold. This week also closes the milestone 0 risk tests for real phones: Done and Later with the app closed, delivery delay, restarts and updates.
 
 ## Results
 

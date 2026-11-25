@@ -82,7 +82,7 @@ The server detects weather events from forecasts. The phone calculates local ecl
 
 ## Future plan: location-based reminders
 
-These need background location, which requires Google Play approval the app can’t get yet. See [mobile-app-stack.md](mobile-app-stack.md).
+These need background location, which requires Google Play approval the app can’t get yet. The location notes below the table list what they need.
 
 <!-- calendar:future:start -->
 | Trigger | Tier | Sunnah | Detection and timing | Sources |
@@ -99,6 +99,9 @@ These need background location, which requires Google Play approval the app can�
 - **Geofencing.** Use the phone’s built-in geofencing, region monitoring on iOS and the Geofencing API on Android, instead of polling GPS. It runs in the background with little battery cost but needs “Always” location permission.
 - **Radius.** Use 150–200 m. Android’s guidance recommends at least 100–150 m, and indoor location is imprecise, so a smaller radius causes false alerts.
 - **Cooldown.** Ignore a home crossing within about 30 minutes of the previous one, so GPS drift at the boundary or a quick step outside doesn’t send repeat pushes.
+- **Permission.** On iOS, ask for “While Using” first, then “Always”. Google Play also requires its background location declaration, an in-app notice explaining the use, and a feature where location is central. Make these reminders opt-in.
+- **Privacy.** The home location stays on the phone and is never sent to the server.
+- **Building and testing.** Geofencing through `expo-location` and `expo-task-manager`. Test on the Android brands that stop background work.
 
 ## Fasting rules the app should respect
 

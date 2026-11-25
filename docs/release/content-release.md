@@ -1,5 +1,7 @@
 # Content release and rollback
 
+This is for production, which doesn't exist yet. Until then, content fixes reach testers as a Preview update when they merge to `master`.
+
 ## Publish a content update
 
 1. Have the owner review wording, evidence, grading, attribution and notification copy. Mark only approved entries published and record the owner as reviewer.
