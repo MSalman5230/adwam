@@ -85,6 +85,8 @@ Nothing else starts a Preview build.
 | Content version | `2026-12-10` | The content package | About ("Content 2026-12-10") |
 | Native fingerprint | a 40-character hash | Worked out from the native code | Nowhere. It decides which over-the-air updates a build accepts. |
 
+**The fingerprint ignores Sentry's upload settings.** GitHub, EAS and the PC set them differently, and they don't change native code. [fingerprint.config.cjs](../../apps/mobile/fingerprint.config.cjs) leaves them out, so every machine works out the same runtime.
+
 **The version name changes only with a Play build.** An over-the-air update can't change it, because Android reads it from the installed app. Changing it doesn't change the native fingerprint. Checked on 26 November 2026 with Expo SDK 58.
 
 The Preview app shows the same version name as the last release. Its own build number tells test builds apart.
