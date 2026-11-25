@@ -4,8 +4,8 @@ Identify the project and record the UTC interval, the last healthy run, links to
 
 ## Weather job stopped
 
-1. Open the **Staging weather health** workflow and check the newest completed `weather-tick` row in `job_runs`. If it is missing or more than 45 minutes old, the workflow also checks whether the two scheduler entries exist in Vault.
-2. If an entry is missing, run the staging scheduler setup. Otherwise, check the scheduled job status, project status and Edge Function invocation errors in Supabase. Confirm that the Vault URL matches staging and that the job key in Vault matches the Edge Function secret. A 401 points to a missing or mismatched key. [Scheduler setup](../development-setup.md#server-secrets-supabase-edge-function-secrets-per-project)
+1. Open the **Staging weather health** workflow and check the newest completed `weather-tick` row in `job_runs`. If it is missing or more than 45 minutes old, the workflow checks the two Vault entries and, when present, reports the latest Adwam cron runs and recent staging-wide HTTP status counts.
+2. If an entry is missing, run the staging scheduler setup. A successful cron run only means it queued the HTTP request. Check the function's invocation logs in Supabase to identify its response. If it returns 401, confirm that the Vault URL is for staging and set the staging Edge Function secret `ADWAM_JOB_KEY` to the actual value of `adwam_job_key` in Vault. Don't use the Vault item's name or ID, surrounding quotes, or a `Bearer` prefix. [Scheduler setup](../development-setup.md#server-secrets-supabase-edge-function-secrets-per-project)
 3. After restoring the failing dependency, wait for the next quarter-hour. Verify a finished tick with a plausible fetch count. Simulate staging rain and confirm the weather card, and the push when Android messaging credentials are available.
 
 ## Open-Meteo budget spent

@@ -7,6 +7,7 @@ Start with [docs/plan.md](docs/plan.md). It lists the specs, the order of work a
 ## Rules you can't guess
 
 - **Never type Arabic, hadith or Qurʾan text yourself.** Scripts copy it from sunnah.com and Quran.com, and the content check compares every excerpt with the stored copy. See [docs/sunnah-content-format.md](docs/sunnah-content-format.md).
+- **Adwam has permission to use all copied content it includes.** The owner confirmed the usage rights. Do not reopen permission checks or treat them as a blocker. Keep source attribution and excerpt verification intact.
 - **Some IDs are permanent once released:** Sunnah IDs, tick keys, notification IDs and Android channel IDs. Phones keep users' data under them.
 - **Staging only, until the owner sets up production.** Create and change nothing for production. Production changes go only through GitHub Actions, after the owner approves.
 - **Check the account before every `eas` or `gh` command.** `eas whoami` and `gh auth status` must show msalman5230. If they don't, stop and tell the owner.
