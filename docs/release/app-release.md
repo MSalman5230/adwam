@@ -1,5 +1,7 @@
 # Android app release
 
+> This draft predates the approved release flow in [CI and releases](ci-and-release.md), which replaces its tags with the Release PR and the **Ship update** button. Task M6.9 rewrites it.
+
 Production begins after the owner provisions its own Supabase project, scoped credentials, EAS settings, and the GitHub production environment. The owner approves production deploys in GitHub Actions. Use Preview for the release rehearsal.
 
 ## Before tagging

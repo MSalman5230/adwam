@@ -327,14 +327,14 @@ Before launch, check this approach with someone who knows data-protection law.
 - **Push credentials.** Firebase Cloud Messaging credentials go into EAS for Android, and an APNs key follows in the iOS phase. Expo's push access token is turned on, so only Adwam's server can send to Adwam's push tokens.
 - **Secrets.** Each build profile's public Supabase URL and key, PostHog key and Sentry address live in EAS environment variables, along with the Sentry token for uploading source maps. The Expo access token, the server keys and the server's Sentry address live in Supabase's secrets.
 
-GitHub Actions:
+GitHub Actions, as [CI and releases](release/ci-and-release.md) describes:
 
 | Trigger | What runs |
 |---|---|
 | Pull request | Type checks, linting, core tests, content checks, app tests, database access tests and Edge Function checks. A native fingerprint check labels the pull request if it needs a new store build. |
-| Merge to master | Migrations and functions deploy to staging. An update goes to the preview channel. |
-| Release tag | Migrations and functions deploy to production. A production build uploads to Play's internal testing track. |
-| Content tag | If the native code hasn't changed, an over-the-air update goes to production. |
+| Merge to master | Migrations and functions deploy to staging. An update goes to the preview channel. release-please updates the Release PR. |
+| Release PR merged | After the owner approves: migrations and functions deploy to production, and a production build uploads to Play's internal testing track. |
+| **Ship update** button | After the owner approves: migrations and functions deploy to production, and, if a production build has the same native code, an over-the-air update goes to 10% of phones. |
 | Daily | Checks that the weather job ran and that Open-Meteo usage is within budget. This also keeps the free Supabase project from pausing. |
 | Weekly | The source link check. |
 

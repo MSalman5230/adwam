@@ -1,6 +1,6 @@
 # Plan
 
-Adwam version 1 for Android is built. This file lists what is left before it is complete on staging, and the rules that still apply. The deliverable is a signed Adwam Preview APK, installed directly from EAS, backed by Supabase staging and the staging correction admin page. Production, Google Play and iOS come after that.
+Adwam version 1 for Android is built. This file lists what is left before it is complete on staging, and the rules that still apply. The deliverable is a signed Adwam Preview APK, installed directly from EAS, backed by Supabase staging and the staging correction admin page. The production pipeline and the Google Play release are being built alongside, in [Production CI and Google Play](#production-ci-and-google-play). iOS comes after that.
 
 Read [mobile-app-architecture.md](mobile-app-architecture.md) for how the system works, and [mobile-app-ui.html](mobile-app-ui.html) for every screen. The original task-by-task build plan for milestones 0–6 is in Git history: `git show 5bc5a46:docs/plan.md`.
 
@@ -75,17 +75,101 @@ Already verified on 25 November 2026 with signed Preview `0.1.0` (version code `
 
 **Version 1 is complete on staging** when all six are recorded for one signed Preview build and no staging or app issue is open. No production or store work is needed.
 
-## Later: production, Google Play and iOS
+## Production CI and Google Play
 
-None of this has started, and none of it is needed to finish staging. The GitHub issues keep their IDs.
+The owner approved the CI and release design on 26 November 2026. It's described in [CI and releases](release/ci-and-release.md). This work runs alongside the staging items above:
 
-- **M6.9:** production Supabase, credentials, live analytics, and the production deploy and content-release pipelines. [#81](https://github.com/MSalman5230/adwam/issues/81)
-- **M7:** Play Console, Play App Signing, the store listing and Data safety form, the closed test and the production rollout. [#82](https://github.com/MSalman5230/adwam/issues/82)–[#85](https://github.com/MSalman5230/adwam/issues/85)
-- **M8:** iOS, TestFlight and the App Store. [#86](https://github.com/MSalman5230/adwam/issues/86)
+- **Agents** build the workflows.
+- **The owner** creates the production accounts and secrets.
+- **Production jobs stop at their plan step** until those secrets exist. Nothing reaches production without the owner's approval in GitHub.
 
-Drafts for this phase are in [release/](release/): the app and content release runbooks, the Google Play account advice, and the store listing review with its screenshots.
+Do the tasks in this order.
 
-After version 1:
+### M6.10 Staging pipeline
+
+[#191](https://github.com/MSalman5230/adwam/issues/191)
+
+- **Agent:**
+  - Publish Preview updates from GitHub's runner with Sentry source maps, and remove the Expo workflow.
+  - Open and close the **Preview needs a new build** issue from the native fingerprint.
+  - Make **Android preview build** reuse a matching Preview build and post its install link.
+- **Owner:** add `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` to the `staging` environment.
+- **Done when:**
+  - A merge publishes a Preview update within minutes.
+  - A test crash on that update shows a readable stack in Sentry.
+  - The reminder issue opens after a native change and closes after the matching build.
+  - The `staging` environment accepts only `master`.
+
+### M6.11 Versioning
+
+[#192](https://github.com/MSalman5230/adwam/issues/192)
+
+- **Agent:** add release-please with `1.0.0` as the first release, the PR title check and the new PR rules below.
+- **Owner:**
+  - Create the release-please GitHub App and the `release` environment.
+  - Allow only squash merges, using the PR title.
+  - Make the PR title check required on `master`.
+- **Done when:** a Release PR opens, runs CI and shows `1.0.0`.
+
+### M6.9 Production workflows
+
+[#81](https://github.com/MSalman5230/adwam/issues/81)
+
+- **Agent:**
+  - Release's plan and production jobs, **Ship update**, **Production rollout** and the daily production health check.
+  - Both admin pages on GitHub Pages.
+  - The `production` submit profile for Play's internal track, starting with draft releases.
+  - The production scheduler SQL, with debug tools off.
+  - Rewrite the [app release](release/app-release.md) and [update release](release/content-release.md) runbooks.
+- **Done when:**
+  - Without production secrets, every production workflow stops cleanly at its plan.
+  - Staging still deploys.
+
+### M6.12 Production setup
+
+[#193](https://github.com/MSalman5230/adwam/issues/193)
+
+- **Owner:** everything in [One-time production setup](release/ci-and-release.md#one-time-production-setup), and the rules for the `production` and `production-monitor` environments.
+- **Owner and agent:**
+  - The first production build, which creates the upload key.
+  - The production scheduler SQL.
+  - The production admin user.
+- **Done when:**
+  - The plan jobs pass against production.
+  - The weather job runs on production.
+  - The production admin page signs in.
+
+### M6.13 Agent account
+
+[#194](https://github.com/MSalman5230/adwam/issues/194)
+
+- **Owner:** create a GitHub machine account for agents with the Write role, and an Expo token with the Viewer role for the agents' PC.
+- **Agent:** change AGENTS.md's account rule to name the machine account.
+- **Done when:** the agents' `gh` login can't approve a `production` run.
+
+### M7 Google Play
+
+- **M7.1 First upload** ([#82](https://github.com/MSalman5230/adwam/issues/82)):
+  - Merging the first Release PR builds `1.0.0` and sends it to internal testing as a draft.
+  - The owner completes the store listing, Data safety and content rating from the [store review](release/android/store-review.html), then rolls the draft out to internal testers.
+  - Later releases go to internal testing directly.
+- **M7.2 Closed test** ([#83](https://github.com/MSalman5230/adwam/issues/83)):
+  - Invite 15–20 testers so that at least 12 stay opted in for 14 days in a row. Include Samsung and Xiaomi owners.
+  - The closed test can double as the week on real phones.
+  - Agents ship fixes with **Ship update**.
+  - Advice on the account is in [google-play-account.md](release/google-play-account.md).
+- **M7.3 Production** ([#84](https://github.com/MSalman5230/adwam/issues/84)):
+  - The owner applies for production access and promotes the build. Google's review usually takes up to 7 days.
+  - The first production release reaches 100% at once. Later ones go to 10%, 50% and 100%, while the owner watches Sentry, the health check and push receipts.
+- **M7.4 Updates after launch** ([#85](https://github.com/MSalman5230/adwam/issues/85)):
+  - **Ship update** sends an update to 10% of phones, and **Production rollout** raises it to 100%.
+  - If something's wrong, **Production rollout** undoes it, as the update runbook describes.
+
+### M8 iOS
+
+iOS, TestFlight and the App Store. [#86](https://github.com/MSalman5230/adwam/issues/86)
+
+## After version 1
 
 - A sunnah.com API key from the owner. The fetch script then reads new hadith from the API, and compares the API's text with the stored copies.
 - Translations as overlay files, then an Arabic interface written right to left.
@@ -99,7 +183,7 @@ After version 1:
 - **One task, one pull request.** Name the branch after the task, such as `m6-speed`, and start the PR title with its ID, such as "M6.4 Speed and size". Track progress in the GitHub issues, not in this file.
 - **Before opening a PR,** run `pnpm check` and meet the definition of done.
 - **Ask the owner** when a step needs an account, a payment, a secret, a legal judgement or a judgement about religious content.
-- **Staging only.** Create or change nothing for production. Distribute signed Preview APKs directly from EAS.
+- **Production only through CI.** Create or change nothing in production by hand. Production changes run only from GitHub Actions, after the owner approves them. Distribute signed Preview APKs directly from EAS.
 
 ### Definition of done
 
@@ -159,6 +243,8 @@ The prototype is the design reference, but the app keeps these settled choices w
 
 ## CI workflows
 
+These are the workflows today. [CI and releases](release/ci-and-release.md) describes what replaces them, and each task above updates this table.
+
 | Workflow | When | What it runs |
 |---|---|---|
 | `ci.yml` | Pull requests and merges to `master` | `pnpm check`, the calendar and route checks, database and function tests, and the Android fingerprint check, which labels the PR `needs-new-build` |
@@ -180,4 +266,5 @@ The prototype is the design reference, but the app keeps these settled choices w
 | [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md) | The Sunnahs, with tables generated from the content files |
 | [development-setup.md](development-setup.md) | Accounts, secrets and local setup |
 | [runbooks/](runbooks/) | Staging acceptance, the phone test, performance, publishing a correction, and incidents |
-| [release/](release/) | Drafts for the production and Google Play phase |
+| [release/ci-and-release.md](release/ci-and-release.md) | How changes reach staging and Google Play: environments, buttons, version numbers and production setup |
+| [release/](release/) | Release runbooks, the Google Play account advice, and the store listing review |
