@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adwam-release
+
+jobs:
+  release-please:
+    name: Release PR
+    runs-on: ubuntu-latest
+    environment: release
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+      sha: ${{ steps.release.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Check the release settings
+        id: settings
+        env:
+          CLIENT_ID: ${{ vars.RELEASE_APP_CLIENT_ID }}
+        run: |
+          node scripts/check-release-config.mjs
+          if [[ -z "$CLIENT_ID" ]]; then
+            echo '::notice::The release-please GitHub App is not set up yet, so no Release PR was updated.'
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/create-github-app-token@v3
+        id: token
+        if: steps.settings.outputs.ready == 'true'
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+      - uses: googleapis/release-please-action@v5
+        id: release
+        if: steps.settings.outputs.ready == 'true'
+        with:
+          token: ${{ steps.token.outputs.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+      - name: Summarise the release
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          TAG: ${{ steps.release.outputs.tag_name }}
+          URL: ${{ steps.release.outputs.html_url }}
+        run: |
+          {
+            echo "### Released $TAG"
+            echo
+            echo "[GitHub Release]($URL). The production run that builds it for Google Play arrives with task M6.9."
+          } >> "$GITHUB_STEP_SUMMARY"

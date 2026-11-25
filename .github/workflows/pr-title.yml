@@ -1,0 +1,24 @@
+name: PR title
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions: {}
+
+jobs:
+  title:
+    name: PR title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the type prefix
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|perf|content|revert|refactor|test|docs|ci|build|chore)(\([a-z0-9.-]+\))?!?: [^ ]'
+          if [[ "$TITLE" =~ $pattern ]]; then
+            echo "The title has a valid type."
+            exit 0
+          fi
+          echo "::error::Start the title with a type, such as 'fix: keep Later after a restart (M4.8)'. The types and what they release are in docs/release/ci-and-release.md."
+          exit 1
