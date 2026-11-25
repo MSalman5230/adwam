@@ -68,6 +68,8 @@ The fingerprint changed after build 15. The manual build workflow checked the AP
 
 ### Owner approval
 
+The owner approved these results, D7 and D9 on 26 November 2026. Version 1 is complete on staging.
+
 **D7. Suggested prayer methods.** These are suggestions, not requirements. The user can choose any available method. [Country mapping](../../packages/core/src/places.ts)
 
 | Country | Suggested method |
