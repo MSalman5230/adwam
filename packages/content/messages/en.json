@@ -583,6 +583,7 @@
     "privacy": "Privacy",
     "privacyBody": "Adwam has no account. Its server receives an anonymous install ID, a push token and the settings it needs for reminders. It receives a rough area only for weather. Your trackers stay on this phone.",
     "diagnostics": "Sentry receives crash reports when enabled. PostHog receives anonymous usage statistics if you opt in. Manage both and delete your server data in Settings → Privacy.",
+    "privacyNotice": "Privacy notice",
     "credits": "Credits",
     "weather": "Weather data by Open-Meteo.com",
     "weatherLicense": "CC BY 4.0 licence",

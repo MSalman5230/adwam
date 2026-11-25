@@ -676,7 +676,7 @@ Scripts copy every hadith and verse from sunnah.com and Quran.com (C16), so nobo
 
 ### M6.7 In-app privacy and notice · M
 
-- Finish About's privacy text and the [privacy notice draft](release/android/privacy-policy.html) for what the staging app actually sends and stores. Put the approved notice on GitHub Pages or the chosen domain and link it from About. Verify that the crash-report and consent switches work and that server-data deletion clears the server-side install and cache while preserving local trackers. Store metadata is deferred.
+- Finish About's privacy text and the [privacy notice](../apps/admin/public/privacy/index.html) for what the staging app actually sends and stores. Put the approved notice on GitHub Pages or the chosen domain and link it from About. Verify that the crash-report and consent switches work and that server-data deletion clears the server-side install and cache while preserving local trackers. Store metadata is deferred.
 
 ### M6.8 Licences · S
 

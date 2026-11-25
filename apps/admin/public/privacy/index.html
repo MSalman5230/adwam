@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adwam privacy notice</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --paper: #f8f5ee;
+      --ink: #1f2a24;
+      --ink2: #4d5a52;
+      --line: #ddd5c5;
+      --green: #1f5b45;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #141a17;
+        --ink: #ece7dc;
+        --ink2: #b5bdb6;
+        --line: #333d37;
+        --green: #8fcfb0;
+      }
+    }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    main { max-width: 680px; margin: 0 auto; padding: 32px 16px 64px; }
+    h1 { font-size: 1.8rem; line-height: 1.25; margin: 0 0 4px; }
+    h2 { font-size: 1.15rem; margin: 32px 0 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .updated { color: var(--ink2); margin: 0 0 24px; }
+    a { color: var(--green); }
+    ul { padding-left: 1.2em; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Adwam privacy notice</h1>
+    <p class="updated">Last updated 26 November 2026</p>
+    <p>This notice covers the Adwam app for Android, including its test versions. Adwam doesn't sell your data or show ads.</p>
+
+    <h2>Who runs Adwam</h2>
+    <p>Adwam is run by Masood (MSalman5230 on GitHub). For questions about your data, or to ask for a copy of it, a correction or its deletion, email <a href="mailto:msalman5230@gmail.com">msalman5230@gmail.com</a>.</p>
+
+    <h2>What stays on your phone</h2>
+    <p>Adwam calculates calendar reminders and prayer times on your phone. Your fasting trackers, ticks and make-up count are stored in the app and never sent to the server. Android may include them in your system backup or device transfer if you turn those settings on. Adwam leaves its sign-in credentials out of Android backups.</p>
+    <p>You can choose a city yourself or let Adwam use Android's approximate location to pick the nearest city. You can change the city or take away the location permission at any time.</p>
+
+    <h2>What the reminder server receives</h2>
+    <p>You can use Adwam without an account. The app creates a random installation identifier. The reminder server stores the identifier, the app and content versions, your country and time zone, your Hijri calculation settings, and the notification settings it needs to send weather and date-correction reminders. It also stores a push token when Android provides one.</p>
+    <p>While weather reminders are on, the app also sends a weather area: your position rounded to a tenth of a degree of latitude and longitude, about 10 km across. The server asks Open-Meteo for the forecast for that area. Open-Meteo receives only the area, not your identifier.</p>
+    <p>Adwam uses Supabase to host its server, and Expo and Google's Firebase Cloud Messaging to deliver push notifications.</p>
+
+    <h2>Crash reports</h2>
+    <p>Crash reports are on at first. You can turn them off in Settings → Privacy. Reports go to Sentry, in the EU, and include software versions, the place in the code where an error happened, and counts from reminder scheduling. Adwam removes typed text, location, installation identifiers and tracker data from these reports.</p>
+
+    <h2>Usage statistics</h2>
+    <p>Adwam sends usage statistics to PostHog, in the EU, only if you choose Share. They include screen views and some reminder interactions, the app and content versions, the platform, your country and a separate random identifier. Using a Sunnah app may indicate your religious beliefs, which is why Adwam asks first. Adwam turns off PostHog's IP-based location, session recording and automatic touch capture.</p>
+    <p>You can change your mind at any time in Settings → Privacy. Turning usage statistics off drops any events not yet sent and clears the analytics identifier from your phone.</p>
+
+    <h2>Why Adwam uses this data</h2>
+    <ul>
+      <li><strong>Reminder server data:</strong> to send the weather and date-correction reminders you turn on.</li>
+      <li><strong>Crash reports:</strong> to find and fix faults in the app. You can turn them off.</li>
+      <li><strong>Usage statistics:</strong> only with your consent, to learn which parts of the app are used. You can withdraw your consent at any time.</li>
+    </ul>
+
+    <h2>How long it's kept</h2>
+    <ul>
+      <li>Settings → Privacy → Delete my data from the server removes this installation's saved settings and push token at once. The app signs out and clears its server cache. Your trackers stay on your phone.</li>
+      <li>If an installation stops contacting the server, its saved settings are deleted after 120 days.</li>
+      <li>Weather events are deleted 7 days after they end. Server job logs, which hold counts but no personal data, are deleted after 30 days.</li>
+      <li>Sentry and PostHog keep data for their services' standard retention periods. You can ask for it to be deleted by email.</li>
+    </ul>
+
+    <h2>Your choices</h2>
+    <p>You can turn crash reports and usage statistics on or off, and delete your server data, in Settings → Privacy. You can change Adwam's location and notification permissions in your phone's settings. You can also contact your local data-protection authority if you're unhappy with how your data is handled.</p>
+
+    <h2>Changes to this notice</h2>
+    <p>If Adwam starts collecting something new or using data differently, this page and its date will be updated.</p>
+  </main>
+</body>
+</html>
