@@ -88,6 +88,19 @@ it('undoes a pause and preserves the setup Done action', async () => {
   expect(mockDismiss).toHaveBeenCalledWith({ pathname: '/today', params: { setup: '1' } });
 });
 
+it('exposes distinct switches for the Android reminder flow', async () => {
+  await renderReminders();
+  const monthly = () => screen.getByTestId('reminders-group-monthly-switch');
+  const pause = () => screen.getByTestId('reminders-pause-switch');
+
+  expect(monthly()).toBeChecked();
+  expect(pause()).not.toBeChecked();
+  await fireEvent.press(monthly());
+  await fireEvent.press(pause());
+  expect(monthly()).not.toBeChecked();
+  expect(pause()).toBeChecked();
+});
+
 it('gates hair and nails by the yearly answer and offers no Push for disputed items', async () => {
   await renderReminders();
   await fireEvent.press(screen.getByRole('button', { name: t('reminders.group.weekly') }));

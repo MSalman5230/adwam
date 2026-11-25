@@ -60,7 +60,7 @@ export function FastingPauseCard({ duration, until, onToggle, onDuration }: {
   return <Panel style="pause">
     <View style={styles.pauseHeader}>
       <View style={styles.grow}><Heading title={title} subtitle={subtitle} /></View>
-      <Switch label={title} checked={active} onChange={onToggle} />
+      <Switch testID="reminders-pause-switch" label={title} checked={active} onChange={onToggle} />
     </View>
     {active && <View style={styles.pauseOptions}><PauseDurationChips selected={duration} onChange={onDuration} /></View>}
   </Panel>;
@@ -96,7 +96,7 @@ export function ReminderGroup({ group, state, year, onToggle, onChoice, onOpen, 
         <View style={styles.grow}><Heading title={title} subtitle={subtitle} /></View>
         <View style={open && styles.expanded}><Icon name="expand_more" size={22} color={palette.ink3} /></View>
       </Pressable>
-      {!disputed && <Switch label={title} checked={enabled} onChange={onToggle} />}
+      {!disputed && <Switch testID={`reminders-group-${group}-switch`} label={title} checked={enabled} onChange={onToggle} />}
     </View>
     {open && <View style={[styles.groupBody, { borderColor: palette.hair }]}>
       {!enabled && <Prose style={[typography.caption, styles.groupNote, { color: palette.ink2 }]}>{t('reminders.restoreChoices')}</Prose>}
