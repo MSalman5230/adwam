@@ -2,7 +2,7 @@
 
 [mobile-app-ui.html](mobile-app-ui.html) is the source of truth for the app's screens: their layout, their wording and how each control behaves. Open it in a browser and use the left panel to jump to any screen or moment. This file is its written companion. It lists the screens and records what the prototype can't show: rules buried in its code, things it only fakes, and what's left out of version 1. If this file and the prototype disagree, the prototype wins and this file should be fixed.
 
-Reminder content and tiers come from [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md). The technical choices come from [mobile-app-stack.md](mobile-app-stack.md).
+Reminder content and tiers come from [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md). The technical choices are in [mobile-app-architecture.md](mobile-app-architecture.md).
 
 ## Screens at a glance
 

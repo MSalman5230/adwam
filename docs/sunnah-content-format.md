@@ -232,7 +232,7 @@ An entry with an approved excerpt includes the following fields.
   reviewed: { by: <reviewer's name>, on: <date> }
 ```
 
-To normalize saved verse captures into a private directory, run `node packages/content/scripts/fetch-quran.ts <browser-capture-directory> <private-output-directory>`. It takes the Arabic, English and displayed credit from the browser records. Check any generic translation credit before publishing a quotation. The owner confirmed written permission for the four cited Quran.com verses. [Content read-through](sunnah-content-review.md)
+To normalize saved verse captures into a private directory, run `node packages/content/scripts/fetch-quran.ts <browser-capture-directory> <private-output-directory>`. It takes the Arabic, English and displayed credit from the browser records. Check any generic translation credit before publishing a quotation. The owner confirmed written permission for the four cited Quran.com verses.
 
 ### Fatwas and books
 
@@ -348,7 +348,7 @@ The build then writes:
 ## Adding a Sunnah
 
 1. **Copy the closest existing entry** into the right section file, with `status: draft` and a new ID.
-2. **Add or reuse evidence and duʿāʾ entries.** Run the fetch scripts for any new hadith or verse, then cut the excerpt from the stored copy.
+2. **Add or reuse evidence and duʿāʾ entries.** Run the fetch scripts for any new hadith or verse, then cut the excerpt from the stored copy. Some sunnah.com pages show a shorter Arabic text than the English, so cut matching parts of each.
 3. **Run the check** and fix what it reports.
 4. **If its timing doesn't fit** the vocabulary, add a rule in `packages/core` with tests.
 5. **Open a pull request.** The reviewer checks the text, the Arabic and the gradings, then sets `status: published` and `reviewed`.

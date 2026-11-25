@@ -2,7 +2,7 @@
 
 An Android-first app that reminds Muslims of Sunnah practices, timed to their Hijri date and prayer times. Expo (React Native, TypeScript) on the phone, Supabase on the server.
 
-Start with [docs/plan.md](docs/plan.md). It lists the specs, the order of work and the check for each task. Local setup and secrets are in [docs/development-setup.md](docs/development-setup.md).
+Start with [docs/plan.md](docs/plan.md). It lists the work that is left, the rules that still apply and the specs. Local setup and secrets are in [docs/development-setup.md](docs/development-setup.md).
 
 ## Rules you can't guess
 

@@ -1,6 +1,6 @@
 # Mobile app architecture
 
-This is the build plan for Adwam. It covers how the app, the shared code and the server fit together, where each piece of code lives and why, and the steps to a production release. It builds on [mobile-app-stack.md](mobile-app-stack.md), [mobile-app-screen-story.md](mobile-app-screen-story.md), [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md) and the prototype [mobile-app-ui.html](mobile-app-ui.html). The prototype stays the source of truth for screens and behaviour.
+This describes how Adwam's app, shared code and server fit together, and where each piece of code lives and why. It goes with [mobile-app-screen-story.md](mobile-app-screen-story.md), [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md) and the prototype [mobile-app-ui.html](mobile-app-ui.html), which stays the source of truth for screens and behaviour. [plan.md](plan.md) has what's left to do.
 
 ## Decisions
 
@@ -65,7 +65,7 @@ SUPABASE
 
 ## Repository layout
 
-The repository becomes a pnpm workspace. The spec files, the plan and the prototype live in `docs/`.
+The repository is a pnpm workspace. The specs, the plan and the prototype live in `docs/`.
 
 ```
 adwam/
@@ -189,12 +189,13 @@ One function does all the scheduling, and it runs often:
 
 Details:
 
-- **How far ahead:** 60 days on Android, at most about 150 notifications. On iOS, at most 60 waiting at once, leaving room for Later. This goes further than the stack file's 2–3 weeks, so a user who doesn't open the app for a month still gets reminders.
+- **How far ahead:** 60 days on Android, at most about 150 notifications. On iOS, at most 60 waiting at once, leaving room for Later. A user who doesn't open the app for a month still gets reminders.
 - **Approximate timing,** with no exact-alarm permission. A build check fails if `SCHEDULE_EXACT_ALARM` or `USE_EXACT_ALARM` gets into the app's permissions.
-- **Android channels:** Weekly, Monthly, Yearly, Weather and eclipses, and Date corrections.
+- **Android channels:** Weekly, Monthly, Yearly, Weather and eclipses, Date corrections, and a silent Date corrections channel for quiet hours.
 - **Buttons:** Done ticks the item and reschedules. Later sends the push once more an hour later, if its window is still open.
 - **Quiet hours** follow the screen story. A push about something tonight or tomorrow moves earlier. A push about something already under way moves later. Weather pushes are dropped. Eclipses notify only if the user allows it.
 - **Tapping** a push opens the item's detail screen. The combined Friday push opens Today.
+- **Huawei phones without Google services** can't receive server pushes. Their local reminders still work.
 
 ### Location and places
 
@@ -361,88 +362,3 @@ GitHub Actions:
 | Apple | — | $99 a year, from the iOS phase |
 
 Free-tier limits change, so check each one when signing up. The server holds nothing that can't be rebuilt. Every install re-syncs at its next launch, and corrections can be entered again. That's why a free database without backups is acceptable at launch.
-
-## Build order
-
-[Implementation plan](plan.md) lists the tasks, dependencies and checks for each milestone.
-
-| Milestone | What it delivers | Done when |
-|---|---|---|
-| 0. Foundations | The workspace, local Supabase, a development build on the emulator and real phones, Supabase projects, CI, and tests of the risks below. [development-setup.md](development-setup.md) lists the accounts, secrets and local tools. | Each risk has a result and a chosen fallback. |
-| 1. Engine and content | Core, with adhan-js, the Umm al-Qura table and eclipses. The calendar and the prototype's text and Arabic converted into content files. | The Moment tests pass, and every difference from the prototype is explained. The regenerated calendar matches today's. |
-| 2. App shell and Today | Theme, components, navigation, Setup, Today, the detail screen, saved state, Sentry | Setup through Today works on a phone, offline. |
-| 3. Remaining screens | Upcoming, Settings and its sheets, Reminders, About, the debug screen | Each screen matches the prototype, in light and dark. |
-| 4. Local notifications | The plan, scheduling, channels, buttons, quiet hours, the background task | A week of reminders arrives correctly on every test phone. |
-| 5. Server | Install sync, weather detection, push sending, corrections, the admin page | Simulated rain reaches a phone, and a correction is offered and applied. |
-| 6. Hardening | Accessibility and large text, PostHog with the consent question, end-to-end tests, privacy policy, store listing, Data safety form, review of the Arabic and evidence | No release blockers remain. |
-| 7. Android release | Closed testing, then production with a staged rollout | Live on Google Play. |
-| 8. iOS | Apple account, APNs, iOS testing, App Store review | Live on the App Store. |
-
-## Google Play account
-
-**Recommendation: a personal account now.** You're a solo developer with no organization to publish under. A personal account opens quickly. Its one real cost is the closed test, and Adwam needs that testing anyway: two weeks on real phones of several brands, used by people who will actually use the app.
-
-| | Personal | Organization |
-|---|---|---|
-| Who it's for | An individual | A registered company, charity or other legal entity |
-| What you need | Government ID, a developer email, and a real Android phone with the Play Console app to verify it | A D-U-N-S number, a verified organization website, a public organization phone number and a contact name |
-| How long it takes | Usually days | Up to 30 days for the D-U-N-S number, then up to 5 days of verification |
-| Before the first release | A closed test with at least 12 testers opted in for 14 days in a row, then an application for production access | No closed test needed |
-| Shown on Google Play | Your chosen developer name and your developer email. Google's help pages differ on whether your legal name, country or address also appear, so check the sign-up form. | The organization's name and contact details |
-| Fee | $25, once | $25, once |
-
-**To open an organization account later:**
-
-1. Register a legal entity, such as a company or a charity.
-2. Request a free D-U-N-S number from Dun & Bradstreet. Use the legal name and address exactly as you will enter them in Play Console.
-3. Set up an organization website and verify it.
-4. Prepare an organization phone number and email that people can find publicly, and name a contact person.
-5. Create the account as an organization, with an organizational payments profile, and wait for verification.
-
-**Starting personal doesn't lock you in.** The account owner can convert a personal account into an organization account in Play Console. The app and its reviews stay. Converting needs an organizational payments profile and a verified website, and it can't be undone. Moving the app to a separate organization account through a transfer request is also possible.
-
-**A nonprofit would also help with iOS.** Apple waives its $99 yearly fee for nonprofits in eligible countries that publish only free apps. Individuals and single-person businesses don't qualify, and Apple also asks for a D-U-N-S number.
-
-**Running the closed test:**
-
-- **Recruit 15–20 testers,** so the count never drops below 12 if a few leave.
-- **Include Samsung and Xiaomi owners,** because those brands are where scheduled notifications are most likely to fail.
-- **Start once milestone 6 is nearly done.** The 14 days then overlap the last fixes instead of delaying the launch.
-
-## Risks to settle in milestone 0
-
-| Risk | Test | Fallback |
-|---|---|---|
-| Done and Later on a notification may not work while the app is closed | Try it on a Pixel, a Samsung and a Xiaomi | Notifee for local notifications |
-| Hermes may not format times in another time zone | Format a city's times in a zone that isn't the phone's | FormatJS's `Intl` add-ons |
-| Some phone brands drop scheduled notifications | The 60-day schedule, plus real-phone tests | A "Not getting reminders?" help page for each brand |
-| Huawei phones without Google services can't receive server pushes | None | Accept it, because local reminders still work |
-| The free Supabase project pauses | The daily check | Upgrade to Pro |
-
-## Changes to the existing specs
-
-Once this plan is approved, update these files:
-
-- **sunnah-reminder-calendar.md:** generate the tables from the content files in milestone 1.
-- **mobile-app-screen-story.md and mobile-app-ui.html:**
-  - The Date correction notice gets "Use" and "Keep my dates" buttons.
-  - Setup step 2 and the Hijri date sheet say that corrections are offered, not applied automatically. The sheet also lists accepted corrections.
-  - The detail screen's Sources rows expand to show the Arabic evidence and its meaning, as [sunnah-content-format.md](sunnah-content-format.md#how-the-detail-screen-shows-evidence) describes.
-  - Setup asks once about usage statistics, and Settings gets a Privacy row with the crash report and usage statistics switches.
-  - Setup's promise becomes "Your trackers stay on this phone", because some settings now go to the server.
-  - About gets the new privacy text, covering the server, Sentry and PostHog, and credits for GeoNames, sunnah.com, Quran.com and the translators they show.
-
-## Gaps in the specs
-
-1. **Penumbral lunar eclipses** are hard to see. Suggestion: leave them out and list only partial and total eclipses.
-2. **Eclipse pushes and the one-weather-push-a-day limit.** Suggestion: the limit counts weather only.
-3. **Report a problem needs a GitHub account.** Suggestion: add an email address as a fallback.
-
-## Open questions
-
-On 21 November 2026 the owner answered some of these and accepted defaults for the rest during development. [plan.md](plan.md) tracks them as decisions D2–D5. The defaults are confirmed or changed before the production release.
-
-1. **App ID and domain.** Decided: `com.msalman5230.adwam`, with `.preview` and `.dev` for test builds. No domain for now. The privacy policy and the admin page use GitHub Pages.
-2. **Licence.** The owner chose noncommercial use with credit to MSalman5230 for Adwam's original app, code, text and artwork. Third-party material keeps its own terms. [Adwam Noncommercial Licence](../LICENSE)
-3. **Analytics consent.** Default for development: PostHog stays off until the user agrees.
-4. **Content reviewer.** Decided: the owner. Content isn't held for review during development, and the owner reads all of it before the production release.

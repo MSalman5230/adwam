@@ -136,8 +136,10 @@ Checked on 21 November 2026:
 | Emulator `Pixel_6` | Android 16 with Google APIs. It includes Google Play services, so server pushes can reach it. |
 | `adb` and `emulator` | In the SDK but not on the PATH. Add `%ANDROID_HOME%\platform-tools` and `%ANDROID_HOME%\emulator`. |
 | Java | JDK 21. React Native has recommended JDK 17, so if the first Android build fails over Java, install JDK 17 and point `JAVA_HOME` at it. |
-| Supabase CLI | Not installed. Add it to the repository as a development dependency, so this PC and CI use the same version. |
+| Supabase CLI | A development dependency of the repository, so this PC and CI use the same version. Run it through the `pnpm db:*` scripts. |
 | Maestro | The Setup suite ran on this PC with Maestro 2.12.1 and the dedicated Android test emulator. |
+
+**Windows native builds.** The Ninja bundled with Android SDK CMake 3.22.1 hits the Windows path limit in Sentry and the generated Gesture Handler code. Copy SDK CMake 3.22.1 to a scratch directory, replace `bin/ninja.exe` in the copy with [Ninja 1.12.1](https://github.com/ninja-build/ninja/releases/tag/v1.12.1), and set `cmake.dir` in the ignored `apps/mobile/android/local.properties` to that copy. Keep Windows long-path support turned on.
 
 ## How local development works
 

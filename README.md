@@ -2,7 +2,7 @@
 
 Adwam is an Android app for Sunnah reminders timed to the Hijri date and local prayer times. The app calculates calendar reminders on the phone and has local fasting trackers. Supabase supplies date corrections and weather alerts.
 
-See the [development setup](docs/development-setup.md) to run the app and backend. The [implementation plan](docs/plan.md) describes each milestone. The [phone test runbook](docs/runbooks/notification-test.md) covers Android reminder delivery.
+See the [development setup](docs/development-setup.md) to run the app and backend. The [plan](docs/plan.md) says what is left before version 1 is complete on staging. The [phone test runbook](docs/runbooks/notification-test.md) covers Android reminder delivery.
 
 ## Licence
 
