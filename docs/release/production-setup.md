@@ -24,9 +24,9 @@ When you've finished, each place below holds these values. The last column is th
 | Variable | `SUPABASE_PROJECT_ID` | The production project ID | [2.2](#22-copy-the-project-id) |
 | Secret | `SUPABASE_ACCESS_TOKEN` | The Supabase deploy token | [2.3](#23-create-the-deploy-token) |
 | Secret | `EXPO_TOKEN` | The Expo build robot's token | [3.1](#31-the-build-robot) |
-| Secret | `SENTRY_AUTH_TOKEN` | A new Sentry organization token | [4.1](#41-a-new-organization-token) |
-| Variable | `SENTRY_ORG` | The Sentry organization slug | [4.2](#42-the-organization-and-project-slugs) |
-| Variable | `SENTRY_PROJECT` | The Sentry project slug | [4.2](#42-the-organization-and-project-slugs) |
+| Secret | `SENTRY_AUTH_TOKEN` | A new Sentry organization token | [4.3](#43-a-new-organization-token) |
+| Variable | `SENTRY_ORG` | The Sentry organization slug, the same as in `staging` | [4.4](#44-the-organization-and-project-slugs) |
+| Variable | `SENTRY_PROJECT` | `adwam-production` | [4.4](#44-the-organization-and-project-slugs) |
 
 **GitHub, environment `production-monitor`**
 
@@ -41,17 +41,17 @@ When you've finished, each place below holds these values. The last column is th
 | Name | Value | Step |
 |---|---|---|
 | `EXPO_ACCESS_TOKEN` | The Expo push token | [3.3](#33-the-push-token) |
-| `SENTRY_DSN` | The Sentry DSN | [4.3](#43-the-dsn) |
+| `SENTRY_DSN` | The `adwam-production` DSN | [4.5](#45-the-dsn) |
 | `ADWAM_JOB_KEY` | The key the scheduler setup creates | [9.4](#94-save-the-job-key) |
 
 **Expo, the adwam project's environment variables, Production only**
 
 | Name | Visibility | Value | Step |
 |---|---|---|---|
-| `SENTRY_AUTH_TOKEN` | Secret | The same Sentry token as in GitHub | [4.1](#41-a-new-organization-token) |
-| `SENTRY_ORG` | Plain text | The Sentry organization slug | [4.2](#42-the-organization-and-project-slugs) |
-| `SENTRY_PROJECT` | Plain text | The Sentry project slug | [4.2](#42-the-organization-and-project-slugs) |
-| `EXPO_PUBLIC_SENTRY_DSN` | Sensitive | The Sentry DSN | [4.3](#43-the-dsn) |
+| `SENTRY_AUTH_TOKEN` | Secret | The same Sentry token as in GitHub | [4.3](#43-a-new-organization-token) |
+| `SENTRY_ORG` | Plain text | The Sentry organization slug, the same as Preview's | [4.4](#44-the-organization-and-project-slugs) |
+| `SENTRY_PROJECT` | Plain text | `adwam-production` | [4.4](#44-the-organization-and-project-slugs) |
+| `EXPO_PUBLIC_SENTRY_DSN` | Sensitive | The `adwam-production` DSN | [4.5](#45-the-dsn) |
 | `EXPO_PUBLIC_POSTHOG_KEY` | Plain text | The PostHog project token | [5](#part-5-posthog-usage-statistics) |
 | `GOOGLE_SERVICES_JSON` | Secret, file | The production app's `google-services.json` | [6.1](#61-add-the-production-app) |
 
@@ -107,7 +107,8 @@ Variables aren't secret, so GitHub keeps showing their values. To change one, cl
 
 If Expo says the name already exists, the existing variable belongs to Preview:
 
-- For `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` and `EXPO_PUBLIC_SENTRY_DSN`, open the existing variable, tick **Production** as well as Preview, and save without changing its value.
+- For `SENTRY_AUTH_TOKEN` and `SENTRY_ORG`, open the existing variable, tick **Production** as well as Preview, and save without changing its value. Both work for either Sentry project.
+- For `SENTRY_PROJECT` and `EXPO_PUBLIC_SENTRY_DSN`, stop and ask an agent. Preview's values point to `adwam-staging`, so sharing them would send production's crash reports there.
 - For `GOOGLE_SERVICES_JSON`, stop and ask an agent. Preview's file doesn't include the production app.
 
 ### E. Expo Android credential
@@ -244,9 +245,30 @@ The production server uses this token to send notifications.
 
 ## Part 4. Sentry: crash reports
 
-Production uses the same Sentry project as Preview. Each crash report is tagged with its environment.
+Production gets its own Sentry project, `adwam-production`. Preview and the staging server keep `adwam-staging`. Test crashes then never mix with real users' crashes, and the crash-free numbers you check before raising a rollout count production only.
 
-### 4.1 A new organization token
+### 4.1 Create the production project
+
+1. In Sentry, click **Projects** in the left menu, then **Create Project**.
+2. **Platform:** React Native.
+3. **Alert frequency:** leave the default.
+4. **Project name:** `adwam-production`. **Team:** the same team as `adwam-staging`.
+5. Click **Create Project**. Skip the setup instructions Sentry shows next. The app is already set up.
+6. Check the address bar. It contains `/adwam-production/`, which is the project's slug. If it shows a different name, use that name wherever this page says `adwam-production`.
+
+### 4.2 Copy the privacy settings
+
+Each Sentry project has its own privacy settings, so the new project doesn't get staging's.
+
+1. Click **Settings** → **Projects** → `adwam-staging` → **Security & Privacy**. Open the same page for `adwam-production` in another tab.
+2. Make every switch on `adwam-production` match `adwam-staging`. These three must be on: **Data Scrubber**, **Use Default Scrubbers** and **Prevent Storing of IP Addresses**.
+3. If staging lists extra sensitive fields or scrubbing rules, add the same ones to production.
+
+A switch that is on and greyed out is set for the whole organization. Leave it as it is.
+
+### 4.3 A new organization token
+
+One token can upload to both projects. Production gets its own, so you can replace one without breaking the other.
 
 1. In Sentry, click **Settings** in the left menu, then **Developer Settings** → **Organization Tokens**.
 2. Click **Create New Token**, name it `adwam-production` and create it.
@@ -255,18 +277,23 @@ Production uses the same Sentry project as Preview. Each crash report is tagged 
    - GitHub `production` secret `SENTRY_AUTH_TOKEN` ([how](#a-github-secret))
    - Expo variable `SENTRY_AUTH_TOKEN`, visibility **Secret** ([how](#d-expo-variable))
 
-### 4.2 The organization and project slugs
+### 4.4 The organization and project slugs
 
-Production uses the same values as staging. They aren't secret.
+The organization is the same as staging's, and the project is the new one. Neither value is secret.
 
-1. Open <https://github.com/MSalman5230/adwam/settings/environments> and click `staging`. Under **Environment variables**, GitHub shows `SENTRY_ORG` and `SENTRY_PROJECT` with their values.
-2. Add both, with the same values, to both places:
-   - GitHub `production` variables `SENTRY_ORG` and `SENTRY_PROJECT` ([how](#b-github-variable))
-   - Expo variables `SENTRY_ORG` and `SENTRY_PROJECT`, visibility **Plain text** ([how](#d-expo-variable))
+1. Open <https://github.com/MSalman5230/adwam/settings/environments> and click `staging`. Under **Environment variables**, copy the value of `SENTRY_ORG`.
+2. Add it to both places:
+   - GitHub `production` variable `SENTRY_ORG` ([how](#b-github-variable))
+   - Expo variable `SENTRY_ORG`, visibility **Plain text** ([how](#d-expo-variable))
+3. Add `SENTRY_PROJECT` with the value `adwam-production` to both places:
+   - GitHub `production` variable `SENTRY_PROJECT` ([how](#b-github-variable))
+   - Expo variable `SENTRY_PROJECT`, visibility **Plain text** ([how](#d-expo-variable))
 
-### 4.3 The DSN
+Don't copy staging's `SENTRY_PROJECT`. It's `adwam-staging`, so production's source maps would go to the wrong project and its crash reports would show unreadable code.
 
-1. In Sentry, click **Settings** → **Projects**, click the Adwam project, then **Client Keys (DSN)**.
+### 4.5 The DSN
+
+1. In Sentry, click **Settings** → **Projects** → `adwam-production` → **Client Keys (DSN)**. Check the project name at the top of the page: staging's DSN would send production's crashes to `adwam-staging`.
 2. Copy the **DSN**. Its host ends in `ingest.de.sentry.io`.
 3. Paste it into both places:
    - Expo variable `EXPO_PUBLIC_SENTRY_DSN`, visibility **Sensitive** ([how](#d-expo-variable))
@@ -460,6 +487,7 @@ Tell an agent that production setup is done. It checks the plans against product
 | "EAS did not confirm the msalman5230 account" | An `EXPO_TOKEN` belongs to another account, or was pasted with a space | Create a new robot token ([3.1](#31-the-build-robot) or [3.2](#32-the-viewer-robot)) and replace the secret |
 | A production run deploys without asking you | `production` has no required reviewer | [1.1](#11-production) |
 | GitHub won't let you approve your own run | **Prevent self-review** is ticked | Untick it, as in [1.1](#11-production) |
+| Production crashes appear in `adwam-staging` | Expo Production or the production Supabase project has staging's DSN | Paste the `adwam-production` DSN over it ([4.5](#45-the-dsn)) |
 | You lost a value before pasting it everywhere | Most sites show secrets only once | Create a new one and paste it over the old value in each place |
 
 ## Checklist
@@ -473,9 +501,11 @@ Tell an agent that production setup is done. It checks the plans against product
 - [ ] 3.1 `EXPO_TOKEN` in `production`
 - [ ] 3.2 `EXPO_TOKEN` in `production-monitor`
 - [ ] 3.3 `EXPO_ACCESS_TOKEN` in Supabase
-- [ ] 4.1 `SENTRY_AUTH_TOKEN` in GitHub `production` and in Expo
-- [ ] 4.2 `SENTRY_ORG` and `SENTRY_PROJECT` in GitHub `production` and in Expo
-- [ ] 4.3 `EXPO_PUBLIC_SENTRY_DSN` in Expo, `SENTRY_DSN` in Supabase
+- [ ] 4.1 `adwam-production` created in Sentry
+- [ ] 4.2 Its privacy settings match `adwam-staging`
+- [ ] 4.3 `SENTRY_AUTH_TOKEN` in GitHub `production` and in Expo
+- [ ] 4.4 `SENTRY_ORG`, and `SENTRY_PROJECT` set to `adwam-production`, in GitHub `production` and in Expo
+- [ ] 4.5 The `adwam-production` DSN as `EXPO_PUBLIC_SENTRY_DSN` in Expo and `SENTRY_DSN` in Supabase
 - [ ] 5 PostHog privacy options set, `EXPO_PUBLIC_POSTHOG_KEY` in Expo
 - [ ] 6.1 `GOOGLE_SERVICES_JSON` in Expo
 - [ ] 6.2 FCM V1 key in Expo credentials

@@ -40,7 +40,7 @@ Open-Meteo needs no account for the free API. The GeoNames city list is a free d
 |---|---|---|---|---|
 | `EXPO_PUBLIC_SUPABASE_URL` | `http://10.0.2.2:54321` | Staging project URL | Production project URL | Supabase project settings, or `supabase status` locally |
 | `EXPO_PUBLIC_SUPABASE_KEY` | The local publishable key | Staging publishable key | Production publishable key | The same places. Older projects call it the anon key. |
-| `EXPO_PUBLIC_SENTRY_DSN` | Empty, so Sentry is off | Sentry DSN | Sentry DSN | Sentry project settings. One project, tagged by environment. |
+| `EXPO_PUBLIC_SENTRY_DSN` | Empty, so Sentry is off | The `adwam-staging` DSN | The `adwam-production` DSN | Sentry, the project's **Client Keys (DSN)** settings. Each environment has its own project. |
 | `EXPO_PUBLIC_POSTHOG_KEY` | Empty | Empty | PostHog project key | PostHog project settings |
 | `APP_VARIANT` | `development` | `preview` | `production` | Set by each build profile. It picks the app ID (`com.msalman5230.adwam.dev`, `com.msalman5230.adwam.preview` or `com.msalman5230.adwam`) and the name, so all three can sit on one phone. |
 
@@ -53,9 +53,9 @@ The Expo project ID also goes into the app config. `eas init` writes it, and it 
 | `SENTRY_AUTH_TOKEN` | Uploading source maps so crash reports point to the right code | Sentry, organization auth tokens |
 | `GOOGLE_SERVICES_JSON` | Firebase settings for the Android app. Stored as an EAS file variable, because the repository is public. | Firebase console, project settings, the Android app's `google-services.json` |
 
-`SENTRY_ORG` and `SENTRY_PROJECT` sit next to them as plain variables.
+`SENTRY_ORG` and `SENTRY_PROJECT` sit next to them as plain variables. `SENTRY_PROJECT` is `adwam-staging` for Preview and `adwam-production` for Production.
 
-For the preview crash check, use the client key from the EU Sentry project. Its ingest host ends in `ingest.de.sentry.io`. The EAS build uploads the JavaScript source map when `SENTRY_AUTH_TOKEN` is set. Open Developer tools → Trigger Sentry test crash on the preview APK and look for **Adwam preview test crash** in the project's issues. Check the decoded stack, `preview` environment, release, and `expo-update-id` tag. JavaScript crash reports carry stack coordinates and build metadata. Crash reports follow the saved privacy preference.
+For the preview crash check, use the client key from the EU `adwam-staging` project. Its ingest host ends in `ingest.de.sentry.io`. The EAS build uploads the JavaScript source map when `SENTRY_AUTH_TOKEN` is set. Open Developer tools → Trigger Sentry test crash on the preview APK and look for **Adwam preview test crash** in the project's issues. Check the decoded stack, `preview` environment, release, and `expo-update-id` tag. JavaScript crash reports carry stack coordinates and build metadata. Crash reports follow the saved privacy preference.
 
 For a staging EAS Update, upload the matching source maps from `apps/mobile` with `pnpm exec sentry-expo-upload-sourcemaps dist` after publishing. Run the upload in the staging runner environment with `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` supplied by its secret store.
 
@@ -75,7 +75,7 @@ These are uploaded once in expo.dev. They aren't environment variables.
 | Secret | Used for |
 |---|---|
 | `EXPO_ACCESS_TOKEN` | Sending pushes. Turn on Expo's enhanced push security, so only this token can send to Adwam's phones. |
-| `SENTRY_DSN` | Error reports from the Edge Functions |
+| `SENTRY_DSN` | Error reports from the Edge Functions. Staging uses the `adwam-staging` DSN, production the `adwam-production` DSN. |
 | `ADWAM_JOB_KEY` | Authorizes scheduled jobs. Copy the value of `adwam_job_key` from this project’s Vault into Edge Function secrets. |
 
 Supabase gives each Edge Function its own project URL and keys automatically. After a project's first deploy of the functions, run [the scheduler setup SQL](../supabase/setup-jobs.sql) in that project's SQL Editor with its URL. Set `debug_tools_enabled` to `true` on staging only. The SQL generates a key in Vault. Copy the key directly from the Vault dashboard into the `ADWAM_JOB_KEY` Edge Function secret. Check that `weather-tick` records a finished run on the next quarter-hour.

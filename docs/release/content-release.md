@@ -14,7 +14,7 @@ How content, JavaScript and server fixes reach production between Play releases.
    - **Another update is still rolling out.** Finish it or undo it first.
    - **Staging didn't deploy this commit.**
 5. **Approve.** The job deploys the production server and publishes the update for 10% of phones on that runtime.
-6. **Raise it.** Check Sentry after a day or so. Then press **Production rollout** → **Raise to 50%**, and later **Raise to 100%**. Each one needs approval.
+6. **Raise it.** Check the `adwam-production` project in Sentry after a day or so. Then press **Production rollout** → **Raise to 50%**, and later **Raise to 100%**. Each one needs approval.
 
 The plan and the job summary give the update group ID and runtime. Record them with the content version when content changed.
 
