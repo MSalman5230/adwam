@@ -1,3 +1,4 @@
+import catalog from '@adwam/content/catalog';
 import { afterEach, beforeEach, expect, it, jest } from '@jest/globals';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -118,4 +119,15 @@ it('gates hair and nails by the yearly answer and offers no Push for disputed it
   expect(push()).toBeNull();
   await fireEvent.press(screen.getByRole('radio', { name: t('reminders.inapp') }));
   expect(screen.getByText(t('reminders.disputedOn', { count: 1 }).replace('in-app', 'in‑app'))).toBeOnTheScreen();
+});
+
+it('omits the Disputed group when no disputed reminders ship', async () => {
+  const replacement = jest.replaceProperty(catalog, 'sunnahs', catalog.sunnahs.filter(({ group }) => group !== 'disputed'));
+  try {
+    await renderReminders();
+    expect(screen.getByRole('button', { name: t('reminders.group.yearly') })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: t('reminders.disputedTitle') })).toBeNull();
+  } finally {
+    replacement.restore();
+  }
 });

@@ -111,13 +111,8 @@ These need background location, which requires Google Play approval the app can�
 - **Ramadan.** Skip Monday, Thursday and White Days reminders during Ramadan, when the Ramadan fast itself is obligatory.
 - **Last day or two of Shaʿbān.** Don’t prompt a new voluntary fast unless it is a regular habit, such as Monday, or a make-up fast. [Bukhārī 1914](https://sunnah.com/bukhari:1914)
 
-## Disputed, so off by default
-
-If a user turns these on, show them In-app only.
-
 <!-- calendar:disputed:start -->
-- **Night of 15 Shaʿbān.** Scholars differ on the forgiveness reports for this night. The narration prescribing a special night prayer and daytime fast is graded fabricated. The daytime fast already falls under the White Days. [Ibn Mājah 1388](https://sunnah.com/ibnmajah:1388), [Ibn Mājah 1390](https://sunnah.com/ibnmajah:1390), [Observing the night of mid-Shaʿbān](https://www.dar-alifta.org/en/fatwa/details/663/celebrating-the-night-of-mid-shaban-and-other-religious-occasions)
-- **Spending more on family on ʿĀshūrāʾ.** Spend more generously on your family on ʿĀshūrāʾ. The evidence is disputed. [Spending more on the family on ʿĀshūrāʾ](https://dar-alifta.org/ar/fatwa/details/21973/%D8%AD%D9%83%D9%85-%D8%A7%D9%84%D8%AA%D9%88%D8%B3%D8%B9%D8%A9-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%A3%D9%87%D9%84-%D9%8A%D9%88%D9%85-%D8%B9%D8%A7%D8%B4%D9%88%D8%B1%D8%A7%D8%A1)
+
 <!-- calendar:disputed:end -->
 
 ## Left out of the app list

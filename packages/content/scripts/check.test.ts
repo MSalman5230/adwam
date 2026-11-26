@@ -9,7 +9,7 @@ import {
   type SourceCopy,
 } from '../schema/index.ts';
 import { selectContent } from './build.ts';
-import { validateContent, type RepositoryContent } from './check.ts';
+import { checkedContent, validateContent, type RepositoryContent } from './check.ts';
 
 const entry: GroupedSunnah = {
   id: 'practice',
@@ -91,6 +91,21 @@ function arabicFixture(): string {
 }
 
 describe('content validation', () => {
+  it('keeps retired IDs in the repository but ships neither reminder nor its evidence', async () => {
+    const data = await checkedContent();
+    const retiredIds = ['shaban15', 'ashura-family'];
+    const retired = data.sunnahs.filter(({ id }) => retiredIds.includes(id));
+    expect(retired.map(({ status }) => status)).toEqual(['retired', 'retired']);
+    const retiredEvidence = retired.flatMap(({ evidence }) => evidence);
+    for (const includeReview of [false, true]) {
+      const bundle = selectContent(data, includeReview);
+      const ids = bundle.sunnahs.map(({ id }) => id);
+      expect(ids.filter((id) => retiredIds.includes(id))).toEqual([]);
+      expect(ids).toEqual(expect.arrayContaining(['ashura', 'shaban', 'white-days']));
+      expect(Object.values(bundle.evidence).flat().filter(({ id }) => retiredEvidence.includes(id))).toEqual([]);
+    }
+  });
+
   it('bundles a Qurʾan reference in review builds using its direct source link', async () => {
     const reference = quranSchema.parse({ id: 'quran-2-185', surah: 2, ayah: 185, url: 'https://quran.com/2/185' });
     const data = content([{ ...entry, evidence: [reference.id] }]);

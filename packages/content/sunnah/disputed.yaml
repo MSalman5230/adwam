@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=../dist/schema.json#/properties/sunnahs
 - id: shaban15
-  status: published
+  status: retired
   reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   default: off
@@ -25,7 +25,7 @@
       window: night
       startAnchor: from-maghrib
 - id: ashura-family
-  status: published
+  status: retired
   reviewed: { by: MSalman5230, on: 2026-11-22 }
   tier: inapp
   default: off
