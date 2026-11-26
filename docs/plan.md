@@ -15,17 +15,17 @@ Checked on 26 November 2026. Every version 1 feature is built and merged. The ow
 | M2 App shell and Today | Theme, components, saved state, navigation, Setup, Today, Sunnah detail, Sentry | — |
 | M3 Remaining screens | Upcoming, Settings and its sheets, Reminders, About, Developer tools | — |
 | M4 Local notifications | Channels, scheduling, Done and Later, background task, permission check | — |
-| M5 Server | Tables and access rules, app and admin RPCs, weather and push functions, corrections, admin page, staging deploys and health check | Staging checks for M5.12–M5.14 ([#70](https://github.com/MSalman5230/adwam/issues/70), [#71](https://github.com/MSalman5230/adwam/issues/71), [#72](https://github.com/MSalman5230/adwam/issues/72)) |
-| M6 Hardening | Accessibility, PostHog with consent, end-to-end tests, offline recovery, licence, privacy notice | Content release checks for M6.6 ([#78](https://github.com/MSalman5230/adwam/issues/78)) |
+| M5 Server | Tables and access rules, app and admin RPCs, weather and push functions, corrections, admin page, staging deploys and health check | — |
+| M6 Hardening | Accessibility, PostHog with consent, end-to-end tests, offline recovery, licence, privacy notice | — |
 
-Already verified on 25 November 2026 with signed Preview `0.1.0` (version code `15`) against staging. Details are in the [staging acceptance runbook](runbooks/staging-acceptance.md).
+Accepted on 26 November 2026 with signed Preview `0.1.0`, version code `16` ([EAS build](https://expo.dev/accounts/msalman5230/projects/adwam/builds/83b69357-401c-4ae2-a191-72841439c9fd)), against staging. The checks below were first passed on 25 November with version code `15`. Details are in the [staging acceptance runbook](runbooks/staging-acceptance.md).
 
 - Anonymous sign-in, install sync, and server-data deletion, which kept the local trackers.
 - Simulated rain on Today. A real weather push and a real correction push arrived and opened the right screens.
 - The admin's emailed sign-in link, then publishing and withdrawing a correction, with **Use**, **Keep my dates** and **Undo** on the phone.
 - Setup through Today in airplane mode. All 32 shipped content entries are approved and pass the release check.
 
-[CI](https://github.com/MSalman5230/adwam/actions/runs/45045021999) · [Staging deploy](https://github.com/MSalman5230/adwam/actions/runs/45045021992) · [Admin Pages](https://github.com/MSalman5230/adwam/actions/runs/45045021916) · [Emulator end-to-end run](https://github.com/MSalman5230/adwam/actions/runs/45590303685) · [Weather health](https://github.com/MSalman5230/adwam/actions/runs/45660404476) · [Signed Preview APK](https://expo.dev/accounts/msalman5230/projects/adwam/builds/18d7dc7c-1dca-470f-b4c2-ecbaa08dc766)
+[CI](https://github.com/MSalman5230/adwam/actions/runs/45045021999) · [Staging deploy](https://github.com/MSalman5230/adwam/actions/runs/45045021992) · [Admin Pages](https://github.com/MSalman5230/adwam/actions/runs/45045021916) · [Emulator end-to-end run](https://github.com/MSalman5230/adwam/actions/runs/45590303685) · [Weather health](https://github.com/MSalman5230/adwam/actions/runs/45660404476) · [Version code 15 APK](https://expo.dev/accounts/msalman5230/projects/adwam/builds/18d7dc7c-1dca-470f-b4c2-ecbaa08dc766)
 
 Done by the owner on 26 November 2026:
 
@@ -68,7 +68,7 @@ Do the tasks in this order.
 
 ### M6.10 Staging pipeline
 
-[#191](https://github.com/MSalman5230/adwam/issues/191)
+[#191](https://github.com/MSalman5230/adwam/issues/191). **Done on 26 November 2026.** Merges publish Preview updates from GitHub, and the owner confirmed a readable Sentry stack on build 16. The reminder issue closed itself after build 16, and `staging` accepts only `master`.
 
 - **Agent:**
   - Publish Preview updates from GitHub's runner with Sentry source maps, and remove the Expo workflow.
