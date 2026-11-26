@@ -386,7 +386,7 @@ If Firebase says key creation isn't allowed, or is restricted by organization po
 Skip this if Adwam - Sunnah Reminders is already in your list of apps.
 
 1. Open <https://play.google.com/console> and click **Create app**.
-2. **App name:** `Adwam - Sunnah Reminders`. This is the title people see on Google Play. Under the icon on their phone, the app still shows as `Adwam`, because that name comes from the app itself. **Default language:** English (United States). **App or game:** App. **Free or paid:** Free.
+2. **App name:** `Adwam - Sunnah Reminders`. This is the title people see on Google Play. Under the icon on their phone, the app still shows as `Adwam`, because that name comes from the app itself. **Package name**, if Play asks for it: `com.msalman5230.adwam`. Check it carefully, because it can't be changed later, and don't use `com.msalman5230.adwam.preview`. **Default language:** English (United States). **App or game:** App. **Free or paid:** Free.
 3. Tick the declarations and click **Create app**.
 
 The store listing, Data safety and content rating come later, in task M7.1, from the [store listing review](android/store-review.html).
