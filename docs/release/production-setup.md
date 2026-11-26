@@ -192,12 +192,15 @@ GitHub uses this token to deploy the database and Edge Functions to production. 
      | API Key Secrets | Read |
      | Migrations | Read |
      | Database | Read |
+     | Connection Pooling | Read |
      | Edge Functions | Read-write |
      | Auth Config | Read-write |
 
 4. Generate the token and copy it. It starts with `sbp_`, and Supabase shows it only once.
 5. Paste it as GitHub `production` secret `SUPABASE_ACCESS_TOKEN` ([how](#a-github-secret)).
 6. Add a calendar reminder for a week before it expires. To renew it, repeat these steps and replace the GitHub secret.
+
+**Connection Pooling** matters even though it sounds optional. GitHub's runners have no IPv6, and the database's direct address is IPv6 only. The migrations reach it through Supabase's connection pooler, and the token needs this permission to find the pooler's address.
 
 ### 2.4 Create the read-only token
 
@@ -501,6 +504,7 @@ Tell an agent that production setup is done. It checks the plans against product
 | What you see | Why | Fix |
 |---|---|---|
 | A run stops with "Production isn't set up yet" | `production-monitor` has no `SUPABASE_PROJECT_ID` | [9.1](#91-switch-production-on) |
+| "IPv6 is not supported on your current network" while applying migrations | The deploy token lacks **Connection Pooling** on Read | Create a new deploy token ([2.3](#23-create-the-deploy-token)), replace the secret, and re-run the failed job |
 | "The scoped token cannot read production Auth" or "cannot update production Auth" | The deploy token lacks Auth Config on Read-write | Create a new deploy token ([2.3](#23-create-the-deploy-token)) and replace the secret |
 | "EAS did not confirm the msalman5230 account" | An `EXPO_TOKEN` belongs to another account, or was pasted with a space | Create a new robot token ([3.1](#31-the-build-robot) or [3.2](#32-the-viewer-robot)) and replace the secret |
 | A production run deploys without asking you | `production` has no required reviewer | [1.1](#11-production) |
