@@ -25,7 +25,7 @@ How a new version reaches Google Play. The design is in [CI and releases](ci-and
    - a weather push and a correction push arrive and open the right screens
    - a Sentry test crash shows a readable stack
 6. **Promote it** in Play Console: to closed testing, then to production.
-   - Later releases start at 10% and rise to 50% and 100%. Before each increase, check crash-free sessions in Sentry, the **Weather health** workflow and push receipts.
+   - Later releases start at 10% and rise to 50% and 100%. Before each increase, check crash-free sessions in the `adwam-production` Sentry project, the **Weather health** workflow and push receipts.
    - The first production release can't use a percentage rollout.
 
 Record in the GitHub Release: the build ID, version code, runtime, Play track and date, and the source map result.

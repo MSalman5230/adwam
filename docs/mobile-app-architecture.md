@@ -309,7 +309,8 @@ Before launch, check this approach with someone who knows data-protection law.
 - **PostHog setup:** the React Native library on PostHog's EU host. Location lookup from IP addresses is off, and the project discards IP addresses. Session replay and touch capture are off.
 - **Sentry setup:**
   - The React Native library with its Expo plugin, and Sentry's Deno library in the Edge Functions.
-  - Default personal data is off, the project doesn't store IP addresses, and breadcrumbs that contain typed text are dropped.
+  - Two projects in one EU organization: `adwam-staging` for Preview and the staging server, `adwam-production` for Production and the production server.
+  - Default personal data is off, neither project stores IP addresses, and breadcrumbs that contain typed text are dropped.
   - Every build and every over-the-air update uploads its source maps, so each error points to the code that actually ran.
 - **Google Play's Data safety form** must list approximate location, device IDs, crash logs and app interactions.
 
