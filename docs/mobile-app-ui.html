@@ -736,10 +736,11 @@ const ITEMS = {
     pushNote:'A push on Friday morning, in the same notification as Friday preparation. It drops the al-Kahf line if you tick Done first.',
     quran:{label:'Read al-Kahf on Quran.com', url:'https://quran.com/18'},
     sources:[s('Sūrat al-Kahf (quran.com)','https://quran.com/18'), s('Al-Bayhaqī','https://hadithweb.com/bayhaqi:5996'), s('Al-Shāfiʿī, Al-Umm','https://islamweb.net/ar/library/content/31/442/'), s('Abū Dāwūd 1047', SN('abudawud:1047'))]},
-  sajdah: {group:'weekly', name:'Friday Fajr: al-Sajdah and al-Insān', tier:'inapp',
+  sajdah: {group:'weekly', name:'Friday Fajr: al-Sajdah and al-Insān', tier:'push', def:'inapp',
     short:'Recite them if you lead or pray Fajr yourself.',
     what:['Recite al-Sajdah and al-Insān in Fajr if you lead the prayer or pray it yourself.'],
-    when:'Friday, before Fajr.',
+    when:'Thursday ʿIshāʾ to Friday sunrise.',
+    pushNote:'A push on Thursday night, about 15 minutes after ʿIshāʾ.',
     quran:{label:'Open al-Sajdah on Quran.com', url:'https://quran.com/32'},
     sources:[s('Muslim 879a', SN('muslim:879a'))]},
   fridayPrep: {group:'weekly', name:'Friday preparation', tier:'push',
@@ -1055,9 +1056,11 @@ function occsForDay(iso) {
     }
   }
   /* weekly */
-  if (wd === 4) add({item: 'kahf', title: 'Sūrat al-Kahf', start: t.maghrib, end: N.t.maghrib, push: N.t.jumuah - 2 * HOUR, pushAnchor: 'morning', startAnchor: 'from Maghrib', endAnchor: 'Maghrib', check: 'done'});
+  if (wd === 4) {
+    add({item: 'kahf', title: 'Sūrat al-Kahf', start: t.maghrib, end: N.t.maghrib, push: N.t.jumuah - 2 * HOUR, pushAnchor: 'morning', startAnchor: 'from Maghrib', endAnchor: 'Maghrib', check: 'done'});
+    add({item: 'sajdah', title: 'Friday Fajr: al-Sajdah and al-Insān', start: t.isha, end: N.t.sunrise, push: t.isha + 15 * MIN, pushAnchor: 'after ʿIshāʾ', startAnchor: 'after ʿIshāʾ', endAnchor: 'sunrise', check: 'done'});
+  }
   if (wd === 5) {
-    add({item: 'sajdah', title: 'Friday Fajr: al-Sajdah and al-Insān', start: P.t.isha, end: t.sunrise, startAnchor: 'before Fajr', endAnchor: 'sunrise', check: 'done'});
     add({item: 'fridayPrep', title: 'Friday preparation', start: t.fajr, end: t.jumuah, push: t.jumuah - 2 * HOUR, pushAnchor: 'morning', startAnchor: 'morning', endAnchor: 'Jumuʿah', toJumuah: true, check: 'done'});
     const aj = Math.max(t.asr, t.jumuah + 90 * MIN);
     add({item: 'afterJumuah', title: 'Four rakʿahs after Jumuʿah', start: t.jumuah, end: aj, startAnchor: 'time', endAnchor: aj === t.asr ? 'ʿAṣr' : null, check: 'done'});
@@ -1171,7 +1174,7 @@ function nextSentence(o, now) {
 /* push estimate */
 function pushEstimate() {
   const P = id => level(id) === 'push';
-  const wk = (P('monthu') ? 2 : 0) + (P('kahf') || P('fridayPrep') ? 1 : 0) + (P('lastHour') ? 1 : 0);
+  const wk = (P('monthu') ? 2 : 0) + (P('sajdah') ? 1 : 0) + (P('kahf') || P('fridayPrep') ? 1 : 0) + (P('lastHour') ? 1 : 0);
   const mo = P('whiteDays') ? 1 : 0;
   let yr = 0; for (const id of itemsIn('yearly')) if (P(id)) yr += ITEMS[id].pushes || 1;
   const weather = ['rain', 'heavyRain', 'wind', 'eclipse'].some(P);
@@ -1181,13 +1184,14 @@ function presetOf() {
   const ids = Object.keys(ITEMS).filter(id => !ITEMS[id].hidden && ITEMS[id].group !== 'disputed');
   const allOn = GROUPS.every(g => S.groupOn[g.id]);
   const disputedDefault = itemsIn('disputed').every(id => level(id) === 'off');
-  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || ITEMS[id].tier) === ITEMS[id].tier)) return 'recommended';
-  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || ITEMS[id].tier) === (ITEMS[id].tier === 'push' ? 'inapp' : ITEMS[id].tier))) return 'inapp';
+  const usual = id => ITEMS[id].def || ITEMS[id].tier;
+  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || usual(id)) === usual(id))) return 'recommended';
+  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || usual(id)) === (usual(id) === 'push' ? 'inapp' : usual(id)))) return 'inapp';
   return 'custom';
 }
 function applyPreset(p) {
   S.choice = {}; S.groupOn = {weekly: true, monthly: true, yearly: true, weather: true};
-  if (p === 'inapp') for (const id in ITEMS) if (ITEMS[id].tier === 'push') S.choice[id] = 'inapp';
+  if (p === 'inapp') for (const id in ITEMS) if ((ITEMS[id].def || ITEMS[id].tier) === 'push') S.choice[id] = 'inapp';
 }
 function estimateText(e = pushEstimate()) {
   if (e.none) return 'No pushes. Everything still shows on Today.';
@@ -1348,7 +1352,7 @@ function upcomingRows() {
     for (const o of occsForDay(iso)) {
       if (o.end <= now) continue;
       const it = ITEMS[o.item];
-      if (o.noUpcoming || it.weather || ['sajdah', 'afterJumuah', 'ramadanDaily', 'makeup'].includes(o.item)) continue;
+      if (o.noUpcoming || it.weather || ['afterJumuah', 'ramadanDaily', 'makeup'].includes(o.item)) continue;
       if (o.kind !== 'marker' && level(o.item) === 'off') continue;
       const sk = o.series || o.key;
       (series[sk] = series[sk] || []).push(iso);
