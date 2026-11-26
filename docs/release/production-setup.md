@@ -42,7 +42,7 @@ When you've finished, each place below holds these values. The last column is th
 |---|---|---|
 | `EXPO_ACCESS_TOKEN` | The Expo push token | [3.3](#33-the-push-token) |
 | `SENTRY_DSN` | The `adwam-production` DSN | [4.5](#45-the-dsn) |
-| `ADWAM_JOB_KEY` | The key the scheduler setup creates | [9.4](#94-save-the-job-key) |
+| `ADWAM_JOB_KEY` | The key the scheduler setup creates | [9.5](#95-save-the-job-key) |
 
 **Expo, the adwam project's environment variables, Production only**
 
@@ -171,7 +171,7 @@ If you lose the password later, reset it: production project → **Project Setti
 2. Copy the **Project ID**. It's 20 lowercase letters and digits, and it also appears after `/project/` in the browser's address bar.
 3. Paste it as GitHub `production` variable `SUPABASE_PROJECT_ID` ([how](#b-github-variable)).
 
-Keep the ID handy. You'll need it again in 9.1 and 9.3. It isn't secret.
+Keep the ID handy. You'll need it again in 9.1 and 9.4. It isn't secret.
 
 ### 2.3 Create the deploy token
 
@@ -433,7 +433,7 @@ The service account doesn't need to accept the invitation, but Google can take u
 
 Paste the production project ID from 2.2 as GitHub `production-monitor` variable `SUPABASE_PROJECT_ID` ([how](#b-github-variable)).
 
-From now on, the plans run against production, the daily **Weather health** check includes production, and the admin page build includes the production page. If **Weather health** opens an issue before you finish 9.4, close it.
+From now on, the plans run against production, the daily **Weather health** check includes production, and the admin page build includes the production page. If **Weather health** opens an issue before you finish 9.5, close it.
 
 ### 9.2 Deploy the production server
 
@@ -448,7 +448,21 @@ From now on, the plans run against production, the daily **Weather health** chec
 
 If a job fails, open it and give the red error lines to an agent. The logs never show secret values.
 
-### 9.3 Run the scheduler setup
+Once the cause is fixed, you don't need a new run. On the run's page, click **Re-run jobs** → **Re-run failed jobs**, then approve **production** again. Only the failed **Production** job runs again. The plan that already passed is kept, and the job reads the secrets again, so a token you've replaced is used.
+
+### 9.3 Set the sign-in settings
+
+The app signs in to the server anonymously, and the admin page signs you in with an emailed link. The deploy in 9.2 tries to set both up, but Supabase refused the change on the first production deploy, even with Auth Config on Read-write. The **Production** job's log then ends with "The scoped token cannot update production Auth". Set them by hand. It takes a minute, and you only do it once.
+
+1. Open <https://supabase.com/dashboard/projects> and click the **production** project. Check the project name at the top, so you don't change staging by mistake.
+2. In the left menu, click **Authentication**, then **URL Configuration**.
+3. **Site URL:** `https://msalman5230.github.io/adwam/`, with the slash at the end. Click **Save changes**.
+4. Under **Redirect URLs**, click **Add URL**, enter `https://msalman5230.github.io/adwam/` and save.
+5. In the left menu, under **Authentication**, click **Sign In / Providers**. Turn on **Allow anonymous sign-ins** and click **Save changes**. Without it, the production app can't reach the server.
+
+The next production deploy then reports "The production Auth settings already match the app and admin page".
+
+### 9.4 Run the scheduler setup
 
 This starts the production server's scheduled jobs and creates their key in Supabase's Vault.
 
@@ -459,7 +473,7 @@ This starts the production server's scheduled jobs and creates their key in Supa
 5. Check that the last line says `debug_tools_enabled = false`. Debug tools stay off in production.
 6. Click **Run**. Supabase reports success with no rows returned.
 
-### 9.4 Save the job key
+### 9.5 Save the job key
 
 1. In the SQL Editor, replace everything with this line and click **Run**:
 
@@ -470,7 +484,7 @@ This starts the production server's scheduled jobs and creates their key in Supa
 2. Copy the long value in the result.
 3. Paste it as Supabase production Edge Function secret `ADWAM_JOB_KEY` ([how](#c-supabase-edge-function-secret)).
 
-### 9.5 Make yourself the admin
+### 9.6 Make yourself the admin
 
 The admin page signs in with an emailed link. Only users listed in `public.admins` can approve date corrections.
 
@@ -483,19 +497,19 @@ The admin page signs in with an emailed link. Only users listed in `public.admin
    insert into public.admins (id) values ('PASTE-THE-USER-UID-HERE');
    ```
 
-### 9.6 Publish the production admin page
+### 9.7 Publish the production admin page
 
 1. Open <https://github.com/MSalman5230/adwam/actions/workflows/admin-pages.yml>, click **Run workflow**, leave the branch on `master`, and click the green **Run workflow** button. Wait for the run to finish.
 2. Open <https://msalman5230.github.io/adwam/>. It shows the Date corrections page now, not the page saying production isn't set up.
-3. Request a sign-in link and open the email in the same browser. You're signed in.
+3. Request a sign-in link and open the email in the same browser. You're signed in. If the link opens `localhost:3000`, or brings you back to the sign-in form, check [9.3](#93-set-the-sign-in-settings) and request a new link.
 
-### 9.7 Check the weather job
+### 9.8 Check the weather job
 
 1. Wait until the next quarter-hour has passed.
 2. Open <https://github.com/MSalman5230/adwam/actions/workflows/daily-health.yml>, click **Run workflow**, leave the branch on `master`, and click the green **Run workflow** button.
 3. Both jobs, staging and `production-monitor`, finish with a green tick.
 
-### 9.8 Tell an agent
+### 9.9 Tell an agent
 
 Tell an agent that production setup is done. It checks the plans against production and records task M6.12 in the plan. When you're ready for the first Play release, follow [Android app release](app-release.md).
 
@@ -505,7 +519,8 @@ Tell an agent that production setup is done. It checks the plans against product
 |---|---|---|
 | A run stops with "Production isn't set up yet" | `production-monitor` has no `SUPABASE_PROJECT_ID` | [9.1](#91-switch-production-on) |
 | "IPv6 is not supported on your current network" while applying migrations | The deploy token lacks **Connection Pooling** on Read | Create a new deploy token ([2.3](#23-create-the-deploy-token)), replace the secret, and re-run the failed job |
-| "The scoped token cannot read production Auth" or "cannot update production Auth" | The deploy token lacks Auth Config on Read-write | Create a new deploy token ([2.3](#23-create-the-deploy-token)) and replace the secret |
+| "The scoped token cannot read production Auth" or "cannot update production Auth" | Supabase didn't let the deploy token change the sign-in settings | Set them by hand ([9.3](#93-set-the-sign-in-settings)) |
+| The admin page's email link opens `localhost:3000`, or brings you back to the sign-in form | The Site URL or redirect URL isn't set | [9.3](#93-set-the-sign-in-settings), then request a new link |
 | "EAS did not confirm the msalman5230 account" | An `EXPO_TOKEN` belongs to another account, or was pasted with a space | Create a new robot token ([3.1](#31-the-build-robot) or [3.2](#32-the-viewer-robot)) and replace the secret |
 | A production run deploys without asking you | `production` has no required reviewer | [1.1](#11-production) |
 | GitHub won't let you approve your own run | **Prevent self-review** is ticked | Untick it, as in [1.1](#11-production) |
@@ -538,7 +553,8 @@ Tell an agent that production setup is done. It checks the plans against product
 - [ ] 8.1–8.4 Play app created, service account invited, its key in Expo credentials
 - [ ] 9.1 `SUPABASE_PROJECT_ID` in `production-monitor`
 - [ ] 9.2 Production server deployed
-- [ ] 9.3–9.4 Scheduler set up, `ADWAM_JOB_KEY` in Supabase
-- [ ] 9.5–9.6 The production admin page signs you in
-- [ ] 9.7 **Weather health** is green for production
-- [ ] 9.8 An agent knows production is set up
+- [ ] 9.3 Site URL, redirect URL and anonymous sign-in set in Supabase
+- [ ] 9.4–9.5 Scheduler set up, `ADWAM_JOB_KEY` in Supabase
+- [ ] 9.6–9.7 The production admin page signs you in
+- [ ] 9.8 **Weather health** is green for production
+- [ ] 9.9 An agent knows production is set up
