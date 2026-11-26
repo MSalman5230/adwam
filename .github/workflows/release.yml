@@ -166,18 +166,25 @@ jobs:
         env:
           TAG: ${{ needs.release-please.outputs.tag_name }}
           VERSION: ${{ needs.release-please.outputs.version }}
+          RELEASE_SHA: ${{ needs.release-please.outputs.sha }}
         run: |
           bash scripts/verify-eas-account.sh
           eas env:set production --name EXPO_PUBLIC_SUPABASE_URL --value "$EXPO_PUBLIC_SUPABASE_URL" --scope project --visibility plaintext --non-interactive >/dev/null
           bash scripts/verify-eas-account.sh
           eas env:set production --name EXPO_PUBLIC_SUPABASE_KEY --value "$EXPO_PUBLIC_SUPABASE_KEY" --scope project --visibility plaintext --non-interactive >/dev/null
           result="$RUNNER_TEMP/production-build.json"
+          message="Release $TAG"
           bash scripts/verify-eas-account.sh
-          eas build --profile production --platform android --non-interactive --wait --message "Release $TAG" --json > "$result"
-          build_id=$(jq -er '.[0].id' "$result")
-          built_version=$(jq -er '.[0].appVersion' "$result")
-          version_code=$(jq -er '.[0].appBuildVersion' "$result")
-          runtime=$(jq -er '.[0].runtime.version' "$result")
+          # eas build's --json output can start with progress text, so look the build up afterwards, as the Preview build does.
+          eas build --profile production --platform android --non-interactive --wait --message "$message" --json >/dev/null
+          bash scripts/verify-eas-account.sh
+          eas build:list --build-profile production --platform android --git-commit-hash "$RELEASE_SHA" \
+            --status finished --limit 20 --json --non-interactive > "$result"
+          build=$(jq -ec --arg message "$message" 'map(select(.message == $message)) | first' "$result")
+          build_id=$(jq -er '.id' <<< "$build")
+          built_version=$(jq -er '.appVersion' <<< "$build")
+          version_code=$(jq -er '.appBuildVersion' <<< "$build")
+          runtime=$(jq -er '.runtime.version' <<< "$build")
           if [[ "$built_version" != "$VERSION" ]]; then
             echo "EAS built version $built_version, but the release is $VERSION." >&2
             exit 1
