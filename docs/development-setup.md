@@ -95,7 +95,7 @@ Use the GitHub environments in [CI and releases](release/ci-and-release.md#githu
 | Secret | Environment | Used for |
 |---|---|---|
 | `EXPO_TOKEN` | Both | Builds, updates and store uploads. Create a robot user in Expo for this. |
-| `SUPABASE_ACCESS_TOKEN` | Each its own | Deploying migrations and functions. A scoped token for that environment's project only, with Project Settings, API Keys, API Key Secrets, Migrations and Database on Read, and Edge Functions on Read-write. It expires within a year, so renew it before then. |
+| `SUPABASE_ACCESS_TOKEN` | Each its own | Deploying migrations and functions. A scoped token for that environment's project only, with Project Settings, API Keys, API Key Secrets, Migrations, Database and Connection Pooling on Read, and Edge Functions and Auth Config on Read-write. Without Connection Pooling, migrations fail on GitHub with "IPv6 is not supported", because the CLI can't find the pooler's IPv4 address. It expires within a year, so renew it before then. |
 | `SUPABASE_DB_PASSWORD` | Each its own | Running migrations when the scoped token cannot create a temporary database login |
 | `SENTRY_AUTH_TOKEN` | `staging` and `production` | Uploading the source maps of over-the-air updates. A Sentry organization token. |
 
