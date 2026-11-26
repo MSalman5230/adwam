@@ -351,7 +351,7 @@ Production has its own Firebase project, `adwam-production`. Preview keeps its o
 
 ### 7.1 Add the production app
 
-1. Open <https://console.firebase.google.com> and click `adwam-production`. If it isn't there, click **Create a project**, name it `adwam-production`, turn Google Analytics off (Adwam doesn't use it) and create it.
+1. Open <https://console.firebase.google.com> and click `adwam-production`. If it isn't there, click **Create a project**, name it `adwam-production`, turn Google Analytics off (Adwam doesn't use it) and create it. Keep it unlinked: if Firebase asks for a parent resource or organization, choose **No organization**. A project inside an organization can't create the key files in 7.2 and 8.2 without [an extra fix](google-cloud-key-policy.md).
 2. Click the gear next to **Project Overview**, then **Project settings**.
 3. On the **General** tab, scroll to **Your apps**, click **Add app**, then the Android icon.
 4. **Android package name:** `com.msalman5230.adwam`. Check it carefully, because it can't be changed later. **App nickname:** `Adwam`. Leave the SHA-1 box empty.
@@ -377,6 +377,8 @@ Expo needs Firebase's service account key here, not `google-services.json`. Fire
 
 If Expo says `"private_key": Required`, you uploaded `google-services.json`. Upload the `firebase-adminsdk` file instead.
 
+If Firebase says key creation isn't allowed, or is restricted by organization policies, follow [Google Cloud: allow service account keys](google-cloud-key-policy.md), then come back to step 2.
+
 ## Part 8. Google Play: the app and its upload permission
 
 ### 8.1 Create the app in Play Console
@@ -401,7 +403,7 @@ A service account is a login for a program. `eas submit` uses this one to upload
 6. In the list, copy the new account's email. It ends in `.iam.gserviceaccount.com`. You'll paste it in 8.3.
 7. Click that email, open the **Keys** tab, click **Add key** → **Create new key**, choose **JSON** and click **Create**. A JSON file downloads, and Google won't offer it again.
 
-If Google says an organization policy blocks key creation, stop and tell an agent.
+If Google says key creation isn't allowed, or is blocked by an organization policy, follow [Google Cloud: allow service account keys](google-cloud-key-policy.md), then come back to step 7.
 
 ### 8.3 Let the service account release to testing tracks
 
@@ -505,6 +507,7 @@ Tell an agent that production setup is done. It checks the plans against product
 | GitHub won't let you approve your own run | **Prevent self-review** is ticked | Untick it, as in [1.1](#11-production) |
 | Production crashes appear in `adwam-staging` | Expo Production or the production Supabase project has staging's DSN | Paste the `adwam-production` DSN over it ([4.5](#45-the-dsn)) |
 | Expo says `"private_key": Required` when you add the FCM key | You uploaded `google-services.json` | Upload the `firebase-adminsdk` file ([7.2](#72-the-push-key)) |
+| Firebase or Google Cloud says key creation isn't allowed by organization policies | `adwam-production` is in a Google Cloud organization that blocks service account keys | [Google Cloud: allow service account keys](google-cloud-key-policy.md) |
 | Production phones get no server pushes | The FCM key in Expo and `GOOGLE_SERVICES_JSON` come from different Firebase projects | Redo [7.2](#72-the-push-key) with a key from `adwam-production` |
 | You lost a value before pasting it everywhere | Most sites show secrets only once | Create a new one and paste it over the old value in each place |
 

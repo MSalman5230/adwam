@@ -249,4 +249,4 @@ These are the workflows today. [CI and releases](release/ci-and-release.md) desc
 | [runbooks/](runbooks/) | Staging acceptance, the phone test, performance, publishing a correction, and incidents |
 | [release/ci-and-release.md](release/ci-and-release.md) | How changes reach staging and Google Play: environments, buttons and version numbers |
 | [release/production-setup.md](release/production-setup.md) | The owner's one-time production setup, step by step, with where each value goes |
-| [release/](release/) | Release runbooks, the Google Play account advice, and the store listing review |
+| [release/](release/) | Release runbooks, the Google Play account advice, the Google Cloud key policy fix, and the store listing review |
