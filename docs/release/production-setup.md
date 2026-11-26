@@ -53,7 +53,7 @@ When you've finished, each place below holds these values. The last column is th
 | `SENTRY_PROJECT` | Plain text | `adwam-production` | [4.4](#44-the-organization-and-project-slugs) |
 | `EXPO_PUBLIC_SENTRY_DSN` | Sensitive | The `adwam-production` DSN | [4.5](#45-the-dsn) |
 | `EXPO_PUBLIC_POSTHOG_KEY` | Plain text | The PostHog project token | [5](#part-5-posthog-usage-statistics) |
-| `GOOGLE_SERVICES_JSON` | Secret, file | The production app's `google-services.json` | [6.1](#61-add-the-production-app) |
+| `GOOGLE_SERVICES_JSON` | Secret, file | The production app's `google-services.json`, from Firebase project `adwam-production` | [7.1](#71-add-the-production-app) |
 
 `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_KEY` aren't on the list, because the production workflows set them.
 
@@ -61,9 +61,9 @@ When you've finished, each place below holds these values. The last column is th
 
 | Credential | Step |
 |---|---|
-| FCM V1 service account key | [6.2](#62-the-push-key) |
-| Google service account key for Expo Submit | [7.4](#74-give-the-key-to-expo) |
-| Android upload keystore | [8](#part-8-the-upload-key) |
+| Android upload keystore | [6](#part-6-the-upload-key) |
+| FCM V1 service account key | [7.2](#72-the-push-key) |
+| Google service account key for Expo Submit | [8.4](#84-give-the-key-to-expo) |
 
 ## How to paste into each place
 
@@ -109,12 +109,12 @@ If Expo says the name already exists, the existing variable belongs to Preview:
 
 - For `SENTRY_AUTH_TOKEN` and `SENTRY_ORG`, open the existing variable, tick **Production** as well as Preview, and save without changing its value. Both work for either Sentry project.
 - For `SENTRY_PROJECT` and `EXPO_PUBLIC_SENTRY_DSN`, stop and ask an agent. Preview's values point to `adwam-staging`, so sharing them would send production's crash reports there.
-- For `GOOGLE_SERVICES_JSON`, stop and ask an agent. Preview's file doesn't include the production app.
+- For `GOOGLE_SERVICES_JSON`, stop and ask an agent. Preview's file comes from Preview's Firebase project, not `adwam-production`.
 
 ### E. Expo Android credential
 
 1. Open <https://expo.dev/accounts/msalman5230/projects/adwam/credentials>.
-2. Under **Android**, click `com.msalman5230.adwam`. If it isn't listed, click **Add application identifier**, type `com.msalman5230.adwam` and save. Don't use `com.msalman5230.adwam.preview`. That's the test app.
+2. Under **Android**, click `com.msalman5230.adwam`. If it isn't listed, do [Part 6](#part-6-the-upload-key) first, which adds it. Don't use **Add application identifier**: that form asks for a keystore that Part 6 creates. Don't use `com.msalman5230.adwam.preview`. That's the test app.
 3. Under **Service credentials**, find the section the step names and click its add button.
 4. Keep **Upload new key** selected, choose the JSON file and click **Save**.
 
@@ -250,7 +250,7 @@ Production gets its own Sentry project, `adwam-production`. Preview and the stag
 ### 4.1 Create the production project
 
 1. In Sentry, click **Projects** in the left menu, then **Create Project**.
-2. **Platform:** React Native.
+2. **Platform:** Expo. If Sentry doesn't offer Expo, choose React Native. Both use the same library.
 3. **Alert frequency:** leave the default.
 4. **Project name:** `adwam-production`. **Team:** the same team as `adwam-staging`.
 5. Click **Create Project**. Skip the setup instructions Sentry shows next. The app is already set up.
@@ -312,77 +312,11 @@ Don't copy staging's `SENTRY_PROJECT`. It's `adwam-staging`, so production's sou
 
 The key is public, because the app contains it. Nothing reaches PostHog unless a user agrees in the app.
 
-## Part 6. Firebase: push delivery for the production app
-
-Use the Firebase project that Preview already uses. Don't create a new one.
-
-### 6.1 Add the production app
-
-1. Open <https://console.firebase.google.com> and click the Adwam project.
-2. Click the gear next to **Project Overview**, then **Project settings**.
-3. On the **General** tab, scroll to **Your apps**, click **Add app**, then the Android icon.
-4. **Android package name:** `com.msalman5230.adwam`. Check it carefully, because it can't be changed later. **App nickname:** `Adwam`. Leave the SHA-1 box empty.
-5. Click **Register app**.
-6. Click **Download google-services.json**. Skip the remaining screens, which are for programmers, and go back to the console.
-7. Upload the file as Expo variable `GOOGLE_SERVICES_JSON`, as a file, with visibility **Secret** ([how](#d-expo-variable)).
-8. Delete the file from your Downloads folder.
-
-### 6.2 The push key
-
-1. In Expo, open the `com.msalman5230.adwam` credentials ([how](#e-expo-android-credential)). Under **FCM V1 service account key**, click **Add a service account key**.
-2. If Expo lets you choose the key you saved for Preview, choose it, save, and skip the rest of this step. Both apps are in the same Firebase project, so the key works for both.
-3. Otherwise, make a new key in Firebase: **Project settings** → **Service accounts** tab → **Generate new private key** → **Generate key**. A JSON file downloads.
-4. Upload that file in Expo and click **Save**.
-5. Delete the file from your Downloads folder.
-
-## Part 7. Google Play: the app and its upload permission
-
-### 7.1 Create the app in Play Console
-
-Skip this if Adwam is already in your list of apps.
-
-1. Open <https://play.google.com/console> and click **Create app**.
-2. **App name:** `Adwam`. **Default language:** English (United States). **App or game:** App. **Free or paid:** Free.
-3. Tick the declarations and click **Create app**.
-
-The store listing, Data safety and content rating come later, in task M7.1, from the [store listing review](android/store-review.html).
-
-### 7.2 Create a service account in Google Cloud
-
-A service account is a login for a program. `eas submit` uses this one to upload builds to Play's internal testing track.
-
-1. Open <https://console.cloud.google.com>. In the project picker at the top, choose the project with your Firebase project's name. Every Firebase project is also a Google Cloud project.
-2. Open <https://console.cloud.google.com/apis/library/androidpublisher.googleapis.com>, check the project name at the top, and click **Enable**. If the button says **Manage**, the API is already on.
-3. Open <https://console.cloud.google.com/iam-admin/serviceaccounts> and click **Create service account**.
-4. **Service account name:** `adwam-play-submit`. Click **Create and continue**.
-5. Skip the optional role and access screens: click **Continue**, then **Done**. The account needs no Google Cloud role, because its Play access comes from 7.3.
-6. In the list, copy the new account's email. It ends in `.iam.gserviceaccount.com`. You'll paste it in 7.3.
-7. Click that email, open the **Keys** tab, click **Add key** → **Create new key**, choose **JSON** and click **Create**. A JSON file downloads, and Google won't offer it again.
-
-If Google says an organization policy blocks key creation, stop and tell an agent.
-
-### 7.3 Let the service account release to testing tracks
-
-1. In Play Console's left menu, click **Users and permissions**, then **Invite new users**.
-2. **Email address:** paste the service account's email from 7.2.
-3. Open the **App permissions** tab, click **Add app**, tick **Adwam** and click **Apply**.
-4. Tick only these two permissions, then click **Apply**:
-   - **Release apps to testing tracks**
-   - **View app information (read-only)**
-5. Leave everything on the **Account permissions** tab unticked, and don't make it an account admin.
-6. Click **Invite user** and confirm.
-
-The service account doesn't need to accept the invitation, but Google can take up to a day to activate it. This permission can't release to the public. Only you can, by promoting a build in Play Console.
-
-### 7.4 Give the key to Expo
-
-1. In Expo, open the `com.msalman5230.adwam` credentials ([how](#e-expo-android-credential)). Under **Google service account key for Expo Submit**, click **Add a Google service account key**.
-2. Upload the JSON file from 7.2 and click **Save**.
-3. Delete the file from your Downloads folder.
-
-## Part 8. The upload key
+## Part 6. The upload key
 
 Google Play only accepts builds signed with Adwam's upload key. EAS creates and stores it, but the first time it has to ask a person, so GitHub can't do it. You do this once, on this PC.
+
+This step also adds `com.msalman5230.adwam` to Expo's credentials page. Parts 7 and 8 add keys there, so do this first.
 
 1. Open PowerShell in the repository folder and run:
 
@@ -399,12 +333,96 @@ Google Play only accepts builds signed with Adwam's upload key. EAS creates and 
    ```
 
 3. Answer the questions with the arrow keys and Enter:
-   - For the build profile, choose **production**.
-   - Choose the keystore option, then set up a new keystore and let EAS generate it.
-4. Back it up. Run `eas credentials --platform android` again and choose **production**. Then choose **credentials.json: Upload/Download credentials between EAS servers and your local json**, and **Download credentials from EAS to credentials.json**.
-5. That writes `credentials.json` and a `.jks` keystore file inside `apps/mobile`. Move both out of the repository folder to a safe place you control, such as a password manager or an encrypted USB drive. Git ignores them, but this folder syncs to MegaSync and agents work in it.
+   1. For the build profile, choose **production**. EAS then prints the application identifier. It must be `com.msalman5230.adwam`, not `com.msalman5230.adwam.preview`.
+   2. Choose **Keystore: Manage everything needed to build your project**.
+   3. Choose **Set up a new keystore**.
+   4. When EAS asks **Generate a new Android Keystore?**, answer yes. EAS prints the new keystore's details.
+4. Open <https://expo.dev/accounts/msalman5230/projects/adwam/credentials/android/com.msalman5230.adwam>. The page shows the upload keystore EAS just made. Don't upload anything here. EAS already has the key, and production builds use it from there.
 
-Play App Signing holds the separate key that signs what users install. If the upload key is ever lost, Google can reset it, and the backup saves you that wait.
+**A backup is optional.** You can download the key again whenever you're signed in to Expo. Play App Signing holds the separate key that signs what users install, so if the upload key is ever lost, Google can reset it. A backup only saves you that wait. To keep one:
+
+1. Run `eas credentials --platform android` again and choose **production**. Then choose **credentials.json: Upload/Download credentials between EAS servers and your local json**, and **Download credentials from EAS to credentials.json**. If EAS says you don't have any Android build credentials, step 3 above didn't finish. Do it again.
+2. That writes two things inside `apps/mobile`: `credentials.json`, which holds the keystore's passwords, and `credentials/android/keystore.jks`, the key itself. Move `credentials.json` and the whole `credentials` folder together to a safe place you control, such as a password manager or an encrypted USB drive. Git ignores them, but this folder syncs to MegaSync and agents work in it.
+3. Empty MEGA's Rubbish Bin, including its **SyncDebris** folder. MEGA keeps copies there of files that leave a synced folder.
+
+## Part 7. Firebase: push delivery for the production app
+
+Production has its own Firebase project, `adwam-production`. Preview keeps its own. Both steps below use `adwam-production`: the push key must come from the same Firebase project as `google-services.json`, or pushes won't arrive.
+
+### 7.1 Add the production app
+
+1. Open <https://console.firebase.google.com> and click `adwam-production`. If it isn't there, click **Create a project**, name it `adwam-production`, turn Google Analytics off (Adwam doesn't use it) and create it. Keep it unlinked: if Firebase asks for a parent resource or organization, choose **No organization**. A project inside an organization can't create the key files in 7.2 and 8.2 without [an extra fix](google-cloud-key-policy.md).
+2. Click the gear next to **Project Overview**, then **Project settings**.
+3. On the **General** tab, scroll to **Your apps**, click **Add app**, then the Android icon.
+4. **Android package name:** `com.msalman5230.adwam`. Check it carefully, because it can't be changed later. **App nickname:** `Adwam`. Leave the SHA-1 box empty.
+5. Click **Register app**.
+6. Click **Download google-services.json**. Skip the remaining screens, which are for programmers, and go back to the console.
+7. Upload the file as Expo variable `GOOGLE_SERVICES_JSON`, as a file, with visibility **Secret** ([how](#d-expo-variable)).
+8. Delete the file from your Downloads folder.
+
+### 7.2 The push key
+
+Expo needs Firebase's service account key here, not `google-services.json`. Firebase gives you two different JSON files:
+
+| File | Where Firebase gives it | Where it goes |
+|---|---|---|
+| `google-services.json` | **Project settings** → **General** → **Your apps** | Expo variable `GOOGLE_SERVICES_JSON`, in 7.1 |
+| The service account key, named like `adwam-production-firebase-adminsdk-….json` | **Project settings** → **Service accounts** | Expo's **FCM V1 service account key**, in this step |
+
+1. Open <https://console.firebase.google.com> and click `adwam-production`. Check the name at the top, so you don't use Preview's project.
+2. Click the gear next to **Project Overview**, then **Project settings**. Open the **Service accounts** tab, click **Generate new private key**, then **Generate key**. A file with `firebase-adminsdk` in its name downloads.
+3. In Expo, open the `com.msalman5230.adwam` credentials ([how](#e-expo-android-credential)). Under **FCM V1 service account key**, click **Add a service account key**.
+4. Upload the `firebase-adminsdk` file and click **Save**. If Expo offers the key you saved for Preview, don't choose it. It belongs to Preview's Firebase project.
+5. Delete the file from your Downloads folder. It lets anyone send pushes as Adwam.
+
+If Expo says `"private_key": Required`, you uploaded `google-services.json`. Upload the `firebase-adminsdk` file instead.
+
+If Firebase says key creation isn't allowed, or is restricted by organization policies, follow [Google Cloud: allow service account keys](google-cloud-key-policy.md), then come back to step 2.
+
+## Part 8. Google Play: the app and its upload permission
+
+### 8.1 Create the app in Play Console
+
+Skip this if Adwam is already in your list of apps.
+
+1. Open <https://play.google.com/console> and click **Create app**.
+2. **App name:** `Adwam`. **Default language:** English (United States). **App or game:** App. **Free or paid:** Free.
+3. Tick the declarations and click **Create app**.
+
+The store listing, Data safety and content rating come later, in task M7.1, from the [store listing review](android/store-review.html).
+
+### 8.2 Create a service account in Google Cloud
+
+A service account is a login for a program. `eas submit` uses this one to upload builds to Play's internal testing track.
+
+1. Open <https://console.cloud.google.com>. In the project picker at the top, choose `adwam-production`. Every Firebase project is also a Google Cloud project.
+2. Open <https://console.cloud.google.com/apis/library/androidpublisher.googleapis.com>, check the project name at the top, and click **Enable**. If the button says **Manage**, the API is already on.
+3. Open <https://console.cloud.google.com/iam-admin/serviceaccounts> and click **Create service account**.
+4. **Service account name:** `adwam-play-submit`. Click **Create and continue**.
+5. Skip the optional role and access screens: click **Continue**, then **Done**. The account needs no Google Cloud role, because its Play access comes from 8.3.
+6. In the list, copy the new account's email. It ends in `.iam.gserviceaccount.com`. You'll paste it in 8.3.
+7. Click that email, open the **Keys** tab, click **Add key** → **Create new key**, choose **JSON** and click **Create**. A JSON file downloads, and Google won't offer it again.
+
+If Google says key creation isn't allowed, or is blocked by an organization policy, follow [Google Cloud: allow service account keys](google-cloud-key-policy.md), then come back to step 7.
+
+### 8.3 Let the service account release to testing tracks
+
+1. In Play Console's left menu, click **Users and permissions**, then **Invite new users**.
+2. **Email address:** paste the service account's email from 8.2.
+3. Open the **App permissions** tab, click **Add app**, tick **Adwam** and click **Apply**.
+4. Tick only these two permissions, then click **Apply**:
+   - **Release apps to testing tracks**
+   - **View app information (read-only)**
+5. Leave everything on the **Account permissions** tab unticked, and don't make it an account admin.
+6. Click **Invite user** and confirm.
+
+The service account doesn't need to accept the invitation, but Google can take up to a day to activate it. This permission can't release to the public. Only you can, by promoting a build in Play Console.
+
+### 8.4 Give the key to Expo
+
+1. In Expo, open the `com.msalman5230.adwam` credentials ([how](#e-expo-android-credential)). Under **Google service account key for Expo Submit**, click **Add a Google service account key**.
+2. Upload the JSON file from 8.2 and click **Save**.
+3. Delete the file from your Downloads folder.
 
 ## Part 9. Switch production on and deploy the server
 
@@ -488,6 +506,9 @@ Tell an agent that production setup is done. It checks the plans against product
 | A production run deploys without asking you | `production` has no required reviewer | [1.1](#11-production) |
 | GitHub won't let you approve your own run | **Prevent self-review** is ticked | Untick it, as in [1.1](#11-production) |
 | Production crashes appear in `adwam-staging` | Expo Production or the production Supabase project has staging's DSN | Paste the `adwam-production` DSN over it ([4.5](#45-the-dsn)) |
+| Expo says `"private_key": Required` when you add the FCM key | You uploaded `google-services.json` | Upload the `firebase-adminsdk` file ([7.2](#72-the-push-key)) |
+| Firebase or Google Cloud says key creation isn't allowed by organization policies | `adwam-production` is in a Google Cloud organization that blocks service account keys | [Google Cloud: allow service account keys](google-cloud-key-policy.md) |
+| Production phones get no server pushes | The FCM key in Expo and `GOOGLE_SERVICES_JSON` come from different Firebase projects | Redo [7.2](#72-the-push-key) with a key from `adwam-production` |
 | You lost a value before pasting it everywhere | Most sites show secrets only once | Create a new one and paste it over the old value in each place |
 
 ## Checklist
@@ -507,10 +528,10 @@ Tell an agent that production setup is done. It checks the plans against product
 - [ ] 4.4 `SENTRY_ORG`, and `SENTRY_PROJECT` set to `adwam-production`, in GitHub `production` and in Expo
 - [ ] 4.5 The `adwam-production` DSN as `EXPO_PUBLIC_SENTRY_DSN` in Expo and `SENTRY_DSN` in Supabase
 - [ ] 5 PostHog privacy options set, `EXPO_PUBLIC_POSTHOG_KEY` in Expo
-- [ ] 6.1 `GOOGLE_SERVICES_JSON` in Expo
-- [ ] 6.2 FCM V1 key in Expo credentials
-- [ ] 7.1–7.4 Play app created, service account invited, its key in Expo credentials
-- [ ] 8 Upload key created and backed up outside the repository
+- [ ] 6 Upload key created, `com.msalman5230.adwam` listed in Expo credentials, and any backup kept outside the repository
+- [ ] 7.1 Production app added to Firebase project `adwam-production`, `GOOGLE_SERVICES_JSON` in Expo
+- [ ] 7.2 The `firebase-adminsdk` key from `adwam-production` as the FCM V1 key in Expo credentials
+- [ ] 8.1–8.4 Play app created, service account invited, its key in Expo credentials
 - [ ] 9.1 `SUPABASE_PROJECT_ID` in `production-monitor`
 - [ ] 9.2 Production server deployed
 - [ ] 9.3–9.4 Scheduler set up, `ADWAM_JOB_KEY` in Supabase

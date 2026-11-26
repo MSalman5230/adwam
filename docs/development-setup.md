@@ -51,7 +51,7 @@ The Expo project ID also goes into the app config. `eas init` writes it, and it 
 | Variable | Used for | Where to get it |
 |---|---|---|
 | `SENTRY_AUTH_TOKEN` | Uploading source maps so crash reports point to the right code | Sentry, organization auth tokens |
-| `GOOGLE_SERVICES_JSON` | Firebase settings for the Android app. Stored as an EAS file variable, because the repository is public. | Firebase console, project settings, the Android app's `google-services.json` |
+| `GOOGLE_SERVICES_JSON` | Firebase settings for the Android app. Stored as an EAS file variable, because the repository is public. | Firebase console, project settings, the Android app's `google-services.json`. Preview and Production have separate Firebase projects. Production's is `adwam-production`. |
 
 `SENTRY_ORG` and `SENTRY_PROJECT` sit next to them as plain variables. `SENTRY_PROJECT` is `adwam-staging` for Preview and `adwam-production` for Production.
 
@@ -65,8 +65,8 @@ These are uploaded once in expo.dev. They aren't environment variables.
 
 | Credential | Used for | How |
 |---|---|---|
-| Android upload key | Signing builds for Google Play | EAS creates it at the first build. Download a backup and keep it somewhere safe. |
-| Firebase service account key | Lets Expo's push service deliver to Android phones | Firebase, project settings, service accounts. Generate a key and upload it under the project's credentials. |
+| Android upload key | Signing builds for Google Play | The owner creates it once with `eas credentials`, and EAS stores it. A downloaded backup is optional. See [Production setup, Part 6](release/production-setup.md#part-6-the-upload-key). |
+| Firebase service account key | Lets Expo's push service deliver to Android phones | Firebase, project settings, **Service accounts**. Generate a private key, a `firebase-adminsdk` file, not `google-services.json`, and upload it under the app's credentials. Each app's key comes from its own Firebase project. |
 | Google Play service account key | Lets `eas submit` upload builds | Play Console and Google Cloud. The first upload to Google Play has to be done by hand. |
 | APNs key and App Store Connect key | iOS, later | — |
 

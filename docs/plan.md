@@ -208,6 +208,7 @@ The prototype is the design reference, but the app keeps these settled choices w
 | Licence | Noncommercial use with credit to MSalman5230 for Adwam's own app, code, text and artwork. Third-party material keeps its own terms. [Adwam Noncommercial Licence](../LICENSE) |
 | Analytics | Off until the user agrees. The question is a one-time notice on Today after setup, "Share anonymous usage statistics?", with neither answer preselected. |
 | Crash reports | Two Sentry projects: `adwam-staging` for Preview and the staging server, `adwam-production` for Production and the production server. |
+| Push delivery | Separate Firebase projects: Preview keeps its own, Production uses `adwam-production`. |
 | Content review | The owner reviews content before it is marked `published`. |
 | Prayer methods | The prototype's five, plus adhan-js's Turkey (Diyanet), Singapore (also suggested for Malaysia and Indonesia), Dubai, Kuwait, Qatar and Moonsighting Committee. Angle-based rule for high latitudes. |
 | Eclipses | Partial and total lunar eclipses and local solar eclipses, computed on the phone. No penumbral eclipses and no cloud-cover flag. |
@@ -248,4 +249,4 @@ These are the workflows today. [CI and releases](release/ci-and-release.md) desc
 | [runbooks/](runbooks/) | Staging acceptance, the phone test, performance, publishing a correction, and incidents |
 | [release/ci-and-release.md](release/ci-and-release.md) | How changes reach staging and Google Play: environments, buttons and version numbers |
 | [release/production-setup.md](release/production-setup.md) | The owner's one-time production setup, step by step, with where each value goes |
-| [release/](release/) | Release runbooks, the Google Play account advice, and the store listing review |
+| [release/](release/) | Release runbooks, the Google Play account advice, the Google Cloud key policy fix, and the store listing review |

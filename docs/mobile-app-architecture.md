@@ -325,7 +325,7 @@ Before launch, check this approach with someone who knows data-protection law.
 | Over-the-air update channel | None | `preview` | `production` |
 
 - **Over-the-air updates.** Each build's runtime version comes from a fingerprint of its native code, so an update only reaches builds it is compatible with. Content and JavaScript fixes ship as updates to 10% of users, then 100%. Native changes need a new store build.
-- **Push credentials.** Firebase Cloud Messaging credentials go into EAS for Android, and an APNs key follows in the iOS phase. Expo's push access token is turned on, so only Adwam's server can send to Adwam's push tokens.
+- **Push credentials.** Firebase Cloud Messaging credentials go into EAS for Android, each from its app's own Firebase project: Preview's, and `adwam-production` for Production. An APNs key follows in the iOS phase. Expo's push access token is turned on, so only Adwam's server can send to Adwam's push tokens.
 - **Secrets.** Each build profile's public Supabase URL and key, PostHog key and Sentry address live in EAS environment variables, along with the Sentry token for uploading source maps. The Expo access token, the server keys and the server's Sentry address live in Supabase's secrets.
 
 GitHub Actions, as [CI and releases](release/ci-and-release.md) describes:
