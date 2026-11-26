@@ -6,7 +6,7 @@ Read [mobile-app-architecture.md](mobile-app-architecture.md) for how the system
 
 ## Where things stand
 
-Checked on 26 November 2026. Every version 1 feature is built and merged. The owner finished the checks that needed real phones and an inbox, and accepted startup speed. The privacy notice is live. The agent checks are recorded, and the owner approved the results. **Version 1 is complete on staging.**
+Checked on 26 November 2026. Every version 1 feature is built and merged. The owner finished the checks that needed real phones and an inbox, and accepted startup speed. The privacy notice is live. The agent checks are recorded, and the owner approved the results. **Version 1 is complete on staging.** The owner set up production the same day (M6.12), so the first Play release is next.
 
 | Milestone | Built | Still open |
 |---|---|---|
@@ -62,7 +62,7 @@ The owner approved the CI and release design on 26 November 2026. It's described
 
 - **Agents** build the workflows.
 - **The owner** creates the production accounts and secrets.
-- **Production jobs stop at their plan step** until those secrets exist. Nothing reaches production without the owner's approval in GitHub.
+- **Production is set up** (M6.12). Every production job still waits for the owner's approval in GitHub.
 
 Do the tasks in this order.
 
@@ -110,7 +110,14 @@ Do the tasks in this order.
 
 ### M6.12 Production setup
 
-[#193](https://github.com/MSalman5230/adwam/issues/193)
+[#193](https://github.com/MSalman5230/adwam/issues/193). **Done on 26 November 2026.** The owner finished [Production setup](release/production-setup.md):
+
+- **Plan:** the server-only [Ship update run](https://github.com/MSalman5230/adwam/actions/runs/45867325378) passed its plan against production. Its Production job then applied the migrations and deployed the Edge Functions.
+- **Weather:** [Weather health](https://github.com/MSalman5230/adwam/actions/runs/45873036103) reports production weather current and within budget.
+- **Admin page:** the [Admin Pages run](https://github.com/MSalman5230/adwam/actions/runs/45871770031) built the production page, and the owner signed in to it.
+- **Upload key:** made with `eas credentials`, not by a build.
+- **Not yet run against production:** Release's plan runs with the first Play release, and Production rollout's plan with the first production update.
+- **Guide fixes:** the owner's run-through corrected the guide in PRs #215–#220. The fixes cover the step order, the separate Sentry and Firebase projects, the Google Cloud key policy, the deploy token's Connection Pooling permission and the sign-in settings.
 
 - **Owner:** everything in [Production setup](release/production-setup.md), including the rules for the `production` and `production-monitor` environments.
 - **Owner and agent:**
