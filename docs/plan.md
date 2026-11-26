@@ -208,6 +208,7 @@ The prototype is the design reference, but the app keeps these settled choices w
 | Licence | Noncommercial use with credit to MSalman5230 for Adwam's own app, code, text and artwork. Third-party material keeps its own terms. [Adwam Noncommercial Licence](../LICENSE) |
 | Analytics | Off until the user agrees. The question is a one-time notice on Today after setup, "Share anonymous usage statistics?", with neither answer preselected. |
 | Crash reports | Two Sentry projects: `adwam-staging` for Preview and the staging server, `adwam-production` for Production and the production server. |
+| Push delivery | Separate Firebase projects: Preview keeps its own, Production uses `adwam-production`. |
 | Content review | The owner reviews content before it is marked `published`. |
 | Prayer methods | The prototype's five, plus adhan-js's Turkey (Diyanet), Singapore (also suggested for Malaysia and Indonesia), Dubai, Kuwait, Qatar and Moonsighting Committee. Angle-based rule for high latitudes. |
 | Eclipses | Partial and total lunar eclipses and local solar eclipses, computed on the phone. No penumbral eclipses and no cloud-cover flag. |
