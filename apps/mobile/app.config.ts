@@ -24,7 +24,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     name,
     slug: 'adwam',
     owner: 'msalman5230',
-    version: '0.1.0', // x-release-please-version
+    version: '1.0.0', // x-release-please-version
     scheme: 'adwam',
     icon: './assets/icon.png',
     platforms: ['android'],
