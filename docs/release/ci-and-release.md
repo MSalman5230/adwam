@@ -38,7 +38,7 @@ feature PRs ──merge──▶ master ──automatic──▶ STAGING: stagin
 | Over-the-air update | Can press **Ship update** or **Production rollout** when asked | Approves every production run |
 | Rollback | Prepare the fix or revert PR | Approves it, or halts the rollout in Play Console |
 
-An agent can press a button but can't approve a production run. That holds once agents use their own GitHub account. Until then the AGENTS.md rule forbids it.
+An agent can press a button but never approves a production run. Agents use the owner's GitHub login, so the AGENTS.md rule is what forbids it.
 
 ## GitHub environments
 
@@ -183,7 +183,6 @@ The owner creates these. Values go only into each service's own secret store, ne
 | Google Play | The app in Play Console. A Google Cloud service account with a JSON key, invited with only "Release apps to testing tracks" and "View app information". | EAS credentials, submissions key for `com.msalman5230.adwam` |
 | PostHog | A project on the EU host, set up as [development-setup.md](../development-setup.md#optional-usage-statistics) describes | `EXPO_PUBLIC_POSTHOG_KEY` above |
 | Sentry | An organization token for source maps, plus the org and project slugs | `staging` and `production` secret `SENTRY_AUTH_TOKEN`; variables `SENTRY_ORG` and `SENTRY_PROJECT` |
-| GitHub | A machine account for agents, with the Write role and no reviewer rights | Its own `gh` login on the agents' PC |
 
 After the first production deploy, run the production scheduler SQL in the production SQL Editor. Copy `adwam_job_key` from Vault into the `ADWAM_JOB_KEY` secret. Add the admin's confirmed email user to `public.admins`. Debug tools stay off in production.
 

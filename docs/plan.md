@@ -122,14 +122,6 @@ Do the tasks in this order.
   - The weather job runs on production.
   - The production admin page signs in.
 
-### M6.13 Agent account
-
-[#194](https://github.com/MSalman5230/adwam/issues/194)
-
-- **Owner:** create a GitHub machine account for agents with the Write role, and an Expo token with the Viewer role for the agents' PC.
-- **Agent:** change AGENTS.md's account rule to name the machine account.
-- **Done when:** the agents' `gh` login can't approve a `production` run.
-
 ### M7 Google Play
 
 - **M7.1 First upload** ([#82](https://github.com/MSalman5230/adwam/issues/82)):
