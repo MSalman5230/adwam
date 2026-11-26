@@ -67,7 +67,7 @@ These are uploaded once in expo.dev. They aren't environment variables.
 |---|---|---|
 | Android upload key | Signing builds for Google Play | The owner creates it once with `eas credentials`, and EAS stores it. A downloaded backup is optional. See [Production setup, Part 6](release/production-setup.md#part-6-the-upload-key). |
 | Firebase service account key | Lets Expo's push service deliver to Android phones | Firebase, project settings, **Service accounts**. Generate a private key, a `firebase-adminsdk` file, not `google-services.json`, and upload it under the app's credentials. Each app's key comes from its own Firebase project. |
-| Google Play service account key | Lets `eas submit` upload builds | Play Console and Google Cloud. The first upload to Google Play has to be done by hand. |
+| Google Play service account key | Lets `eas submit` upload builds | Play Console and Google Cloud. `eas submit` can make the app's first upload too, as a draft on the internal testing track. |
 | APNs key and App Store Connect key | iOS, later | — |
 
 ### Server secrets (Supabase, Edge Function secrets, per project)

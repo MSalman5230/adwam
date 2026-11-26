@@ -41,5 +41,5 @@ Record in the GitHub Release: the build ID, version code, runtime, Play track an
 - **Play Console.** The app, store listing, Data safety answers and content rating are complete. [Store listing review](android/store-review.html)
 - **The upload key.** The first production build can't create it unattended, so the owner creates it with `eas credentials` during [production setup](production-setup.md#part-6-the-upload-key). EAS stores it, and a downloaded backup is optional. Play App Signing keeps the key that signs what users install.
 - **Draft releases.** The submit profile in `apps/mobile/eas.json` uploads drafts, because Play accepts only drafts until the app's first release.
-- **Remove `release-as` after 1.0.0.** Once `v1.0.0` exists, remove `"release-as": "1.0.0"` from `release-please-config.json`. The Release workflow fails until it's gone.
+- **`release-as` is gone.** It pinned the first release to 1.0.0 and was removed once `v1.0.0` existed. If it's ever added again for a one-off version, remove it as soon as that tag exists, because the Release workflow fails until it's gone.
 - **The closed test.** A personal account needs at least 12 testers opted in for 14 days in a row, then an application for production access. [Account advice](google-play-account.md)

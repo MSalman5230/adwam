@@ -59,7 +59,6 @@
     ".": {
       "release-type": "node",
       "package-name": "adwam",
-      "release-as": "1.0.0",
       "changelog-path": "CHANGELOG.md",
       "exclude-paths": [
         ".github",
