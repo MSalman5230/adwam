@@ -337,12 +337,13 @@ This step also adds `com.msalman5230.adwam` to Expo's credentials page. Parts 7 
    2. Choose **Keystore: Manage everything needed to build your project**.
    3. Choose **Set up a new keystore**.
    4. When EAS asks **Generate a new Android Keystore?**, answer yes. EAS prints the new keystore's details.
-4. Back it up. Run `eas credentials --platform android` again and choose **production**. Then choose **credentials.json: Upload/Download credentials between EAS servers and your local json**, and **Download credentials from EAS to credentials.json**. If EAS says you don't have any Android build credentials, step 3 didn't finish. Do it again.
-5. That writes two things inside `apps/mobile`: `credentials.json`, which holds the keystore's passwords, and `credentials/android/keystore.jks`, the key itself. Move `credentials.json` and the whole `credentials` folder together to a safe place you control, such as a password manager or an encrypted USB drive. Git ignores them, but this folder syncs to MegaSync and agents work in it.
-6. Empty MEGA's Rubbish Bin, including its **SyncDebris** folder. MEGA keeps copies there of files that leave a synced folder.
-7. Reload <https://expo.dev/accounts/msalman5230/projects/adwam/credentials>. `com.msalman5230.adwam` is now listed under **Android**.
+4. Open <https://expo.dev/accounts/msalman5230/projects/adwam/credentials/android/com.msalman5230.adwam>. The page shows the upload keystore EAS just made. Don't upload anything here. EAS already has the key, and production builds use it from there.
 
-The backup is insurance. EAS keeps the key, so you can download it again whenever you're signed in to Expo. Play App Signing holds the separate key that signs what users install. If the upload key is ever lost, Google can reset it, and the backup saves you that wait.
+**A backup is optional.** You can download the key again whenever you're signed in to Expo. Play App Signing holds the separate key that signs what users install, so if the upload key is ever lost, Google can reset it. A backup only saves you that wait. To keep one:
+
+1. Run `eas credentials --platform android` again and choose **production**. Then choose **credentials.json: Upload/Download credentials between EAS servers and your local json**, and **Download credentials from EAS to credentials.json**. If EAS says you don't have any Android build credentials, step 3 above didn't finish. Do it again.
+2. That writes two things inside `apps/mobile`: `credentials.json`, which holds the keystore's passwords, and `credentials/android/keystore.jks`, the key itself. Move `credentials.json` and the whole `credentials` folder together to a safe place you control, such as a password manager or an encrypted USB drive. Git ignores them, but this folder syncs to MegaSync and agents work in it.
+3. Empty MEGA's Rubbish Bin, including its **SyncDebris** folder. MEGA keeps copies there of files that leave a synced folder.
 
 ## Part 7. Firebase: push delivery for the production app
 
@@ -361,10 +362,20 @@ Production has its own Firebase project, `adwam-production`. Preview keeps its o
 
 ### 7.2 The push key
 
-1. In Firebase, in `adwam-production`, open **Project settings** → **Service accounts** tab → **Generate new private key** → **Generate key**. A JSON file downloads.
-2. In Expo, open the `com.msalman5230.adwam` credentials ([how](#e-expo-android-credential)). Under **FCM V1 service account key**, click **Add a service account key**.
-3. If Expo offers the key you saved for Preview, don't choose it. It belongs to Preview's Firebase project. Upload the new file instead and click **Save**.
-4. Delete the file from your Downloads folder.
+Expo needs Firebase's service account key here, not `google-services.json`. Firebase gives you two different JSON files:
+
+| File | Where Firebase gives it | Where it goes |
+|---|---|---|
+| `google-services.json` | **Project settings** → **General** → **Your apps** | Expo variable `GOOGLE_SERVICES_JSON`, in 7.1 |
+| The service account key, named like `adwam-production-firebase-adminsdk-….json` | **Project settings** → **Service accounts** | Expo's **FCM V1 service account key**, in this step |
+
+1. Open <https://console.firebase.google.com> and click `adwam-production`. Check the name at the top, so you don't use Preview's project.
+2. Click the gear next to **Project Overview**, then **Project settings**. Open the **Service accounts** tab, click **Generate new private key**, then **Generate key**. A file with `firebase-adminsdk` in its name downloads.
+3. In Expo, open the `com.msalman5230.adwam` credentials ([how](#e-expo-android-credential)). Under **FCM V1 service account key**, click **Add a service account key**.
+4. Upload the `firebase-adminsdk` file and click **Save**. If Expo offers the key you saved for Preview, don't choose it. It belongs to Preview's Firebase project.
+5. Delete the file from your Downloads folder. It lets anyone send pushes as Adwam.
+
+If Expo says `"private_key": Required`, you uploaded `google-services.json`. Upload the `firebase-adminsdk` file instead.
 
 ## Part 8. Google Play: the app and its upload permission
 
@@ -493,6 +504,7 @@ Tell an agent that production setup is done. It checks the plans against product
 | A production run deploys without asking you | `production` has no required reviewer | [1.1](#11-production) |
 | GitHub won't let you approve your own run | **Prevent self-review** is ticked | Untick it, as in [1.1](#11-production) |
 | Production crashes appear in `adwam-staging` | Expo Production or the production Supabase project has staging's DSN | Paste the `adwam-production` DSN over it ([4.5](#45-the-dsn)) |
+| Expo says `"private_key": Required` when you add the FCM key | You uploaded `google-services.json` | Upload the `firebase-adminsdk` file ([7.2](#72-the-push-key)) |
 | Production phones get no server pushes | The FCM key in Expo and `GOOGLE_SERVICES_JSON` come from different Firebase projects | Redo [7.2](#72-the-push-key) with a key from `adwam-production` |
 | You lost a value before pasting it everywhere | Most sites show secrets only once | Create a new one and paste it over the old value in each place |
 
@@ -513,9 +525,9 @@ Tell an agent that production setup is done. It checks the plans against product
 - [ ] 4.4 `SENTRY_ORG`, and `SENTRY_PROJECT` set to `adwam-production`, in GitHub `production` and in Expo
 - [ ] 4.5 The `adwam-production` DSN as `EXPO_PUBLIC_SENTRY_DSN` in Expo and `SENTRY_DSN` in Supabase
 - [ ] 5 PostHog privacy options set, `EXPO_PUBLIC_POSTHOG_KEY` in Expo
-- [ ] 6 Upload key created and backed up outside the repository, `com.msalman5230.adwam` listed in Expo credentials
+- [ ] 6 Upload key created, `com.msalman5230.adwam` listed in Expo credentials, and any backup kept outside the repository
 - [ ] 7.1 Production app added to Firebase project `adwam-production`, `GOOGLE_SERVICES_JSON` in Expo
-- [ ] 7.2 FCM V1 key from `adwam-production` in Expo credentials
+- [ ] 7.2 The `firebase-adminsdk` key from `adwam-production` as the FCM V1 key in Expo credentials
 - [ ] 8.1–8.4 Play app created, service account invited, its key in Expo credentials
 - [ ] 9.1 `SUPABASE_PROJECT_ID` in `production-monitor`
 - [ ] 9.2 Production server deployed
