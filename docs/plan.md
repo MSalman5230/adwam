@@ -6,7 +6,7 @@ Read [mobile-app-architecture.md](mobile-app-architecture.md) for how the system
 
 ## Where things stand
 
-Checked on 26 November 2026. Every version 1 feature is built and merged. The owner finished the checks that needed real phones and an inbox, and accepted startup speed. The privacy notice is live. The agent checks are recorded. The owner's final approval is still open.
+Checked on 26 November 2026. Every version 1 feature is built and merged. The owner finished the checks that needed real phones and an inbox, and accepted startup speed. The privacy notice is live. The agent checks are recorded, and the owner approved the results. **Version 1 is complete on staging.**
 
 | Milestone | Built | Still open |
 |---|---|---|
@@ -51,10 +51,10 @@ Done by the owner on 26 November 2026:
 
 - **Recorded:** on signed Preview, checked light and dark screens against the prototype, TalkBack and 200% text, and the offline paths. A Sentry test crash showed a readable stack.
 - **Recorded:** the checkbox contrast and Reminders title passed the signed Preview recheck. **Android end-to-end tests** passed with the reminder switch selector fix.
-- **Owner:** approve the results, including the suggested prayer method for each country (D7) and the eclipse note (D9).
+- **Approved by the owner on 26 November 2026:** the results, the suggested prayer method for each country (D7) and the eclipse note (D9).
 - **Done when:** the build ID, Android version code, native fingerprint, content version and update ID are recorded in the staging acceptance runbook.
 
-**Version 1 is complete on staging** when both are recorded for one signed Preview build and no staging or app issue is open. No production or store work is needed.
+**Version 1 is complete on staging** as of 26 November 2026. Both items are recorded for signed Preview build 16, and no staging or app issue is open. No production or store work was needed.
 
 ## Production CI and Google Play
 
