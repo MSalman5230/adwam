@@ -112,7 +112,7 @@ Do the tasks in this order.
 
 [#193](https://github.com/MSalman5230/adwam/issues/193)
 
-- **Owner:** everything in [One-time production setup](release/ci-and-release.md#one-time-production-setup), and the rules for the `production` and `production-monitor` environments.
+- **Owner:** everything in [Production setup](release/production-setup.md), including the rules for the `production` and `production-monitor` environments.
 - **Owner and agent:**
   - The first production build, which creates the upload key.
   - The production scheduler SQL.
@@ -245,5 +245,6 @@ These are the workflows today. [CI and releases](release/ci-and-release.md) desc
 | [sunnah-reminder-calendar.md](sunnah-reminder-calendar.md) | The Sunnahs, with tables generated from the content files |
 | [development-setup.md](development-setup.md) | Accounts, secrets and local setup |
 | [runbooks/](runbooks/) | Staging acceptance, the phone test, performance, publishing a correction, and incidents |
-| [release/ci-and-release.md](release/ci-and-release.md) | How changes reach staging and Google Play: environments, buttons, version numbers and production setup |
+| [release/ci-and-release.md](release/ci-and-release.md) | How changes reach staging and Google Play: environments, buttons and version numbers |
+| [release/production-setup.md](release/production-setup.md) | The owner's one-time production setup, step by step, with where each value goes |
 | [release/](release/) | Release runbooks, the Google Play account advice, and the store listing review |

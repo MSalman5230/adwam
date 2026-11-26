@@ -90,7 +90,7 @@ To test the admin page locally, run `pnpm db:start`, set `VITE_SUPABASE_URL` and
 
 ### CI secrets (GitHub, repository settings)
 
-Use the GitHub environments in [CI and releases](release/ci-and-release.md#github-environments): `staging`, `production` and `production-monitor`. The production environment requires the owner's approval, so nothing reaches production without it. The full production list is in [One-time production setup](release/ci-and-release.md#one-time-production-setup).
+Use the GitHub environments in [CI and releases](release/ci-and-release.md#github-environments): `staging`, `production` and `production-monitor`. The production environment requires the owner's approval, so nothing reaches production without it. The full production list, with every step, is in [Production setup](release/production-setup.md).
 
 | Secret | Environment | Used for |
 |---|---|---|

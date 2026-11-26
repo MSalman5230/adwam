@@ -2,6 +2,8 @@
 
 How a change travels from a pull request to staging testers and to Google Play users. The owner approved this design on 26 November 2026. The tasks that build it are in [plan.md](../plan.md#production-ci-and-google-play).
 
+**Setting up production?** Follow [Production setup](production-setup.md). This page explains how the pipeline works once it's set up.
+
 ## The short version
 
 - **Staging follows `master` by itself.** Every merge deploys the staging server and sends an over-the-air update to every Adwam Preview phone.
@@ -52,6 +54,8 @@ Each environment holds its own secrets. Only `master` can deploy to any of them.
 | `github-pages` | Nothing | GitHub Pages deploys |
 
 Every job that names `production` waits for its own approval. So each production workflow does all its production work in one job, and you approve once.
+
+[Production setup, part 1](production-setup.md#part-1-github-environment-rules) shows how to set these rules.
 
 ## Staging
 
@@ -165,26 +169,7 @@ GitHub Pages serves both admin pages from one deploy: production at `https://msa
 
 ## One-time production setup
 
-The owner creates these. Values go only into each service's own secret store, never into files or chat.
-
-| Service | What | Where it goes |
-|---|---|---|
-| Supabase | The production project, on the free plan | — |
-| Supabase | A deploy token scoped to production: Project Settings, API Keys, API Key Secrets, Migrations and Database on Read; Edge Functions and Auth config on Read-write | `production` secret `SUPABASE_ACCESS_TOKEN` |
-| Supabase | A read-only token scoped to production: Database and API Keys on Read | `production-monitor` secret `SUPABASE_ACCESS_TOKEN` |
-| Supabase | The database password | `production` secret `SUPABASE_DB_PASSWORD` |
-| Supabase | The project ID | `production` and `production-monitor` variable `SUPABASE_PROJECT_ID` |
-| Supabase | Edge Function secrets `EXPO_ACCESS_TOKEN` (a new Expo access token), `SENTRY_DSN` and `ADWAM_JOB_KEY` | The production project's Edge Function secrets |
-| Expo | The robot token that builds and publishes | `production` secret `EXPO_TOKEN` |
-| Expo | A second robot with the Viewer role | `production-monitor` secret `EXPO_TOKEN` |
-| Expo | `EXPO_PUBLIC_SENTRY_DSN`, `EXPO_PUBLIC_POSTHOG_KEY`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` (secret) and `GOOGLE_SERVICES_JSON` (file) | EAS `production` environment variables |
-| Expo | The upload key, created at the first production build. That step needs the owner once. Keep a backup. | EAS credentials for `com.msalman5230.adwam` |
-| Firebase | An Android app `com.msalman5230.adwam` in the same Firebase project. Its `google-services.json`, and the FCM service account key assigned to the new app ID. | EAS variable above, and EAS credentials |
-| Google Play | The app in Play Console. A Google Cloud service account with a JSON key, invited with only "Release apps to testing tracks" and "View app information". | EAS credentials, submissions key for `com.msalman5230.adwam` |
-| PostHog | A project on the EU host, set up as [development-setup.md](../development-setup.md#optional-usage-statistics) describes | `EXPO_PUBLIC_POSTHOG_KEY` above |
-| Sentry | An organization token for source maps, plus the org and project slugs | `staging` and `production` secret `SENTRY_AUTH_TOKEN`; variables `SENTRY_ORG` and `SENTRY_PROJECT` |
-
-After the first production deploy, run the production scheduler SQL in the production SQL Editor. Copy `adwam_job_key` from Vault into the `ADWAM_JOB_KEY` secret. Add the admin's confirmed email user to `public.admins`. Debug tools stay off in production.
+The owner does this once, before merging the first Release PR: the production Supabase project, the environment rules, every token and key, the upload key, the first server deploy, the scheduler and the admin user. [Production setup](production-setup.md) gives every click, and names the exact place each value goes.
 
 ## Costs to watch
 
