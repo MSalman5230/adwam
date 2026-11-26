@@ -205,6 +205,7 @@ The prototype is the design reference, but the app keeps these settled choices w
 | Topic | Decision |
 |---|---|
 | App IDs | `com.msalman5230.adwam` for production, `.preview` and `.dev` for test builds. No domain: the privacy notice and admin page use GitHub Pages. |
+| App name | `Adwam - Sunnah Reminders` on Google Play. `Adwam` on the phone, under the icon. |
 | Licence | Noncommercial use with credit to MSalman5230 for Adwam's own app, code, text and artwork. Third-party material keeps its own terms. [Adwam Noncommercial Licence](../LICENSE) |
 | Analytics | Off until the user agrees. The question is a one-time notice on Today after setup, "Share anonymous usage statistics?", with neither answer preselected. |
 | Crash reports | Two Sentry projects: `adwam-staging` for Preview and the staging server, `adwam-production` for Production and the production server. |
