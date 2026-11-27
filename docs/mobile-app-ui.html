@@ -406,6 +406,11 @@ button{font:inherit;color:inherit}
 .pause .t{font:650 17px/1.25 var(--serif)}
 .pause .s{font:400 13.5px/1.35 var(--sans);color:var(--ink-2);margin-top:2px}
 .pause .chips{margin-top:12px}
+.prayers{margin-top:10px;background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:4px 16px 14px}
+.prayers .t{min-height:48px;display:flex;align-items:center;gap:8px;font:650 17px/1.25 var(--serif);cursor:pointer}
+.prayers .t .ms{font-size:18px;color:var(--ink-3)}
+.prayers .s{font:400 13.5px/1.35 var(--sans);color:var(--ink-2)}
+.prayers .seg{margin-top:10px}
 
 /* about */
 .about-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 0 22px;border-bottom:1px solid var(--gold-line)}
@@ -929,6 +934,13 @@ const ITEMS = {
     what:['Missed Ramadan fasts are obligatory to make up. ʿĀʾishah made hers up in Shaʿbān.','Log each one here. At zero, this card leaves Today.'],
     when:'All through Shaʿbān, and on the Shawwāl card.',
     sources:[s('Bukhārī 1950', SN('bukhari:1950'))]},
+  /* Prayer times: built into the app, not read from a content file, so it has no sources */
+  prayers: {group:'daily', name:'Prayer times', tier:'push', def:'off',
+    short:'Mark it done once you’ve prayed.',
+    what:['A card on Today as each of the five daily prayers begins, so you can mark it done once you’ve prayed. Each card stays until the next prayer time, or until sunrise for Fajr.'],
+    when:'Every day, at each prayer time. The times follow your location and prayer settings.',
+    pushNote:'A push as each prayer time begins.',
+    sources:[]},
 };
 const GROUPS = [
   {id:'weekly', name:'Weekly'},
@@ -936,8 +948,8 @@ const GROUPS = [
   {id:'yearly', name:'Yearly'},
   {id:'weather', name:'Weather and eclipses'},
 ];
-const GROUP_LABEL = {weekly:'Weekly', monthly:'Monthly', yearly:'Yearly', weather:'Weather', disputed:'Disputed'};
-const CHANNELS = [...GROUPS, {id:'corrections', name:'Date corrections'}, {id:'corrections-silent', name:'Date corrections (silent)'}];
+const GROUP_LABEL = {weekly:'Weekly', monthly:'Monthly', yearly:'Yearly', weather:'Weather', disputed:'Disputed', daily:'Daily'};
+const CHANNELS = [...GROUPS, {id:'daily', name:'Prayer times'}, {id:'corrections', name:'Date corrections'}, {id:'corrections-silent', name:'Date corrections (silent)'}];
 const itemsIn = g => Object.keys(ITEMS).filter(id => ITEMS[id].group === g && !ITEMS[id].hidden);
 
 /* =========================================================
@@ -954,13 +966,14 @@ const MOMENTS = [
   {id:'qadr', label:'Last ten nights', sub:'After Maghrib, so the Hijri day has turned', date:'2027-02-27', time:'19:40'},
   {id:'shawwal', label:'Shawwāl, on a Monday', sub:'Six fasts at 3 of 6, three days to make up', date:'2027-03-29', time:'10:02', fasts:['2027-03-15','2027-03-18','2027-03-22'], makeup:3},
   {id:'dq', label:'Mid Dhul-Qaʿdah', sub:'The uḍḥiyah question, White Days 2 of 3', date:'2027-04-22', time:'10:02', fasts:['2027-04-20','2027-04-21'], udhiyah:null},
+  {id:'prayer', label:'Prayer times on', sub:'The ʿAṣr card, with Done and a bell', date:'2026-12-01', time:'14:10', prayers:'push'},
 ];
 function defaults() {
   return {
-    v: 1, setupDone: false, step: 1, setupPreset: 'recommended',
+    v: 1, setupDone: false, step: 1, setupPreset: 'recommended', setupPrayers: 'push',
     tab: 'today', stack: [],
     city: 'london', locMode: 'current', method: 'mwl', asr: 'standard', jumuah: {mode: 'fixed', time: '13:30'},
-    hijriMethod: 'umalqura', hijriShift: 0, quiet: {start: '22:00', end: '07:00'}, eclipseQuiet: false,
+    hijriMethod: 'umalqura', hijriShift: 0, quiet: {start: '22:00', end: '07:00'}, eclipseQuiet: false, prayerQuiet: true,
     udhiyah: null, theme: 'system', notif: 'unset', channels: Object.fromEntries(CHANNELS.map(c => [c.id, true])),
     correctionChoice: null, usagePrompt: false, usageStats: false, crashReports: true,
     choice: {}, groupOn: {weekly: true, monthly: true, yearly: true, weather: true}, expanded: {weekly: true},
@@ -1017,7 +1030,7 @@ const hijriLabel = h => `${h.hd} ${HM[h.hm]}`;
 function level(id) {
   const it = ITEMS[id]; if (!it) return 'off';
   if (id === 'makeup') return level('shaban') === 'off' && level('shawwal6') === 'off' ? 'off' : 'inapp';
-  if (it.group !== 'disputed' && !S.groupOn[it.group]) return 'off';
+  if (it.group !== 'disputed' && S.groupOn[it.group] === false) return 'off';
   let c = S.choice[id] || it.def || it.tier;
   if (c === 'push' && it.tier !== 'push') c = 'inapp';
   if (id === 'hairNails' && S.udhiyah !== 'yes') return 'off';
@@ -1025,6 +1038,17 @@ function level(id) {
 }
 const paused = () => !!S.pause && (!S.pause.until || S.date <= S.pause.until);
 const pushAllowed = o => level(o.item) === 'push' && S.notif === 'granted' && S.channels[ITEMS[o.item].group] !== false && !(o.fast && paused());
+/* the end of the quiet hours an instant falls in, or null outside them */
+function quietEnd(ms) {
+  const {iso, min} = civil(ms), a = toMin(S.quiet.start), b = toMin(S.quiet.end);
+  if (a === b || (a < b ? min < a || min >= b : min < a && min >= b)) return null;
+  return localToMs(a > b && min >= a ? isoAdd(iso, 1) : iso, b, city().tz);
+}
+/* a prayer push comes on time, even in quiet hours, unless the user holds it; then it waits for them to end, if its time lasts */
+function prayerPush(o) {
+  const end = o.item === 'prayers' && !S.prayerQuiet ? quietEnd(o.push) : null;
+  return end === null ? o : Object.assign({}, o, {push: end < o.end ? end : null});
+}
 
 /* occurrences of each practice on a civil date */
 function occsForDay(iso) {
@@ -1087,6 +1111,10 @@ function occsForDay(iso) {
   if (hm === 12 && hd === 10) add({item: 'eidAdha', title: 'Eid al-Aḍḥā', start: t.fajr, end: t.dhuhr, push: t.fajr + 20 * MIN, pushAnchor: 'after Fajr', startAnchor: 'after Fajr', noFast: true, check: 'done'});
   if (hm === 12 && hd >= 9 && hd <= 13) add({item: 'takbir', title: 'Takbīr after prayers', start: hd === 9 ? t.fajr : P.t.maghrib, end: hd === 13 ? t.asr + 30 * MIN : t.isha + 60 * MIN, series: `takbir:${hy}`, startAnchor: 'from Fajr', key: 'takbir:' + iso});
   if (hm === 12 && hd >= 11 && hd <= 13) add({item: 'takbir', title: 'Days of Tashrīq', start: P.t.maghrib, end: t.maghrib, series: `tashriq:${hy}`, noFast: true, kind: 'marker', key: 'tashriq:' + iso});
+  /* prayer times: each card lasts until the next prayer time, or until sunrise for Fajr */
+  for (const [k, title, end, endAnchor] of [['fajr', 'Fajr', t.sunrise, 'sunrise'], ['dhuhr', 'Ẓuhr', t.asr, 'ʿAṣr'], ['asr', 'ʿAṣr', t.maghrib, 'Maghrib'], ['maghrib', 'Maghrib', t.isha, 'ʿIshāʾ'], ['isha', 'ʿIshāʾ', N.t.fajr, 'Fajr']]) {
+    add({item: 'prayers', title, start: t[k], end, push: t[k], startAnchor: 'time', endAnchor, check: 'done', key: `prayers.${k}:${iso}`, noComing: true, noUpcoming: true});
+  }
   return (C.occ[iso] = out);
 }
 function rainOcc() {
@@ -1175,10 +1203,13 @@ function pushEstimate() {
   const mo = P('whiteDays') ? 1 : 0;
   let yr = 0; for (const id of itemsIn('yearly')) if (P(id)) yr += ITEMS[id].pushes || 1;
   const weather = ['rain', 'heavyRain', 'wind', 'eclipse'].some(P);
-  return {wk, mo, yr, weather, none: !wk && !mo && !yr && !weather};
+  const daily = P('prayers') ? 5 : 0;
+  return {daily, wk, mo, yr, weather, none: !daily && !wk && !mo && !yr && !weather};
 }
+/* prayer times have their own setup question, so the presets leave them as they are */
+const followsPresets = id => !['disputed', 'daily'].includes(ITEMS[id].group);
 function presetOf() {
-  const ids = Object.keys(ITEMS).filter(id => !ITEMS[id].hidden && ITEMS[id].group !== 'disputed');
+  const ids = Object.keys(ITEMS).filter(id => !ITEMS[id].hidden && followsPresets(id));
   const allOn = GROUPS.every(g => S.groupOn[g.id]);
   const disputedDefault = itemsIn('disputed').every(id => level(id) === 'off');
   if (allOn && disputedDefault && ids.every(id => (S.choice[id] || ITEMS[id].tier) === ITEMS[id].tier)) return 'recommended';
@@ -1186,8 +1217,8 @@ function presetOf() {
   return 'custom';
 }
 function applyPreset(p) {
-  S.choice = {}; S.groupOn = {weekly: true, monthly: true, yearly: true, weather: true};
-  if (p === 'inapp') for (const id in ITEMS) if (ITEMS[id].tier === 'push') S.choice[id] = 'inapp';
+  S.choice = S.choice.prayers ? {prayers: S.choice.prayers} : {}; S.groupOn = {weekly: true, monthly: true, yearly: true, weather: true};
+  if (p === 'inapp') for (const id in ITEMS) if (ITEMS[id].tier === 'push' && followsPresets(id)) S.choice[id] = 'inapp';
 }
 function estimateText(e = pushEstimate()) {
   if (e.none) return 'No pushes. Everything still shows on Today.';
@@ -1450,9 +1481,9 @@ function renderDetail(r) {
   if (r.item === 'makeup') mk = S.makeup ? `<div class="tracker" style="justify-content:space-between"><span><b style="font:650 22px/1 var(--serif);color:var(--ink)">${S.makeup}</b>&nbsp; left to make up</span><button class="btn tonal sm" data-act="logmakeup">${I('check')}Log one</button></div>` : `<p class="cap">${S.makeup === 0 ? 'All made up.' : 'Not set yet.'}</p>`;
   const dua = it.dua ? sec('Duʿāʾ') + `<div class="dua"><div class="ar" lang="ar">${it.dua.ar}</div><div class="tr">${esc(it.dua.tr)}</div><div class="en">${esc(it.dua.en)}</div><div class="acts"><button class="btn outlined sm" data-act="copy" data-v="${esc(it.dua.ar + '\n' + it.dua.tr + '\n' + it.dua.en)}">${I('content_copy')}Copy</button></div></div>` : '';
   const what = it.what.map(p => `<p class="body">${fmt(p)}</p>`).join('');
-  const sources = sec('Sources') + (it.notes || []).map(n => `<p class="note">${fmt(n)}</p>`).join('') + `<div class="srcs" style="margin-top:${it.notes ? 10 : 0}px">${it.sources.map(evidenceRow).join('')}</div>`;
+  const sources = !it.sources.length && !it.notes ? '' : sec('Sources') + (it.notes || []).map(n => `<p class="note">${fmt(n)}</p>`).join('') + `<div class="srcs" style="margin-top:${it.notes ? 10 : 0}px">${it.sources.map(evidenceRow).join('')}</div>`;
   const reminder = it.hidden ? '' : sec('Your reminder') + seg(reminderOpts(r.item), lv, 'choice', `data-item="${r.item}"`) + `<p class="cap">${
-    lv === 'off' ? (it.group !== 'disputed' && !S.groupOn[it.group] ? `The ${GROUP_LABEL[it.group]} group is off in Settings.` : 'Off. No card and no notification.') :
+    lv === 'off' ? (it.group !== 'disputed' && S.groupOn[it.group] === false ? `The ${GROUP_LABEL[it.group]} group is off in Settings.` : 'Off. No card and no notification.') :
     lv === 'inapp' ? (it.tier === 'push' ? 'Shows on Today during its window, with no notification.' : 'Shows on Today during its window. This one has no push time.') :
     esc(it.pushNote || 'A notification at its push time, and a card on Today.')}${r.item === 'hairNails' && S.udhiyah !== 'yes' ? ' Turns on only if you answer Yes to the uḍḥiyah question.' : ''}</p>`;
   const quran = it.quran ? `<button class="btn filled" style="margin-top:16px" data-act="ext-btn" data-v="${it.quran.url}">${I('menu_book')}${esc(it.quran.label)}</button>` : '';
@@ -1536,14 +1567,17 @@ function renderReminders() {
   }).join('');
   const disputedOpen = !!S.expanded.disputed;
   const dCount = itemsIn('disputed').filter(id => level(id) !== 'off').length;
-  const pauseOn = paused();
+  const pauseOn = paused(), lp = level('prayers');
   return `<header class="appbar"><button class="iconbtn" data-act="back" aria-label="Back">${I('arrow_back')}</button><div class="ab-title">Reminders</div></header>
   <div class="scroll"><div class="ptitle"><h1>Reminders</h1><div class="sub">Each reminder can push, show only in the app, or stay off.</div></div>
     <div class="summary"><div class="over">This adds up to</div><div class="big">${e.none ? 'No pushes' : e.wk ? `About ${e.wk} push${e.wk === 1 ? '' : 'es'} a week` : 'No weekly pushes'}</div>
-      <div class="s">${e.none ? 'Everything still shows on Today.' : [e.mo ? `${e.mo} a month` : '', e.yr ? `${e.yr} a year` : '', e.weather ? 'weather when it matters' : ''].filter(Boolean).join(' · ').replace(/^./, c => 'Plus ' + c) || 'Nothing else.'}</div>
+      <div class="s">${e.none ? 'Everything still shows on Today.' : [e.daily ? `${e.daily} prayer time${e.daily === 1 ? '' : 's'} a day` : '', e.mo ? `${e.mo} a month` : '', e.yr ? `${e.yr} a year` : '', e.weather ? 'weather when it matters' : ''].filter(Boolean).join(' · ').replace(/^./, c => 'Plus ' + c) || 'Nothing else.'}</div>
       ${seg([['recommended', 'Recommended'], ['inapp', 'In-app only']], p, 'preset')}
       ${p === 'custom' ? `<div class="custom"><span class="cap" style="margin:0">Custom choices</span><button class="btn text" data-act="preset" data-v="recommended">${I('restart_alt')}Reset</button></div>` : ''}
     </div>
+    <section class="prayers"><div class="t" data-act="open" data-item="prayers" role="button" tabindex="0">Prayer times${I('chevron_right')}</div>
+      <div class="s" aria-live="polite">${{push: 'A push and a card on Today as each of the five prayers begins', inapp: 'A card on Today as each prayer begins, with no push', off: 'No prayer-time reminders'}[lp]}</div>
+      ${seg(reminderOpts('prayers'), lp, 'choice', 'data-item="prayers"')}</section>
     <div class="pause"><div class="top"><div class="tx"><div class="t">Pause fasting reminders</div><div class="s">${pauseOn ? (S.pause.until ? 'Paused until ' + fmtLong(S.pause.until) : 'Paused until you turn it off') : 'For illness, travel or any reason. No questions.'}</div></div>${sw(pauseOn, 'pausesw')}</div>
       ${pauseOn ? `<div class="chips">${[[3, '3 days'], [7, '7 days'], [14, '14 days'], [0, 'Until I turn it off']].map(([d, l]) => { const on = d ? S.pause.days === d : !S.pause.until; return `<button class="chip ${on ? 'on' : ''}" data-act="pausefor" data-v="${d}">${on ? I('check') : ''}${l}</button>`; }).join('')}</div>` : ''}</div>
     ${groups}
@@ -1570,19 +1604,20 @@ function renderAbout() {
 /* Setup */
 function renderSetup() {
   const st = S.step;
-  const prog = `<div class="progress" aria-label="Step ${st} of 4">${[1, 2, 3, 4].map(i => `<i class="${i <= st ? 'on' : ''}"></i>`).join('')}</div>`;
+  const prog = `<div class="progress" aria-label="Step ${st} of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= st ? 'on' : ''}"></i>`).join('')}</div>`;
   const top = st === 1 ? `<div class="setup-top">${prog}</div>` : `<div class="setup-top"><button class="iconbtn" data-act="setupback" aria-label="Back">${I('arrow_back')}</button>${prog}</div>`;
+  const radioCard = (act, value) => (v, t, d, k) => `<div class="radio-card ${value === v ? 'on' : ''}" data-act="${act}" data-v="${v}" role="radio" aria-checked="${value === v}" tabindex="0"><span class="radio"></span><div><div class="t">${t}</div><div class="s">${d}</div>${k ? `<div class="k">${k}</div>` : ''}</div></div>`;
   let body = '', actions = '';
   if (st === 1) {
     body = `<div class="welcome"><div class="app-icon">${CRESCENT()}</div><div><div class="wm">Adwam</div><div class="tg">Sunnah practices, timed to your Hijri date and prayer times.</div></div></div>
-      <div class="over" style="margin-top:22px">Step 1 of 4</div><h1 class="setup-h">Where are you?</h1><p class="setup-p">Prayer times and weather reminders depend on your area.</p>
+      <div class="over" style="margin-top:22px">Step 1 of 5</div><h1 class="setup-h">Where are you?</h1><p class="setup-p">Prayer times and weather reminders depend on your area.</p>
       <div class="promise"><div>${I('lock')}<span><b>No account</b><span class="d">Your trackers stay on this phone.</span></span></div>
       <div>${I('location_on')}<span><b>An approximate area</b><span class="d">Only a rough area is sent, and only for weather.</span></span></div>
       <div>${I('notifications')}<span><b>About 4 reminders a week</b><span class="d">You choose which ones, and can change it any time.</span></span></div></div>`;
     actions = `<button class="btn filled" data-act="uselocation" ${UI.locBusy ? 'disabled' : ''}>${I('my_location')}${UI.locBusy ? 'Finding you…' : 'Use my location'}</button><button class="btn outlined" data-act="sheet" data-v="city">${I('search')}Pick a city</button>`;
   } else if (st === 2) {
     const D = dayInfo(S.date), h = effHijri(), nxt = dayInfo(isoAdd(S.date, 1)).h;
-    body = `<div class="over" style="margin-top:20px">Step 2 of 4</div><h1 class="setup-h">Check your Hijri date</h1>
+    body = `<div class="over" style="margin-top:20px">Step 2 of 5</div><h1 class="setup-h">Check your Hijri date</h1>
       <p class="setup-p" style="margin-top:18px">Today is</p><div class="big-date">${nw(`${h.hd} ${HM[h.hm]} ${h.hy}`)}</div>
       <p class="setup-p" style="margin-top:6px">${fmtLong(S.date)} · ${esc(city().name)}</p>
       <p class="setup-p" style="margin-top:22px;color:var(--ink)">Is that right where you live?</p>
@@ -1592,18 +1627,33 @@ function renderSetup() {
       <div>${I('calendar_month')}<span><span class="d">Calculated with Umm al-Qura. When an announced date differs in your region, Adwam offers a correction.</span></span></div></div>`;
     actions = `<button class="btn filled" data-act="next">Continue</button>`;
   } else if (st === 3) {
-    const opt = (v, t, d, k) => `<div class="radio-card ${S.setupPreset === v ? 'on' : ''}" data-act="setpreset" data-v="${v}" role="radio" aria-checked="${S.setupPreset === v}" tabindex="0"><span class="radio"></span><div><div class="t">${t}</div><div class="s">${d}</div>${k ? `<div class="k">${k}</div>` : ''}</div></div>`;
-    body = `<div class="over" style="margin-top:20px">Step 3 of 4</div><h1 class="setup-h">Choose your reminders</h1><p class="setup-p">You can change any of these later in Settings.</p>
+    const opt = radioCard('setprayers', S.setupPrayers);
+    body = `<div class="over" style="margin-top:20px">Step 3 of 5</div><h1 class="setup-h">Remind you at prayer times?</h1><p class="setup-p">Adwam can tell you as each of the five prayers begins in ${esc(city().name)}, and you can mark each one done on Today.</p>
+      ${dayLine(dayInfo(S.date))}<p class="cap" style="margin-top:14px">Times use ${METHODS[S.method].short}. If you change the method in Settings, the reminders follow it.</p>
+      <div role="radiogroup" aria-label="Remind you at prayer times?" style="margin-top:4px">
+      ${opt('push', 'Push', 'A push as each prayer begins, and a card on Today.', `${I('notifications')}5 pushes a day`)}
+      ${opt('inapp', 'In-app', 'A card on Today as each prayer begins. No pushes.')}
+      ${opt('off', 'Off', 'No prayer-time reminders. You can turn them on later in Reminders.')}</div>`;
+    actions = `<button class="btn filled" data-act="next">Continue</button>`;
+  } else if (st === 4) {
+    const opt = radioCard('setpreset', S.setupPreset);
+    body = `<div class="over" style="margin-top:20px">Step 4 of 5</div><h1 class="setup-h">Choose your reminders</h1><p class="setup-p">You can change any of these later in Settings.</p>
       ${opt('recommended', 'Recommended', 'Each reminder at its usual level: Monday and Thursday fasts, Friday, White Days, Ramadan, Eid and more.', `${I('notifications')}About 4 pushes a week`)}
       ${opt('inapp', 'In-app only', 'No notifications. Everything still shows on Today.', `${I('notifications_off')}No pushes`)}
       ${opt('custom', 'Let me choose', 'Start from Recommended, then set each reminder yourself.', `${I('tune')}Opens the reminder list`)}`;
     actions = `<button class="btn filled" data-act="next">Continue</button>`;
   } else {
-    body = `<div class="over" style="margin-top:20px">Step 4 of 4</div><h1 class="setup-h">Allow notifications?</h1><p class="setup-p">So we can remind you of the Monday fast, Friday, Ramadan and Eid. Never during your quiet hours, ${fmtHM(toMin(S.quiet.start))} to ${fmtHM(toMin(S.quiet.end))}.</p>
-      <div class="notif-preview"><div class="lbl">A reminder looks like this</div>${notifCardHTML({title: 'Tomorrow is Monday, a Sunnah fast', body: 'Deeds are presented on Mondays and Thursdays.', when: 'Sun 6:02 pm', actions: ['Later']}, true)}</div>
-      <div class="promise" style="margin-top:14px"><div>${I('event')}<span><b>Fasts</b><span class="d">The evening before, after ʿIshāʾ.</span></span></div>
+    const prayers = S.setupPrayers === 'push', others = S.setupPreset !== 'inapp' || !prayers;
+    const quiet = `${fmtHM(toMin(S.quiet.start))} to ${fmtHM(toMin(S.quiet.end))}`;
+    const lead = !prayers ? `So we can remind you of the Monday fast, Friday, Ramadan and Eid. Never during your quiet hours, ${quiet}.`
+      : others ? `So we can tell you as each prayer begins, and remind you of the Monday fast, Friday, Ramadan and Eid. Other reminders stay out of your quiet hours, ${quiet}.`
+      : `So we can tell you as each of the five prayers begins. They can come during your quiet hours, ${quiet}, unless you hold them in Settings.`;
+    body = `<div class="over" style="margin-top:20px">Step 5 of 5</div><h1 class="setup-h">Allow notifications?</h1><p class="setup-p">${lead}</p>
+      <div class="notif-preview"><div class="lbl">A reminder looks like this</div>${notifCardHTML(others ? {title: 'Tomorrow is Monday, a Sunnah fast', body: 'Deeds are presented on Mondays and Thursdays.', when: 'Sun 6:02 pm', actions: ['Later']} : {title: 'Time for Maghrib', body: 'Mark it done once you’ve prayed.', when: 'Sun 6:02 pm', actions: ['Done', 'Later']}, true)}</div>
+      <div class="promise" style="margin-top:14px">${prayers ? `<div>${I('schedule')}<span><b>Prayer times</b><span class="d">As each of the five prayers begins, even in quiet hours.</span></span></div>` : ''}
+      ${others ? `<div>${I('event')}<span><b>Fasts</b><span class="d">The evening before, after ʿIshāʾ.</span></span></div>
       <div>${I('mosque')}<span><b>Friday</b><span class="d">About 2 hours before Jumuʿah, and near Maghrib.</span></span></div>
-      <div>${I('rainy')}<span><b>Weather</b><span class="d">Only the first rain after a dry week, at most once a day.</span></span></div></div>`;
+      <div>${I('rainy')}<span><b>Weather</b><span class="d">Only the first rain after a dry week, at most once a day.</span></span></div>` : ''}</div>`;
     actions = `<button class="btn filled" data-act="asknotif">Continue</button><button class="btn text" style="align-self:center" data-act="notnow">Not now</button>`;
   }
   return `${top}<div class="scroll">${body}</div><div class="bottom-actions">${actions}</div>`;
@@ -1643,6 +1693,7 @@ function notifFor(o, now) {
     case 'lastHour': return Object.assign(base, {title: 'Last hour of Friday', body: 'About 45 minutes to Maghrib. Spend it in duʿāʾ.', actions: ['Done', 'Later']});
     case 'rain': return Object.assign(base, {title: 'Rain is likely starting in your area', body: 'Say: Allāhumma ṣayyiban nāfiʿan.', actions: ['Done', 'Later']});
     case 'lastTen': return Object.assign(base, {title: 'The last ten nights have begun', body: 'Seek Laylat al-Qadr every night until Ramadan ends.', actions: ['Later']});
+    case 'prayers': return Object.assign(base, {title: `Time for ${o.title}`, body: 'Mark it done once you’ve prayed.', actions: ['Done', 'Later']});
     default: return Object.assign(base, {title: ITEMS[o.item].name, body: o.short || ITEMS[o.item].short, actions: o.check === 'done' ? ['Done', 'Later'] : ['Later']});
   }
 }
@@ -1651,7 +1702,7 @@ function pushesBetween(a, b) {
   for (let i = -2; i <= 12; i++) all = all.concat(occsForDay(isoAdd(S.date, i)));
   if (S.rain) all.push(rainOcc());
   const seen = new Set();
-  return all.filter(o => o.push && o.push > a && o.push <= b && pushAllowed(o) && !(o.item === 'kahf') && !(o.check === 'done' && isDone(o)) && !seen.has(o.key + o.push) && seen.add(o.key + o.push)).sort((x, y) => y.push - x.push);
+  return all.map(prayerPush).filter(o => o.push && o.push > a && o.push <= b && pushAllowed(o) && !(o.item === 'kahf') && !(o.check === 'done' && isDone(o)) && !seen.has(o.key + o.push) && seen.add(o.key + o.push)).sort((x, y) => y.push - x.push);
 }
 function delivered() {
   const now = nowMs();
@@ -1713,7 +1764,8 @@ function sheetHTML(id) {
       const sel = (v, act) => `<select data-change="${act}">${hours.map(x => `<option value="${x}" ${x === v ? 'selected' : ''}>${fmtHM(toMin(x))}</option>`).join('')}</select>`;
       return `<h2>Quiet hours</h2><p class="lead">No pushes in this window. A push about tonight or tomorrow moves earlier, to just before it starts. One about something already under way, like Eid after Fajr, waits until it ends. Weather pushes are dropped.</p>
         <div class="timepick"><label>Starts${sel(S.quiet.start, 'qstart')}</label><label>Ends${sel(S.quiet.end, 'qend')}</label></div>
-        <div class="opts" style="margin-top:18px"><div class="opt" data-act="eclq"><div class="tx"><div class="t">Eclipses can notify in quiet hours</div><div class="s">Lunar eclipses often happen at night.</div></div>${sw(S.eclipseQuiet, 'eclq')}</div></div>`;
+        <div class="opts" style="margin-top:18px"><div class="opt" data-act="eclq"><div class="tx"><div class="t">Eclipses can notify in quiet hours</div><div class="s">Lunar eclipses often happen at night.</div></div>${sw(S.eclipseQuiet, 'eclq')}</div>
+        <div class="opt" data-act="prayq"><div class="tx"><div class="t">Prayer times can notify in quiet hours</div><div class="s">Fajr, and ʿIshāʾ in summer, often fall in quiet hours. When this is off, a prayer push waits until quiet hours end, if its time hasn’t ended.</div></div>${sw(S.prayerQuiet, 'prayq')}</div></div>`;
     }
     case 'pause': {
       const on = paused();
@@ -1879,6 +1931,7 @@ function tick(key, fastDate) {
   if (on) snack('Marked done', 'Undo', () => { delete S.done[key]; UI.moved = key; render(); });
 }
 function finishSetup() {
+  if (S.setupPrayers === 'off') delete S.choice.prayers; else S.choice.prayers = S.setupPrayers;
   S.setupDone = true; S.tab = 'today'; S.stack = []; UI.anim = 'fade';
   S.usagePrompt = !S.usageAnswered;
   if (S.setupPreset === 'custom') { applyPreset('recommended'); UI.fromSetup = true; S.stack = [{s: 'reminders'}]; UI.anim = 'push'; }
@@ -1926,6 +1979,7 @@ function applyMoment(id) {
   S.fastLog = {}; for (const d of m.fasts || []) S.fastLog[d] = true;
   if ('makeup' in m) S.makeup = m.makeup;
   if ('udhiyah' in m) S.udhiyah = m.udhiyah;
+  if ('prayers' in m) S.choice.prayers = m.prayers;
   S.pause = null;
   S.setupDone = true; S.tab = 'today'; S.stack = []; UI.anim = 'fade';
   closeOverlay(); closeShade(); hideSnack();
@@ -1955,7 +2009,7 @@ document.addEventListener('click', e => {
     case 'tick': tick(el.dataset.key, el.dataset.fast); break;
     case 'choice': {
       const id = el.dataset.item; const it = ITEMS[id];
-      if (it.group !== 'disputed' && !S.groupOn[it.group]) S.groupOn[it.group] = true;
+      if (it.group !== 'disputed' && S.groupOn[it.group] === false) S.groupOn[it.group] = true;
       if (v === (it.def || it.tier)) delete S.choice[id]; else S.choice[id] = v;
       render(); break;
     }
@@ -2017,10 +2071,11 @@ document.addEventListener('click', e => {
     case 'setupback': back(); break;
     case 'shift': S.hijriShift = +v; render(); break;
     case 'setpreset': S.setupPreset = v; render(); break;
+    case 'setprayers': S.setupPrayers = v; render(); break;
     case 'next': {
-      if (S.step === 3) {
+      if (S.step === 4) {
         applyPreset(S.setupPreset === 'inapp' ? 'inapp' : 'recommended');
-        if (S.setupPreset === 'inapp') { S.notif = 'unset'; finishSetup(); break; }
+        if (S.setupPreset === 'inapp' && S.setupPrayers !== 'push') { S.notif = 'unset'; finishSetup(); break; }
       }
       S.step++; UI.anim = 'push'; render(); break;
     }
@@ -2035,6 +2090,7 @@ document.addEventListener('click', e => {
     case 'jtime': S.jumuah.time = v; render(); break;
     case 'hmethod': S.hijriMethod = v; render(); break;
     case 'eclq': S.eclipseQuiet = !S.eclipseQuiet; render(); break;
+    case 'prayq': S.prayerQuiet = !S.prayerQuiet; render(); break;
     case 'theme': S.theme = v; render(); break;
     case 'notifsw': S.notif = S.notif === 'granted' ? 'denied' : 'granted'; render(); break;
     case 'channel': S.channels[v] = S.channels[v] === false; render(); break;
@@ -2068,8 +2124,8 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => rend
 const REVIEW = [
   {n:'01', f:'01-setup-location.png', t:'Setup · location', issue:'60% of the screen was empty, with no sense of what the app is.', fix:'Three short promises (no account, approximate area, about 4 a week) and the buttons moved to the thumb zone. Pick a city opens a search sheet; Use my location shows the Android dialog.', go:['setup', 1]},
   {n:'02', f:'02-setup-hijri-date.png', t:'Setup · Hijri date', issue:'Good idea, but −1/0/+1 changed nothing on screen.', fix:'The date updates live, and the screen says when it will turn at Maghrib.', go:['setup', 2]},
-  {n:'03', f:'03-setup-reminder-preset.png', t:'Setup · reminders', issue:'Phone off-centre; Let me choose had no description.', fix:'Every option explained with its push count. In-app only skips the permission step; Let me choose ends on the Reminders list.', go:['setup', 3]},
-  {n:'04+05', f:'04-setup-notification-explainer.png', t:'Setup · notifications', issue:'Two screens for one decision, a half-width button and a stray text link.', fix:'Merged: a preview of a real reminder, then the Android dialog on top. Same button set as every other step.', go:['setup', 4]},
+  {n:'03', f:'03-setup-reminder-preset.png', t:'Setup · reminders', issue:'Phone off-centre; Let me choose had no description.', fix:'Every option explained with its push count. In-app only skips the permission step unless prayer times push; Let me choose ends on the Reminders list.', go:['setup', 4]},
+  {n:'04+05', f:'04-setup-notification-explainer.png', t:'Setup · notifications', issue:'Two screens for one decision, a half-width button and a stray text link.', fix:'Merged: a preview of a real reminder, then the Android dialog on top. Same button set as every other step.', go:['setup', 5]},
   {n:'06', f:'06-today-friday.png', t:'Today · Friday', issue:'The reference screen. Bells sat apart from the times they belonged to.', fix:'Kept the layout. Added the day line, a one-tap banner, and a link to all upcoming items.', go:['moment', 'fri-am']},
   {n:'07', f:'07-today-friday-done.png', t:'Today · done card', issue:'Good behaviour, shown as a separate screen.', fix:'Tick any card: it dims, drops below open cards, and the snackbar offers Undo.', go:['moment', 'fri-am']},
   {n:'08', f:'08-today-quiet.png', t:'Today · quiet day', issue:'Lower half empty; “Nothing special right now” was a lone line.', fix:'The empty state names what’s next and when, and the day line keeps the screen anchored.', go:['moment', 'tue']},
@@ -2127,6 +2183,7 @@ function renderReview() {
     <h4>Added</h4><ul class="rv-list">
       <li><b>Day line</b> on Today: Fajr to ʿIshāʾ, a now marker, and the time to Maghrib, when the Hijri day turns.</li>
       <li><b>Live push estimate</b> and presets on Reminders. <b>Pause</b> for 3, 7 or 14 days, as the spec asks.</li>
+      <li><b>Prayer-time reminders:</b> a setup step, a card on Today from each prayer time with a Done tick, a push as it begins, and a Prayer times card on Reminders. Off until chosen.</li>
       <li><b>Upcoming filters</b> (All, Fasts, Notifies me), month-start rows and No fasting tags.</li>
       <li><b>Undo</b> on every tick, <b>Appearance</b> with a dark theme, a <b>Privacy</b> section, a <b>Report a problem</b> sheet, and a working <b>notification shade</b> with Android channels.</li>
     </ul>

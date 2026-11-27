@@ -1,4 +1,3 @@
-import catalog from '@adwam/content/catalog';
 import type { CivilDate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
@@ -19,6 +18,7 @@ import { openNotificationSettings } from '../../services/notification-settings';
 import { needsServerUpdate } from '../../services/server-sync-payload';
 import { track } from '../../services/usage-statistics';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
+import { reminderCatalog } from '../../state/reminder-catalog';
 import { selectReminderState, selectToday } from '../../state/selectors';
 import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
 import { useClock, useReminderStores } from '../../state/useClock';
@@ -46,7 +46,7 @@ export default function TodayScreen() {
   const { location } = settings;
   const format = useMessageFormat(location?.timeZone);
   const correction = cached.correctionOffer ?? undefined;
-  const state = selectReminderState(settings, trackers, cached, catalog.sunnahs);
+  const state = selectReminderState(settings, trackers, cached, reminderCatalog);
   const view = state && selectToday(now, state, settings, correction);
   const updateNeeded = cached.config && needsServerUpdate(appVersion, cached.config.minAppVersion);
   const banner = view?.banner;

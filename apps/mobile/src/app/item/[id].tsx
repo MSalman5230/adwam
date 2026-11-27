@@ -20,6 +20,7 @@ import { useMessageFormat } from '../../language/useMessageFormat';
 import { readItemParams } from '../../navigation/item-params';
 import { track } from '../../services/usage-statistics';
 import { editOccurrenceTick } from '../../state/occurrence-tracking';
+import { reminderCatalog } from '../../state/reminder-catalog';
 import { reminderOptions, setReminderChoice } from '../../state/reminder-choices';
 import { selectDetail, selectReminderState } from '../../state/selectors';
 import { editMakeup, type TrackerEdit } from '../../state/tracker-edits';
@@ -45,7 +46,7 @@ function ReminderDetail({ item }: { item: NonNullable<ReturnType<typeof readItem
   const cache = useStore(cacheStore, ({ value }) => value);
   const now = useClock();
   const format = useMessageFormat(settings.location?.timeZone);
-  const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
+  const state = selectReminderState(settings, trackers, cache, reminderCatalog);
   const view = state && selectDetail(now, state, item.id, item.date, item.occurrenceKey);
   const [snack, setSnack] = useState<Snack>();
   const [reportOpen, setReportOpen] = useState(false);

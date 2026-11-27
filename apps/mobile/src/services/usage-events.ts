@@ -1,9 +1,10 @@
 import catalog from '@adwam/content/catalog';
 import { z } from 'zod';
 
+import { reminderCatalog } from '../state/reminder-catalog';
 import { setupUsageSchema } from '../state/schema';
 
-const itemIds = new Set(catalog.sunnahs.filter(({ hidden }) => !hidden).map(({ id }) => id));
+const itemIds = new Set(reminderCatalog.filter(({ hidden }) => !hidden).map(({ id }) => id));
 const item = z.string().refine((id) => itemIds.has(id));
 const notificationItem = z.union([item, z.enum(['friday-summary', 'date-correction'])]);
 

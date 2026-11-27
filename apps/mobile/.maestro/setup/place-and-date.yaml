@@ -3,4 +3,4 @@ appId: ${APP_ID}
 - tapOn: Pick a city
 - runFlow: pick-london.yaml
 - tapOn: Continue
-- assertVisible: Choose your reminders
+- runFlow: prayers-off.yaml

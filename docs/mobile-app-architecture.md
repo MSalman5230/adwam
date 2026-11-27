@@ -104,6 +104,7 @@ Rules for this package:
 | `views` | The data behind Today, Upcoming and the detail screen, including banners and notices | `todayState`, `bannerData`, `notices`, `upcomingRows`, `nextOccurrence` |
 | `labels` | Phrases such as "until Maghrib" and "Reminder tomorrow after ʿIshāʾ" | `activeMeta`, `comingLabel`, `nextSentence`, `relDay` |
 | `presets` | The Recommended and In-app only presets, and the push estimate | `pushEstimate`, `presetOf`, `applyPreset` |
+| `prayer-reminders` | The optional prayer-time reminder: a card and a push for each of the five prayers, built from the prayer times rather than a content file. The app passes in its wording. | New |
 | `notifications` | The list of local notifications to schedule: time, channel, text, actions, quiet hours, limits, the combined Friday push | `notifFor`, `pushesBetween`, plus the quiet-hours rules the prototype only fakes |
 | `eclipses` | Eclipses visible from a place, with start times | New, built on astronomy-engine |
 | `weather` | Turns a forecast into events, and decides each install's push | New, used by the server |
@@ -170,7 +171,7 @@ apps/mobile/
 
 | Store | What it holds | Saved on the phone |
 |---|---|---|
-| settings | Place, prayer method, ʿAṣr rule, Jumuʿah time, Hijri method and shift, accepted corrections, quiet hours, theme, reminder choices, group switches, pause, the uḍḥiyah answer for each Hijri year | Yes |
+| settings | Place, prayer method, ʿAṣr rule, Jumuʿah time, Hijri method and shift, accepted corrections, quiet hours and whether eclipses and prayer times may notify in them, theme, reminder choices including prayer times, group switches, pause, the uḍḥiyah answer for each Hijri year | Yes |
 | trackers | Done ticks, fasting log, make-up count, dismissed notices | Yes |
 | server | Offered corrections and the user's answers, current weather events, last sync time | Yes, as a cache |
 | clock | The current minute. In test builds, the debug screen can change it. | No |
@@ -190,10 +191,11 @@ One function does all the scheduling, and it runs often:
 Details:
 
 - **How far ahead:** 60 days on Android, at most about 150 notifications. On iOS, at most 60 waiting at once, leaving room for Later. A user who doesn't open the app for a month still gets reminders.
+- **Prayer times** come five a day, so they're planned 14 days ahead on Android, outside the 150, and 3 days ahead on iOS, inside the 60. The background task tops them up. Their times come from the same settings as everything else, so a new calculation method, ʿAṣr rule or place gives new times, and `syncSchedule()` replaces each prayer push whose time changed.
 - **Approximate timing,** with no exact-alarm permission. A build check fails if `SCHEDULE_EXACT_ALARM` or `USE_EXACT_ALARM` gets into the app's permissions.
-- **Android channels:** Weekly, Monthly, Yearly, Weather and eclipses, Date corrections, and a silent Date corrections channel for quiet hours.
+- **Android channels:** Weekly, Monthly, Yearly, Weather and eclipses, Prayer times, Date corrections, and a silent Date corrections channel for quiet hours.
 - **Buttons:** Done ticks the item and reschedules. Later sends the push once more an hour later, if its window is still open.
-- **Quiet hours** follow the screen story. A push about something tonight or tomorrow moves earlier. A push about something already under way moves later. Weather pushes are dropped. Eclipses notify only if the user allows it.
+- **Quiet hours** follow the screen story. A push about something tonight or tomorrow moves earlier. A push about something already under way moves later. Weather pushes are dropped. Eclipses notify only if the user allows it. Prayer-time pushes notify unless the user holds them.
 - **Tapping** a push opens the item's detail screen. The combined Friday push opens Today.
 - **Huawei phones without Google services** can't receive server pushes. Their local reminders still work.
 
@@ -270,7 +272,7 @@ That covers roughly 1,000 areas. If the app outgrows that, the stack file's opti
 | Stays on the phone | Sent to the server |
 |---|---|
 | Exact location and chosen city | An area about 10 km across, only while Weather and eclipses is on |
-| Prayer method, Jumuʿah time, theme | Country and time zone |
+| Prayer method, Jumuʿah time, theme, prayer-time reminders | Country and time zone |
 | Choices for reminders that aren't about weather | Weather reminder choices and quiet hours |
 | All trackers and ticks, the make-up count | Hijri method and shift, to decide who gets a correction |
 | The uḍḥiyah answer and accepted corrections | Anonymous install ID, push token, app and content versions |

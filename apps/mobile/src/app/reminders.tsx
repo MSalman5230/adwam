@@ -1,5 +1,5 @@
-import catalog from '@adwam/content/catalog';
-import { applyPreset, civil, effectiveHijri, level, presetOf, pushEstimate, type Preset } from '@adwam/core';
+import type { GroupedSunnah } from '@adwam/content/schema';
+import { applyPreset, civil, effectiveHijri, level, presetOf, pushEstimate, type Preset, type ReminderLevel } from '@adwam/core';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -9,10 +9,11 @@ import { Button } from '../components/controls';
 import { Snackbar } from '../components/overlays';
 import { Subpage } from '../components/Subpage';
 import { t } from '../language/messages';
-import { FastingPauseCard, PresetCard, ReminderGroup, groupOrder } from '../reminders/controls';
+import { FastingPauseCard, PrayerTimesCard, PresetCard, ReminderGroup, groupOrder } from '../reminders/controls';
 import { track } from '../services/usage-statistics';
 import { activePauseDuration, pauseFor } from '../settings/fasting-pause';
 import { UdhiyahSheet } from '../settings/preference-sheets';
+import { prayerEntry, reminderCatalog } from '../state/reminder-catalog';
 import { setReminderChoice } from '../state/reminder-choices';
 import type { Settings } from '../state/schema';
 import { selectReminderState } from '../state/selectors';
@@ -34,7 +35,7 @@ export default function RemindersScreen() {
     return () => clearTimeout(timeout);
   }, [undoPause]);
 
-  const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
+  const state = selectReminderState(settings, trackers, cache, reminderCatalog);
   if (!state || !settings.location) return <Redirect href="/today" />;
   const today = civil(now, settings.location.timeZone).iso;
   const { year } = effectiveHijri(now, state.calendar);
@@ -48,6 +49,13 @@ export default function RemindersScreen() {
     }));
     if (preset !== currentPreset) track({ event: 'preset_applied', properties: {} });
   };
+  const chooseLevel = (entry: GroupedSunnah, choice: ReminderLevel) => {
+    update((value) => setReminderChoice(value, entry, choice));
+    if (level(state, entry.id, year) !== choice) {
+      track({ event: 'reminder_level_changed', properties: { item: entry.id, level: choice } });
+    }
+  };
+  const openEntry = (entry: GroupedSunnah) => router.push({ pathname: '/item/[id]', params: { id: entry.id } });
   const setPause = (next: Settings['reminders']['pause']) => update((value) => ({
     ...value, reminders: { ...value.reminders, pause: next },
   }));
@@ -73,6 +81,8 @@ export default function RemindersScreen() {
         }} />
       </View>}>
       <PresetCard estimate={pushEstimate(state, year)} preset={currentPreset} onChange={choosePreset} />
+      <PrayerTimesCard choice={level(state, prayerEntry.id, year)} onChoice={(choice) => chooseLevel(prayerEntry, choice)}
+        onOpen={() => openEntry(prayerEntry)} />
       <FastingPauseCard duration={duration} until={pause?.until} onToggle={togglePause} onDuration={(days) => {
         setUndoPause(undefined);
         setPause(pauseFor(today, days));
@@ -81,13 +91,7 @@ export default function RemindersScreen() {
         onToggle={(enabled) => update((value) => ({
           ...value, reminders: { ...value.reminders, groupOn: { ...value.reminders.groupOn, [group]: enabled } },
         }))}
-        onChoice={(entry, choice) => {
-          update((value) => setReminderChoice(value, entry, choice));
-          if (level(state, entry.id, year) !== choice) {
-            track({ event: 'reminder_level_changed', properties: { item: entry.id, level: choice } });
-          }
-        }}
-        onOpen={(entry) => router.push({ pathname: '/item/[id]', params: { id: entry.id } })}
+        onChoice={chooseLevel} onOpen={openEntry}
         onUdhiyah={() => setUdhiyahOpen(true)} />)}
       {fromSetup === '1' && <Button label={t('common.done')} style={styles.actions}
         onPress={() => router.dismissTo({ pathname: '/today', params: { setup: '1' } })} />}

@@ -1,10 +1,10 @@
-import catalog from '@adwam/content/catalog';
 import { laterFor } from '@adwam/core';
 import {
   dismissNotificationAsync, getAllScheduledNotificationsAsync, type NotificationContent, type NotificationResponse,
 } from 'expo-notifications';
 
 import { deviceStores } from '../state/native';
+import { reminderCatalog } from '../state/reminder-catalog';
 import { selectReminderState } from '../state/selectors';
 import { editTick } from '../state/tracker-edits';
 import { calendarNotification, scheduleCalendarNotification, snoozeSuffix } from './notification-request';
@@ -58,7 +58,7 @@ async function applyAction(identifier: string, action: 'done' | 'later', doneKey
   } else if (action === 'later') {
     const existing = await getAllScheduledNotificationsAsync();
     if (!existing.some((request) => request.identifier === identifier + snoozeSuffix)) {
-      const state = selectReminderState(settings.getState().value, trackers.getState().value, serverCache.getState().value, catalog.sunnahs);
+      const state = selectReminderState(settings.getState().value, trackers.getState().value, serverCache.getState().value, reminderCatalog);
       const snooze = state && laterFor(identifier, Date.now(), state);
       if (snooze) {
         await scheduleCalendarNotification(snooze);

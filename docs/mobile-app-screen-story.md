@@ -8,11 +8,11 @@ Reminder content and tiers come from [sunnah-reminder-calendar.md](sunnah-remind
 
 | Screen | How you get there | What it's for |
 |---|---|---|
-| **Setup** | First launch only | Location, a Hijri date check, reminder choice and notification permission |
+| **Setup** | First launch only | Location, a Hijri date check, prayer-time reminders, reminder choice and notification permission |
 | **Today** | First tab. The app opens here. | What applies right now, and what's next |
 | **Upcoming** | Second tab, or All upcoming on Today | The next 60 days, for planning fasts and checking dates |
 | **Settings** | Third tab | Reminders, notifications, place and time, the uḍḥiyah answer, appearance |
-| **Reminders** | Settings, or Let me choose in Setup | Push, In-app or Off for each item, presets and the fasting pause |
+| **Reminders** | Settings, or Let me choose in Setup | Push, In-app or Off for each item and for prayer times, presets and the fasting pause |
 | **Sunnah detail** | Tap a card, a banner, a Coming up or Upcoming row, an item in Reminders, or a push | Full text, duʿāʾ, sources and grading notes, and the item's reminder choice |
 | **About** | Settings | Sources, privacy, credits, source code and version |
 
@@ -22,15 +22,16 @@ There is no account or sign-in. The server knows a phone only by an anonymous in
 
 ## Setup
 
-Setup runs once, on first launch, and takes under a minute. It has four steps with a progress bar, and a back arrow from step 2. Every choice can be changed later in Settings.
+Setup runs once, on first launch, and takes under a minute. It has five steps with a progress bar, and a back arrow from step 2. Every choice can be changed later in Settings.
 
 1. **Where are you?** The app's name and tagline, then three promises: no account and trackers that stay on the phone, only a rough area sent and only for weather, and about 4 reminders a week. "Use my location" asks for approximate location while using the app. "Pick a city" opens a city search, and so does refusing location. Prayer times and the weather area depend on the answer.
 2. **Check your Hijri date.** For example: "Today is 9 Rajab 1448. Is that right where you live?" with −1, 0 and +1 buttons. The date and a strip of this week in both calendars update as the user shifts it. A note says when the Hijri day turns at Maghrib today, or after Maghrib, that the new Hijri day has begun. Another explains that Adwam calculates the date with Umm al-Qura and offers a correction when an announced date differs in the region.
-3. **Choose your reminders.** Three choices, each showing its push count:
+3. **Remind you at prayer times?** Today's day line with the five prayer times for the chosen place, and the calculation method in use. Three choices: **Push**, a push and a card on Today as each prayer begins, preselected and showing "5 pushes a day"; **In-app**, the card with no push; and **Off**. See [Prayer times](#prayer-times).
+4. **Choose your reminders.** Three choices, each showing its push count:
    - **Recommended:** each item at its tier in the calendar. About 4 pushes a week.
    - **In-app only:** no notifications. Everything still shows on Today.
    - **Let me choose:** starts from Recommended and ends setup on the Reminders screen, with a Done button.
-4. **Allow notifications?** A sample reminder, a promise of nothing during quiet hours, and when reminders come: fasts the evening before after ʿIshāʾ, Friday about 2 hours before Jumuʿah and near Maghrib, and weather only for the first rain after a dry week. Continue brings up the system permission request right after the user picks reminders, when the request makes sense. Not now skips it. If they picked In-app only, setup ends after step 3 and never asks.
+5. **Allow notifications?** A sample reminder, a promise of nothing during quiet hours, and when reminders come: fasts the evening before after ʿIshāʾ, Friday about 2 hours before Jumuʿah and near Maghrib, and weather only for the first rain after a dry week. When prayer times push, a Prayer times line comes first and the text says prayer pushes can come in quiet hours. With In-app only and prayer pushes, only the Prayer times line shows. Continue brings up the system permission request right after the user picks reminders, when the request makes sense. Not now skips it. If they picked In-app only and no prayer pushes, setup ends after step 4 and never asks.
 
 Setup ends on Today with the snackbar "You're all set. Change anything in Settings." A one-time notice asks "Share anonymous usage statistics?" with Share and No thanks. Both options are unselected, including when the user chose In-app only.
 
@@ -46,7 +47,7 @@ Today is the screen the app opens on. From top to bottom:
    - **Uḍḥiyah question.** Shown from 10 Dhul-Qaʿdah until it's answered: "Are you offering an uḍḥiyah this year?" with Yes and No. Only Yes turns on the hair-and-nails reminders. The same answer is in Settings.
    - **Fasting reminders paused.** Shown during a pause, with its end date and a Resume now button.
 4. **Season banner.** Only one shows at a time, and the most specific wins, in this order: the last ten nights, Ramadan, the best ten days (1–10 Dhul-Ḥijjah), the Days of Tashrīq, Muḥarram, Shaʿbān, then any other sacred month. Tapping it opens that item's detail screen. If the item is set to Off, there's no banner.
-5. **Active now.** A card for every item whose in-app window is open, with the soonest to end first and a count of the open ones in the heading. Done items drop to the bottom, dimmed, until their window closes.
+5. **Active now.** A card for every item whose in-app window is open, with the soonest to end first and a count of the open ones in the heading. Done items drop to the bottom, dimmed, until their window closes. When prayer-time reminders are on, the current prayer has a card too.
 6. **Coming up.** The next three items that haven't started, from the next two weeks, then an All upcoming link to the Upcoming tab. A multi-day item appears once. Each row says when the item starts, such as "1:30 pm", "From ʿAṣr" or "Thursday from Maghrib". For a fast that sends a push, the row says when the reminder comes instead, such as "Reminder Sunday after ʿIshāʾ". A bell marks rows that will send a push.
 
 **Empty state.** Often nothing applies. Tuesday, Saturday and most of Sunday and Wednesday have no weekly item, and many months have no banner. Then Active now shows "Nothing special right now" with a line naming what's next, such as "Next is the Thursday fast. You'll get a reminder tomorrow after ʿIshāʾ." With the day line and Coming up, the screen never looks blank.
@@ -73,6 +74,18 @@ The cards follow these rules:
 - **Pushes without a card.** The 1 Shaʿbān and 1 Dhul-Ḥijjah pushes have no card, because a banner covers the month or the ten days. The ʿArafah afternoon duʿāʾ push has none either, because the ʿArafah fast card covers the day.
 - **The make-up card** works differently. See [Trackers](#trackers).
 
+## Prayer times
+
+Prayer-time reminders are optional and sit outside the Sunnah calendar. They are built into the app rather than written in the content files, and have no sources.
+
+- **Choice.** Push, In-app or Off, asked in setup and changed in Reminders or on the detail screen. It is Off until the user chooses, so phones that update the app don't start getting prayer pushes. The Recommended and In-app only presets leave it as it is, and it doesn't make the choices custom.
+- **Cards.** From each prayer time, a card titled with the prayer: Fajr, Ẓuhr, ʿAṣr, Maghrib or ʿIshāʾ. It reads "Mark it done once you’ve prayed." and has a Done tick. It stays until the next prayer time: Fajr until sunrise, Ẓuhr until ʿAṣr, ʿAṣr until Maghrib, Maghrib until ʿIshāʾ, and ʿIshāʾ until the next Fajr. On Friday the midday card is still Ẓuhr, at Ẓuhr time. Ticks are saved for each prayer and day, under keys such as `prayers.fajr:2026-12-14`.
+- **Pushes.** With Push, a notification as each prayer time begins, such as "Time for Fajr", with Done and Later, on the Prayer times channel. Done ticks the card. The app plans them two weeks ahead and tops them up from the background task, so they don't crowd out other reminders.
+- **Prayer settings.** The times use the place, calculation method and ʿAṣr rule from Settings. Changing any of them moves every card and scheduled prayer push at once.
+- **Quiet hours.** Fajr, and ʿIshāʾ in summer, often fall in quiet hours, so prayer pushes come on time by default. A switch in Quiet hours holds them instead. A held push waits until quiet hours end, if the prayer's time hasn't ended, and is dropped otherwise.
+- **Left out.** Prayer cards don't appear in Coming up or on Upcoming, and the push estimate lists them separately, as "5 prayer times a day".
+- **Timing.** Like every local reminder, prayer pushes use approximate alarms with no exact-alarm permission, so Android may deliver one a few minutes late.
+
 ## Sunnah detail
 
 The detail screen opens from a card, a banner, a Coming up or Upcoming row, an item in Reminders, or a push. Its title moves into the top bar on scroll. From top to bottom:
@@ -81,7 +94,7 @@ The detail screen opens from a card, a banner, a Coming up or Upcoming row, an i
 - **What to do.** The full text from the calendar. While the item is active, its tick and tracker sit under the text.
 - **Quran.com,** a button on al-Kahf and al-Sajdah that opens the surah.
 - **Duʿāʾ,** for items that have one: the Arabic, the transliteration and the English meaning, with a Copy button. The calendar has only the transliteration and meaning, so the Arabic text needs to be added to the shared JSON. The prototype already has the Arabic for all seven.
-- **Sources.** Grading notes and differences of opinion come first, in full, as written in the calendar. Hadith and Qurʾan rows show the source label and any available grade. Expand a row for the Arabic excerpt, its English meaning, the narrator where applicable, translation credit and the link. Book and fatwa rows link to the source.
+- **Sources.** Left out for prayer times, which have none. Grading notes and differences of opinion come first, in full, as written in the calendar. Hadith and Qurʾan rows show the source label and any available grade. Expand a row for the Arabic excerpt, its English meaning, the narrator where applicable, translation credit and the link. Book and fatwa rows link to the source.
 - **Your reminder.** The item's Push, In-app or Off control, with a line on what the choice means, such as "A push about 45 minutes before Maghrib." It can be changed here without going to Settings.
 - **Report a problem with this item.** This opens a sheet with the item, its ID, the content version, the app version and a box to describe the problem. "Open the issue form" opens an issue form with all of these filled in. Over-the-air updates mean a fix can ship within days.
 - **Weather credit** on weather items, the same as on their cards.
@@ -122,11 +135,11 @@ The Settings tab says "Saved on this phone. No account needed." Its rows come in
 | Group | Setting | Choices | Notes |
 |---|---|---|---|
 | Reminders | **Reminders** | Opens the Reminders screen | The row shows the preset and the pushes a week. |
-| | **Notifications** | Opens the phone's notification settings for the app | Six channels, including two for date corrections. |
-| | **Quiet hours** | Start and end, 10 pm to 7 am by default. A switch lets eclipses notify in quiet hours, off by default. | Lunar eclipses often happen at night. See below. |
+| | **Notifications** | Opens the phone's notification settings for the app | Seven channels, including Prayer times and two for date corrections. |
+| | **Quiet hours** | Start and end, 10 pm to 7 am by default. A switch lets eclipses notify in quiet hours, off by default. Another lets prayer times notify in quiet hours, on by default. | Lunar eclipses often happen at night, and Fajr often falls in quiet hours. See below. |
 | | **Pause fasting reminders** | 3, 7 or 14 days, or until turned back on | Also on the Reminders screen. |
 | Place and time | **Location** | Current location, or a city from a search | With current location, the area updates each time the app opens. Picking a city also picks its suggested prayer method. |
-| | **Prayer times** | Calculation method. ʿAṣr: standard or Ḥanafī. | The sheet names the method suggested for the location and previews today's ʿAṣr and Maghrib. |
+| | **Prayer times** | Calculation method. ʿAṣr: standard or Ḥanafī. | The sheet names the method suggested for the location and previews today's ʿAṣr and Maghrib. Prayer-time cards and pushes follow it. |
 | | **Jumuʿah time** | At Ẓuhr, or a fixed time | Defaults to Ẓuhr. Many mosques hold Jumuʿah at a set time. The push 2 hours before and the after-Jumuʿah card use this time. |
 | | **Hijri date** | Umm al-Qura by default, or tabular. Shift by −1, 0 or +1 days. | The sheet previews today's Hijri date, explains how offers work and lists accepted corrections, each with Remove. |
 | This year | **Uḍḥiyah this year** | Yes, No or Not set | Not set means Today asks in mid-Dhul-Qaʿdah. It resets each year. |
@@ -146,7 +159,8 @@ Each item has up to three choices:
 | **In-app** | A card on Today during its window, with no notification |
 | **Off** | No notification and no card |
 
-- **A live total** at the top adds up the pushes a week, a month and a year, plus weather. Under it, **Recommended** and **In-app only** set every item at once. Any other mix shows as custom choices, with a Reset button.
+- **A live total** at the top adds up the pushes a week, a month and a year, plus prayer times and weather. Under it, **Recommended** and **In-app only** set every item at once, except prayer times. Any other mix shows as custom choices, with a Reset button.
+- **Prayer times** sits under the total, as its own card with Push, In-app and Off and a line on what the choice means. Its title opens its detail screen. See [Prayer times](#prayer-times).
 - **Defaults** follow the calendar's tiers. Push items offer all three choices. In-app items offer only In-app and Off, because the calendar gives them no push time.
 - **Pause fasting reminders** sits under the total. Its switch pauses for 7 days, with Undo, and chips change that to 3, 7 or 14 days or until turned back on. It gives no reason and asks for none, so it covers illness, travel and periods alike. Fasting cards, pushes and bells stop, and nothing else changes. Fasting items are tagged in the shared JSON so the pause can find them.
 - **Groups** follow the calendar: Weekly, Monthly, Yearly, and Weather and eclipses. Each group expands to its items, shows how many of them push, and has a switch. Turning a group off and on again restores the choices made inside it, and picking a choice inside an off group turns the group back on. Yearly items appear in Hijri month order, under month headings, with the sacred months under "Through the year". Each item's name opens its detail screen.
@@ -168,7 +182,7 @@ Each item has up to three choices:
 - **Tapping** a push opens that item's detail screen. The combined Friday push opens Today instead, because it covers two items.
 - **Later** is on every push. It sends the push once more an hour later, if its window is still open.
 - **Done** ticks the item, like the tick on its card. Only pushes for items with a Done tick have it. Fasting pushes come the evening before, so they have only Later, and so does the combined Friday push.
-- **Android channels:** Weekly, Monthly, Yearly, Weather and eclipses, Date corrections, and Date corrections (silent) for quiet hours.
+- **Android channels:** Weekly, Monthly, Yearly, Weather and eclipses, Prayer times, Date corrections, and Date corrections (silent) for quiet hours.
 - **Wording** is short: what's coming, then one line on what to do, such as "Tomorrow is Monday, a Sunnah fast". Weather wording stays soft, such as "Rain is likely starting in your area", because the data is a forecast.
 
 ## A week in the app
@@ -210,7 +224,7 @@ The calendar gives each item's window in words. The prototype turns these into t
 
 ## Left out of version 1
 
-- **Prayer-time and Qibla screens.** The app uses adhan-js to time reminders, but it isn't a prayer-time app. The day line on Today shows the five times for context only, with no prayer alerts.
+- **Prayer-time and Qibla screens.** The app uses adhan-js to time reminders, but it isn't a prayer-time app. Prayer-time reminders are optional cards and pushes, with no adhan sound, monthly timetable or Qibla direction.
 - **A Qur'an reader.** Recitation items open quran.com instead.
 - **Home-screen widgets.** They need native code, so they wait for a later version.
 - **Accounts and sign-in.**

@@ -1,4 +1,3 @@
-import catalog from '@adwam/content/catalog';
 import { civil, isoAdd, isoParts, type CivilDate, type UpcomingFilter } from '@adwam/core';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
@@ -11,6 +10,7 @@ import { Hero, SectionHeader } from '../../components/headers';
 import { Crescent, Icon, type IconName } from '../../icons';
 import { renderMessage, t, type MessageFormat } from '../../language/messages';
 import { useMessageFormat } from '../../language/useMessageFormat';
+import { reminderCatalog } from '../../state/reminder-catalog';
 import { selectReminderState, selectUpcoming } from '../../state/selectors';
 import { useClock, useReminderStores } from '../../state/useClock';
 import { Prose } from '../../theme/Text';
@@ -31,7 +31,7 @@ export default function UpcomingScreen() {
   const cache = useStore(stores.serverCache, ({ value }) => value);
   const now = useClock();
   const format = useMessageFormat(settings.location?.timeZone);
-  const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
+  const state = selectReminderState(settings, trackers, cache, reminderCatalog);
   const view = state && selectUpcoming(now, state, filter);
   const weeks = useMemo(() => view?.count ? agendaWeeks(view.rows) : [], [view]);
   const { location } = settings;

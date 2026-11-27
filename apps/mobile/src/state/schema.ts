@@ -7,6 +7,7 @@ const date = z.iso.date() as z.ZodType<`${number}-${number}-${number}`>;
 const channels = z.object({
   weekly: z.boolean().optional(), monthly: z.boolean().optional(),
   yearly: z.boolean().optional(), weather: z.boolean().optional(), disputed: z.boolean().optional(),
+  daily: z.boolean().optional(),
 });
 const corrections = z.array(z.object({
   id: z.string().min(1).optional(), year: z.int().positive(), month: z.int().min(1).max(12),
@@ -45,6 +46,7 @@ const reminderPreferences = z.object({
   channels: channels.default({ weekly: true, monthly: true, yearly: true, weather: true }),
   quietHours: z.object({ start: minute, end: minute }).default({ start: 22 * 60, end: 7 * 60 }),
   eclipseQuiet: z.boolean().default(false),
+  prayerQuiet: z.boolean().default(true),
 });
 
 export const setupUsageSchema = z.object({

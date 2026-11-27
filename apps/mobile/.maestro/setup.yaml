@@ -13,11 +13,27 @@ name: Setup paths on Android
 - tapOn: Pick a city
 - runFlow: setup/pick-london.yaml
 - tapOn: Continue
-- assertVisible: Choose your reminders
+- runFlow: setup/prayers-off.yaml
 - tapOn: In-app only
 - tapOn: Continue
 - assertVisible: Today
 - assertNotVisible: 'Allow notifications\?'
+
+# Prayer-time pushes still need permission when every other reminder is in-app only.
+- runFlow: setup/start.yaml
+- tapOn: Pick a city
+- runFlow: setup/pick-london.yaml
+- tapOn: Continue
+- assertVisible: 'Remind you at prayer times\?'
+- assertVisible: 'Times use Muslim World League.*'
+- tapOn: Continue
+- tapOn: In-app only
+- tapOn: Continue
+- assertVisible: 'Allow notifications\?'
+- assertVisible: Prayer times
+- assertNotVisible: Fasts
+- tapOn: Not now
+- assertVisible: Today
 
 - runFlow: setup/start.yaml
 - runFlow: setup/place-and-date.yaml
@@ -69,7 +85,7 @@ name: Setup paths on Android
     timeout: 20000
 - assertVisible: '.* · Yellowknife'
 - tapOn: Continue
-- assertVisible: Choose your reminders
+- runFlow: setup/prayers-off.yaml
 - tapOn: In-app only
 - tapOn: Continue
 - assertVisible: Today
