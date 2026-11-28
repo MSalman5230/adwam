@@ -8,6 +8,8 @@ name: Reminder choices, pause, presets and Upcoming filters
       MOMENT: Friday morning
 - openLink: adwam://reminders
 - assertVisible: Each reminder can push.*
+- assertVisible: Prayer times
+- assertVisible: 'No prayer.time reminders'
 - tapOn: In-app only
 - assertVisible: No pushes
 - tapOn: Recommended

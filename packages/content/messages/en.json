@@ -106,6 +106,15 @@
       "whiteDays": "White Days this month · {{count}} of {{total}}",
       "shawwal": "{{count}} of {{total}} this month",
       "shawwalComplete": "All six done. Shawwāl reminders have stopped."
+    },
+    "prayers": {
+      "title": "Prayer times",
+      "short": "Mark it done once you’ve prayed.",
+      "what": "A card on Today as each of the five daily prayers begins, so you can mark it done once you’ve prayed. Each card stays until the next prayer time, or until sunrise for Fajr.",
+      "when": "Every day, at each prayer time. The times follow your location and prayer settings.",
+      "pushNote": "A push as each prayer time begins.",
+      "pushTitle": "Time for {{prayer}}",
+      "pushBody": "Mark it done once you’ve prayed."
     }
   },
   "upcoming": {
@@ -322,12 +331,22 @@
       "sameDay": "0",
       "nextDay": "+1"
     },
+    "prayers": {
+      "title": "Remind you at prayer times?",
+      "body": "Adwam can tell you as each of the five prayers begins in {{city}}, and you can mark each one done on Today.",
+      "method": "Times use {{method}}. If you change the method in Settings, the reminders follow it.",
+      "push": "A push as each prayer begins, and a card on Today.",
+      "pushDetail": "5 pushes a day",
+      "inapp": "A card on Today as each prayer begins. No pushes.",
+      "off": "No prayer-time reminders. You can turn them on later in Reminders."
+    },
     "reminders": {
       "title": "Choose your reminders",
       "body": "You can change any of these later in Settings.",
       "recommended": "Each reminder at its usual level: Monday and Thursday fasts, Friday, White Days, Ramadan, Eid and more.",
       "estimated": "About 4 pushes a week",
-      "inapp": "No notifications. Everything still shows on Today.",
+      "inapp": "Other reminders stay in the app. Your prayer notification choice stays the same.",
+      "inappHint": "No other pushes",
       "choose": "Let me choose",
       "chooseBody": "Start from Recommended, then set each reminder yourself.",
       "chooseHint": "Opens the reminder list"
@@ -335,6 +354,8 @@
     "notifications": {
       "title": "Allow notifications?",
       "body": "So we can remind you of the Monday fast, Friday, Ramadan and Eid. Never during your quiet hours, {{start, time}} to {{end, time}}.",
+      "bodyPrayers": "So we can tell you as each prayer begins, and remind you of the Monday fast, Friday, Ramadan and Eid. Other reminders stay out of your quiet hours, {{start, time}} to {{end, time}}.",
+      "bodyPrayersOnly": "So we can tell you as each of the five prayers begins. They can come during your quiet hours, {{start, time}} to {{end, time}}, unless you hold them in Settings.",
       "sample": "A reminder looks like this",
       "sampleDate": "Sun 6:02 pm",
       "sampleTitle": "Tomorrow is Monday, a Sunnah fast",
@@ -343,6 +364,8 @@
       "fastTime": "The evening before, after ʿIshāʾ.",
       "friday": "Friday",
       "fridayTime": "About 2 hours before Jumuʿah, and near Maghrib.",
+      "prayers": "Prayer times",
+      "prayersTime": "As each of the five prayers begins, even in quiet hours.",
       "weather": "Weather",
       "weatherTime": "Only the first rain after a dry week, at most once a day."
     }
@@ -420,8 +443,16 @@
     "monthly": "{{count}} a month",
     "yearly": "{{count}} a year",
     "weather": "weather when it matters",
+    "daily_one": "{{count}} prayer time a day",
+    "daily_other": "{{count}} prayer times a day",
     "plus": "Plus {{text}}",
     "nothingElse": "Nothing else.",
+    "prayers": {
+      "title": "Prayer times",
+      "push": "A push and a card on Today as each of the five prayers begins",
+      "inapp": "A card on Today as each prayer begins, with no push",
+      "off": "No prayer-time reminders"
+    },
     "preferred": "Recommended",
     "inappOnly": "In-app only",
     "custom": "Custom",
@@ -443,7 +474,8 @@
       "monthly": "Monthly",
       "yearly": "Yearly",
       "weather": "Weather and eclipses",
-      "disputed": "Disputed"
+      "disputed": "Disputed",
+      "daily": "Daily"
     },
     "groupCount_one": "{{count}} reminder · {{detail}}",
     "groupCount_other": "{{count}} reminders · {{detail}}",
@@ -523,7 +555,9 @@
       "ends": "Ends",
       "timeControl": "{{label}}, {{time}}",
       "eclipse": "Eclipses can notify in quiet hours",
-      "eclipseHint": "Lunar eclipses often happen at night."
+      "eclipseHint": "Lunar eclipses often happen at night.",
+      "prayers": "Prayer times can notify in quiet hours",
+      "prayersHint": "Fajr, and ʿIshāʾ in summer, often fall in quiet hours. When this is off, a prayer push waits until quiet hours end, if its time hasn’t ended."
     },
     "pause": {
       "title": "Pause fasting reminders",
@@ -608,6 +642,7 @@
       "monthly": "Monthly",
       "yearly": "Yearly",
       "weather": "Weather and eclipses",
+      "daily": "Prayer times",
       "corrections": "Date corrections",
       "corrections-silent": "Date corrections (silent)"
     }

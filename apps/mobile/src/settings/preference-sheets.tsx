@@ -58,7 +58,7 @@ function ToggleRow({ title, description, checked, onChange }: {
 }
 
 export function QuietSheet({ settings, format, update, onClose }: SettingsProps & { format: MessageFormat }) {
-  const { quietHours, eclipseQuiet } = settings.reminders;
+  const { quietHours, eclipseQuiet, prayerQuiet } = settings.reminders;
   const setTime = (field: 'start' | 'end', minute: number) => update((value) => ({
     ...value, reminders: { ...value.reminders, quietHours: { ...value.reminders.quietHours, [field]: minute } },
   }));
@@ -70,6 +70,8 @@ export function QuietSheet({ settings, format, update, onClose }: SettingsProps 
       </View>
       <ToggleRow title={t('sheet.quiet.eclipse')} description={t('sheet.quiet.eclipseHint')} checked={eclipseQuiet}
         onChange={(checked) => update((value) => ({ ...value, reminders: { ...value.reminders, eclipseQuiet: checked } }))} />
+      <ToggleRow title={t('sheet.quiet.prayers')} description={t('sheet.quiet.prayersHint')} checked={prayerQuiet}
+        onChange={(checked) => update((value) => ({ ...value, reminders: { ...value.reminders, prayerQuiet: checked } }))} />
     </Sheet>
   );
 }

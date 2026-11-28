@@ -22,6 +22,7 @@ type PrototypeUpcoming = {
 } & ({ kind: 'month' } | { kind: 'item'; o: PrototypeOccurrence });
 
 export type PrototypeState = {
+  choice?: Record<string, 'push' | 'inapp' | 'off'>;
   done?: Record<string, boolean>;
   fastLog?: Record<CivilDate, boolean>;
   notif?: 'unset' | 'denied' | 'granted';

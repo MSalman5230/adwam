@@ -20,6 +20,8 @@ export type ReminderPreferences = Readonly<{
   channels?: Readonly<Partial<Record<ContentGroup, boolean>>>;
   quietHours?: QuietHours;
   eclipseQuiet?: boolean;
+  /** Whether prayer-time pushes still arrive during quiet hours. On unless the user turns it off. */
+  prayerQuiet?: boolean;
 }>;
 export type ReminderTracking = Readonly<{
   done?: Readonly<Record<string, boolean>>;

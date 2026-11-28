@@ -27,6 +27,7 @@ export function duaCredit(evidenceId: string): string | undefined {
 
 export function Sources({ entry, openLink }: { entry: GroupedSunnah; openLink: (url: string) => void }) {
   const { palette } = useTheme();
+  if (!entry.evidence.length && !entry.notes?.length) return null;
   return <>
     <SectionHeader title={t('detail.sources')} />
     {entry.notes?.map((note) => (

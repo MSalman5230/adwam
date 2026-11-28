@@ -1,8 +1,8 @@
-import catalog from '@adwam/content/catalog';
 import { laterFor, MINUTE_MS, planNotifications, type PlannedNotification } from '@adwam/core';
 import { cancelScheduledNotificationAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
 
 import { deviceStores } from '../state/native';
+import { reminderCatalog } from '../state/reminder-catalog';
 import { selectReminderState } from '../state/selectors';
 import { recordScheduleCounts } from './crash-reporting';
 import type { ScheduleCounts } from './crash-event';
@@ -37,7 +37,7 @@ async function reconcile() {
     ]);
     const { settings, trackers, serverCache } = deviceStores;
     const saved = settings.getState().value;
-    const state = saved.setupDone && selectReminderState(saved, trackers.getState().value, serverCache.getState().value, catalog.sunnahs);
+    const state = saved.setupDone && selectReminderState(saved, trackers.getState().value, serverCache.getState().value, reminderCatalog);
     const now = Date.now();
     const plan = state ? planNotifications(now, state) : [];
     const missing = new Map<string, PlannedNotification>(plan.map((push) => [push.id, push]));

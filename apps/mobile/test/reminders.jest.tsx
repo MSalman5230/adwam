@@ -1,20 +1,21 @@
-import catalog from '@adwam/content/catalog';
 import { afterEach, beforeEach, expect, it, jest } from '@jest/globals';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, within } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import RemindersScreen from '../src/app/reminders';
 import { t } from '../src/language/messages';
 import { settingsStore } from '../src/state/native';
+import * as reminderCatalog from '../src/state/reminder-catalog';
 import { defaultSettings } from '../src/state/schema';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
 import { setFixedClock } from './fixed-clock';
 
 const mockDismiss = jest.fn();
+const mockPush = jest.fn();
 let mockFromSetup: string | undefined;
 jest.mock('expo-router', () => ({
   useLocalSearchParams: () => ({ fromSetup: mockFromSetup }),
-  useRouter: () => ({ dismissTo: mockDismiss }),
+  useRouter: () => ({ dismissTo: mockDismiss, push: mockPush }),
 }));
 jest.mock('@adwam/content/catalog', () => {
   const example = { status: 'review', short: 'A practice.', when: 'After prayer.', what: ['A practice.'], evidence: [], duas: [], occurrences: [] };
@@ -40,6 +41,10 @@ afterEach(async () => {
   settingsStore.getState().update(defaultSettings);
 });
 
+const choices = (id: string) => within(screen.getByTestId(`reminders-${id}`));
+// Prose keeps hyphenated words together with non-breaking hyphens.
+const prose = (text: string) => text.replace(/(?<=\p{L})-(?=\p{L})/gu, '‑');
+
 function renderReminders() {
   return render(<SafeAreaProvider initialMetrics={{
     frame: { x: 0, y: 0, width: 412, height: 915 },
@@ -56,14 +61,15 @@ it('restores saved choices, re-enables an off group when edited, and resets the 
   const name = t('reminders.group.weekly');
   expect(screen.queryByText('Hidden item')).toBeNull();
   const switchForWeekly = () => screen.getByRole('switch', { name });
-  const inApp = () => screen.getByRole('radio', { name: t('reminders.inapp') });
+  const monday = () => choices('monthu');
+  const inApp = () => monday().getByRole('radio', { name: t('reminders.inapp') });
   expect(inApp()).toBeChecked();
   await fireEvent.press(switchForWeekly());
   expect(screen.getByText(t('reminders.restoreChoices'))).toBeOnTheScreen();
   await fireEvent.press(switchForWeekly());
   expect(inApp()).toBeChecked();
   await fireEvent.press(switchForWeekly());
-  await fireEvent.press(screen.getByRole('radio', { name: t('reminders.push') }));
+  await fireEvent.press(monday().getByRole('radio', { name: t('reminders.push') }));
   expect(switchForWeekly()).toBeChecked();
 
   // Changing the group manually leaves a distinct custom combination.
@@ -106,27 +112,51 @@ it('gates hair and nails by the yearly answer and offers no Push for disputed it
   await renderReminders();
   await fireEvent.press(screen.getByRole('button', { name: t('reminders.group.weekly') }));
   const yearly = () => screen.getByRole('button', { name: t('reminders.group.yearly') });
-  const push = () => screen.queryByRole('radio', { name: t('reminders.push') });
+  // The prayer-time card always offers Push, so count the others.
+  const pushes = () => screen.queryAllByRole('radio', { name: t('reminders.push') }).length - 1;
   await fireEvent.press(yearly());
   expect(screen.getByRole('header', { name: t('reminders.throughYear') })).toBeOnTheScreen();
-  expect(push()).toBeNull();
+  expect(pushes()).toBe(0);
   await fireEvent.press(screen.getByRole('button', { name: t('reminders.setUdhiyah') }));
   await fireEvent.press(screen.getByRole('radio', { name: t('sheet.udhiyah.yes') }));
-  expect(push()).toBeOnTheScreen();
+  expect(choices('hair-nails').getByRole('radio', { name: t('reminders.push') })).toBeOnTheScreen();
   await fireEvent.press(yearly());
 
   await fireEvent.press(screen.getByRole('button', { name: t('reminders.disputedTitle') }));
-  expect(push()).toBeNull();
-  await fireEvent.press(screen.getByRole('radio', { name: t('reminders.inapp') }));
+  expect(pushes()).toBe(0);
+  await fireEvent.press(choices('disputed-item').getByRole('radio', { name: t('reminders.inapp') }));
   expect(screen.getByText(t('reminders.disputedOn', { count: 1 }).replace('in-app', 'in‑app'))).toBeOnTheScreen();
 });
 
+it('sets prayer-time reminders on their own, outside the presets', async () => {
+  await renderReminders();
+  const prayers = () => choices('prayers');
+  expect(prayers().getByRole('radio', { name: t('reminders.off') })).toBeChecked();
+  expect(screen.getByText(prose(t('reminders.prayers.off')))).toBeOnTheScreen();
+
+  await fireEvent.press(prayers().getByRole('radio', { name: t('reminders.push') }));
+  expect(settingsStore.getState().value.reminders.choice).toEqual({ prayers: 'push' });
+  expect(screen.getByText(prose(t('reminders.prayers.push')))).toBeOnTheScreen();
+  expect(screen.getByText(t('reminders.plus', { text: t('reminders.daily', { count: 5 }) }))).toBeOnTheScreen();
+  expect(screen.getByRole('radio', { name: t('reminders.preferred') })).toBeChecked();
+
+  await fireEvent.press(screen.getByRole('radio', { name: t('reminders.inappOnly') }));
+  expect(screen.getByRole('radio', { name: t('reminders.inappOnly') })).toBeChecked();
+  expect(prayers().getByRole('radio', { name: t('reminders.push') })).toBeChecked();
+  expect(settingsStore.getState().value.reminders.choice).toEqual({ monthu: 'inapp', 'hair-nails': 'inapp', prayers: 'push' });
+
+  await fireEvent.press(screen.getByRole('button', { name: t('reminders.prayers.title') }));
+  expect(mockPush).toHaveBeenCalledWith({ pathname: '/item/[id]', params: { id: 'prayers' } });
+});
+
 it('omits the Disputed group when no disputed reminders ship', async () => {
-  const replacement = jest.replaceProperty(catalog, 'sunnahs', catalog.sunnahs.filter(({ group }) => group !== 'disputed'));
+  const replacement = jest.replaceProperty(reminderCatalog, 'reminderCatalog',
+    reminderCatalog.reminderCatalog.filter(({ group }) => group !== 'disputed'));
   try {
     await renderReminders();
     expect(screen.getByRole('button', { name: t('reminders.group.yearly') })).toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: t('reminders.disputedTitle') })).toBeNull();
+    expect(screen.getByRole('button', { name: t('reminders.prayers.title') })).toBeOnTheScreen();
   } finally {
     replacement.restore();
   }

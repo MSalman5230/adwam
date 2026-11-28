@@ -7,7 +7,7 @@ import { isDone, pushAllowed, reminderOccurrences, type ReminderState } from './
 export const serverNotificationKind = 'adwam-server-v1';
 
 export type NotificationState = ReminderState & { platform?: 'android' | 'ios' };
-type Channel = 'weekly' | 'monthly' | 'yearly' | 'weather';
+type Channel = 'weekly' | 'monthly' | 'yearly' | 'weather' | 'daily';
 type Button = 'done' | 'later';
 
 export type PlannedNotification = Readonly<{
@@ -30,6 +30,16 @@ const months = [
 ] as const;
 
 type Candidate = { occurrence: Occurrence; push: OccurrencePush; combined?: boolean };
+
+/** Other reminders are planned 60 days ahead, and at most this many wait on Android at once. */
+const androidLimit = 150;
+/** iOS keeps at most 64 waiting notifications for an app. This leaves room for Later. */
+const iosLimit = 60;
+/**
+ * Prayer-time pushes come five a day, so they are planned for fewer days and, on Android,
+ * don't count toward the other reminders' limit. The background task tops them up.
+ */
+const prayerDays = { android: 14, ios: 3 } as const;
 
 function collect(date: CivilDate, fromOffset: number, toOffset: number, state: ReminderState): Candidate[] {
   const found: Candidate[] = [];
@@ -61,12 +71,17 @@ function baseId(push: OccurrencePush): string {
   return `${push.tickKey}|${push.key ?? 'main'}`;
 }
 
+function notifiesInQuietHours({ occurrence, push }: Candidate, preferences: ReminderState['preferences']): boolean {
+  if (occurrence.event && 'eclipse' in occurrence.event) return preferences.eclipseQuiet === true;
+  return push.group === 'daily' && preferences.prayerQuiet !== false;
+}
+
 function scheduledAt(candidate: Candidate, state: ReminderState): number | undefined {
   const { occurrence, push } = candidate;
   const { preferences, calendar } = state;
   const quiet = quietInterval(push.at, calendar.place.timeZone, preferences.quietHours);
-  if (!quiet) return push.at;
-  if (occurrence.event && 'eclipse' in occurrence.event) return preferences.eclipseQuiet ? push.at : undefined;
+  if (!quiet || notifiesInQuietHours(candidate, preferences)) return push.at;
+  if (occurrence.event && 'eclipse' in occurrence.event) return;
   if (push.quiet === 'drop') return;
   if (push.quiet === 'advance') return quiet.start - MINUTE_MS;
   return quiet.end < occurrence.end ? quiet.end : undefined;
@@ -103,22 +118,30 @@ export function planNotifications(now: number, state: NotificationState): Planne
   if (state.preferences.notifications !== 'granted') return [];
   const { timeZone } = state.calendar.place;
   const { iso: date, min } = civil(now, timeZone);
+  const ios = state.platform === 'ios';
   const through = localToMs(isoAdd(date, 60), min, timeZone);
+  const prayersThrough = localToMs(isoAdd(date, ios ? prayerDays.ios : prayerDays.android), min, timeZone);
   const local = withEclipses(state, date, 61);
   const plan = combineFridays(collect(date, -1, 61, local)).flatMap((candidate) => {
     const at = scheduledAt(candidate, state);
-    if (at === undefined || at <= now || at >= through || at >= candidate.occurrence.end) return [];
+    const until = candidate.push.group === 'daily' ? prayersThrough : through;
+    if (at === undefined || at <= now || at >= until || at >= candidate.occurrence.end) return [];
     return [notification(candidate, at)];
   }).sort((a, b) => a.at - b.at || a.id.localeCompare(b.id, 'en'));
 
-  const cap = state.platform === 'ios' ? 60 : 150;
   const seen = new Set<string>();
   const result: PlannedNotification[] = [];
+  let reminders = 0;
   for (const push of plan) {
     if (seen.has(push.id)) continue;
-    result.push(push);
-    if (result.length === cap) break;
     seen.add(push.id);
+    if (ios) {
+      if (result.length === iosLimit) break;
+    } else if (push.channel !== 'daily') {
+      if (reminders === androidLimit) continue;
+      reminders += 1;
+    }
+    result.push(push);
   }
   return result;
 }
@@ -134,7 +157,6 @@ export function laterFor(id: string, now: number, state: NotificationState): Pla
   if (originallyScheduled === undefined || originallyScheduled > now) return;
   const at = now + 60 * MINUTE_MS;
   if (at < found.occurrence.start || at >= found.occurrence.end) return;
-  if (quietInterval(at, timeZone, state.preferences.quietHours) &&
-      !(found.occurrence.event && 'eclipse' in found.occurrence.event && state.preferences.eclipseQuiet)) return;
+  if (quietInterval(at, timeZone, state.preferences.quietHours) && !notifiesInQuietHours(found, state.preferences)) return;
   return notification(found, at, true);
 }

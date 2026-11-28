@@ -1,4 +1,4 @@
-import type { ContentGroup, GroupedSunnah } from '@adwam/content/schema';
+import type { GroupedSunnah } from '@adwam/content/schema';
 import { hijriMonths, level, type CivilDate, type Preset, type PushEstimate, type ReminderLevel, type ReminderState } from '@adwam/core';
 import { useMemo, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -8,6 +8,7 @@ import { Icon } from '../icons';
 import { t } from '../language/messages';
 import { PauseDurationChips } from '../settings/PauseDurationChips';
 import type { PauseDays } from '../settings/fasting-pause';
+import { prayerEntry } from '../state/reminder-catalog';
 import { reminderOptions } from '../state/reminder-choices';
 import { Prose } from '../theme/Text';
 import { useTheme } from '../theme/ThemeProvider';
@@ -22,9 +23,10 @@ const presetOptions = [
 
 export function PresetCard({ estimate, preset, onChange }: { estimate: PushEstimate; preset: Preset; onChange: (value: Preset) => void }) {
   const { palette } = useTheme();
-  const { weekly, monthly, yearly, weather, none } = estimate;
+  const { daily, weekly, monthly, yearly, weather, none } = estimate;
   const total = weekly ? t('reminders.weekly', { count: weekly }) : t('reminders.noWeekly');
   const other = [
+    daily ? t('reminders.daily', { count: daily }) : '',
     monthly ? t('reminders.monthly', { count: monthly }) : '',
     yearly ? t('reminders.yearly', { count: yearly }) : '',
     weather ? t('reminders.weather') : '',
@@ -41,6 +43,23 @@ export function PresetCard({ estimate, preset, onChange }: { estimate: PushEstim
       <Prose style={[typography.caption, { color: palette.ink2 }]}>{t('reminders.customChoices')}</Prose>
       <Button label={t('common.reset')} icon="restart_alt" variant="text" small onPress={() => onChange('recommended')} />
     </View>}
+  </Panel>;
+}
+
+export function PrayerTimesCard({ choice, onChoice, onOpen }: {
+  choice: ReminderLevel; onChoice: (value: ReminderLevel) => void; onOpen: () => void;
+}) {
+  const { palette } = useTheme();
+  const title = t('reminders.prayers.title');
+  return <Panel style="prayers">
+    <Pressable accessibilityRole="button" accessibilityLabel={title} onPress={onOpen} style={styles.itemTitle}>
+      <Prose style={[typography.cardTitle, styles.itemName]}>{title}</Prose>
+      <Icon name="chevron_right" size={18} color={palette.ink3} />
+    </Pressable>
+    <Prose accessibilityLiveRegion="polite" style={[typography.caption, { color: palette.ink2 }]}>{t(`reminders.prayers.${choice}`)}</Prose>
+    <View style={styles.prayerOptions}>
+      <Segmented testID="reminders-prayers" label={title} options={reminderOptions(prayerEntry)} value={choice} onChange={onChoice} />
+    </View>
   </Panel>;
 }
 
@@ -67,7 +86,7 @@ type GroupActions = {
 };
 
 export function ReminderGroup({ group, state, year, onToggle, onChoice, onOpen, onUdhiyah }: GroupActions & {
-  group: ContentGroup; state: ReminderState; year: number; onToggle: (enabled: boolean) => void;
+  group: (typeof groupOrder)[number]; state: ReminderState; year: number; onToggle: (enabled: boolean) => void;
 }) {
   const { palette } = useTheme();
   const [open, setOpen] = useState(group === 'weekly');
@@ -130,12 +149,13 @@ function ReminderRow({ entry, choice, gated, onChoice, onOpen, onUdhiyah }: Grou
       <Prose style={[typography.small, { color: palette.ink2 }]}>{t('reminders.udhiyahOnly')}</Prose>
       <Button label={t('reminders.setUdhiyah')} variant="text" small onPress={onUdhiyah} style={styles.udhiyahLink} />
     </> : <View style={styles.levelOptions}>
-      <Segmented label={entry.title} options={reminderOptions(entry)} value={choice} onChange={(value) => onChoice(entry, value)} />
+      <Segmented testID={`reminders-${entry.id}`} label={entry.title} options={reminderOptions(entry)} value={choice}
+        onChange={(value) => onChoice(entry, value)} />
     </View>}
   </View>;
 }
 
-function Panel({ children, style }: { children: ReactNode; style?: 'summary' | 'pause' }) {
+function Panel({ children, style }: { children: ReactNode; style?: 'summary' | 'pause' | 'prayers' }) {
   const { palette } = useTheme();
   return <View style={[styles.panel, style && styles[style], { backgroundColor: palette.surface, borderColor: palette.hair }]}>{children}</View>;
 }
@@ -156,6 +176,8 @@ const styles = StyleSheet.create({
   presetOptions: { marginTop: 14 },
   custom: { marginTop: 6, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' },
   pause: { paddingVertical: 14, paddingLeft: 16, paddingRight: 14 },
+  prayers: { paddingTop: 4, paddingBottom: 14, paddingHorizontal: 16 },
+  prayerOptions: { marginTop: 10 },
   pauseHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   pauseOptions: { marginTop: 8 },
   grow: { flex: 1 },

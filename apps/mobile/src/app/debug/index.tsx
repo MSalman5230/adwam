@@ -1,4 +1,3 @@
-import catalog from '@adwam/content/catalog';
 import { planNotifications } from '@adwam/core';
 import {
   addNotificationReceivedListener, cancelAllScheduledNotificationsAsync, dismissAllNotificationsAsync,
@@ -23,6 +22,7 @@ import { simulateServerRain } from '../../services/server-sync';
 import { scheduledTime } from '../../services/notification-request';
 import { deviceStores, settingsStore } from '../../state/native';
 import { moments } from '../../state/moments';
+import { reminderCatalog } from '../../state/reminder-catalog';
 import { defaultServerCache, defaultSettings, defaultTrackers } from '../../state/schema';
 import { selectReminderState } from '../../state/selectors';
 import { setDebugMoment, setDebugTime, useClock, useReminderStores } from '../../state/useClock';
@@ -40,7 +40,7 @@ export default function DebugScreen() {
   const cache = useStore(stores.serverCache, ({ value }) => value);
   const now = useClock();
   const format = useMessageFormat(settings.location?.timeZone);
-  const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
+  const state = selectReminderState(settings, trackers, cache, reminderCatalog);
   const planned = useMemo(() => state ? planNotifications(now, state) : [], [now, state]);
   const next = planned[0];
   const [connection, setConnection] = useState<'connected' | 'failed'>();

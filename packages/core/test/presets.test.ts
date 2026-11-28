@@ -20,7 +20,7 @@ it('estimates the configured push frequency and counts Friday only once', () => 
   const year = 1448;
   const preferences = { udhiyah: { [year]: 'yes' } } as const;
   const recommended = { ...state, preferences };
-  expect(pushEstimate(recommended, year)).toEqual({ weekly: 4, monthly: 1, yearly: 12, weather: true, none: false });
+  expect(pushEstimate(recommended, year)).toEqual({ daily: 0, weekly: 4, monthly: 1, yearly: 12, weather: true, none: false });
   expect(pushEstimate(recommended, year + 1).yearly).toBe(11);
   expect(pushEstimate({ ...state, preferences: { choice: { 'friday-prep': 'off' } } }, year).weekly).toBe(4);
   expect(pushEstimate({ ...state, preferences: { choice: { 'friday-prep': 'off', kahf: 'inapp' } } }, year).weekly).toBe(3);
@@ -45,7 +45,7 @@ it('identifies each preset and resets only reminder choices and groups when appl
   const inapp = { ...custom, preferences: applyPreset(custom, 'inapp') };
   expect(presetOf(inapp)).toBe('inapp');
   expect(inapp.preferences).toMatchObject({ notifications: 'denied', pause: {} });
-  expect(pushEstimate(inapp, 1448)).toEqual({ weekly: 0, monthly: 0, yearly: 0, weather: false, none: true });
+  expect(pushEstimate(inapp, 1448)).toEqual({ daily: 0, weekly: 0, monthly: 0, yearly: 0, weather: false, none: true });
   expect(presetOf({ ...inapp, preferences: applyPreset(inapp, 'recommended') })).toBe('recommended');
 });
 

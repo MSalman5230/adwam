@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 
+import english from '../../content/messages/en.json';
 import { selectContent } from '../../content/scripts/build.ts';
 import { checkedContent } from '../../content/scripts/check.ts';
 import { calendarSettings, compareDay, places } from '../../../tools/prototype-match/compare.ts';
@@ -8,6 +9,7 @@ import { isoAdd, localToMs, type CivilDate } from '../src/civil';
 import { day } from '../src/day';
 import { hijriMonthStart } from '../src/hijri';
 import type { NotificationState } from '../src/notifications';
+import { prayerReminder, reminderPrayers, type PrayerReminderCopy } from '../src/prayer-reminders';
 import { reminderOccurrences } from '../src/rules';
 import { todayState } from '../src/views';
 
@@ -15,6 +17,20 @@ const { sunnahs } = selectContent(await checkedContent(), true);
 const stateFor = (calendar: NotificationState['calendar']): NotificationState => ({
   calendar, catalog: sunnahs, tracking: { makeup: 3 },
   preferences: { notifications: 'granted', udhiyah: { 1447: 'yes', 1448: 'yes', 1449: 'yes', 1450: 'yes' } },
+});
+
+// The prototype builds in the prayer-time reminder, so core's side adds the app's built-in entry, at Push on both sides.
+const copy = english.reminder.prayers;
+const prayers = prayerReminder({
+  title: copy.title, short: copy.short, what: [copy.what], when: copy.when, pushNote: copy.pushNote,
+  prayers: Object.fromEntries(reminderPrayers.map((prayer) => {
+    const title = english.calendar.prayer[prayer];
+    return [prayer, { title, pushTitle: copy.pushTitle.replace('{{prayer}}', title), pushBody: copy.pushBody }];
+  })) as PrayerReminderCopy['prayers'],
+});
+const prayerLevel = { choice: { prayers: 'push' } } as const;
+const withPrayers = (state: NotificationState): NotificationState => ({
+  ...state, catalog: [...state.catalog, prayers], preferences: { ...state.preferences, ...prayerLevel },
 });
 
 it('compares two Hijri years in London and samples the other four cities', () => {
@@ -30,8 +46,8 @@ it('compares two Hijri years in London and samples the other four cities', () =>
   }
 
   const differences = cases.flatMap(({ settings, dates }) => {
-    const engine = prototype(settings);
-    const state = stateFor(settings);
+    const engine = prototype(settings, prayerLevel);
+    const state = withPrayers(stateFor(settings));
     return dates.flatMap((date) => compareDay(date, engine, state)
       .map((difference) => ({ city: settings.place.timeZone, ...difference })));
   });

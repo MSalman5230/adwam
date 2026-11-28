@@ -1,0 +1,9 @@
+appId: ${APP_ID}
+---
+- assertVisible: 'Remind you at prayer times\?'
+- scrollUntilVisible:
+    element: 'Off'
+    direction: DOWN
+- tapOn: 'Off'
+- tapOn: Continue
+- assertVisible: Choose your reminders

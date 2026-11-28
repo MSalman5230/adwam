@@ -1,4 +1,4 @@
-import { civil, day, effectiveHijri, isoAdd, isoParts, localToMs, type DaySettings } from '@adwam/core';
+import { civil, day, dayLine, effectiveHijri, isoAdd, isoParts, localToMs, type DaySettings, type ReminderLevel } from '@adwam/core';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -8,6 +8,7 @@ import { useMessageFormat } from '../language/useMessageFormat';
 import { useTheme } from '../theme/ThemeProvider';
 import { brandCrescent } from '../theme/tokens';
 import { typography } from '../theme/typography';
+import { DayLine } from './calendarDisplay';
 import { RadioCard } from './cards';
 import { Segmented } from './controls';
 
@@ -123,7 +124,7 @@ export function SetupReminderChoices({ preset, onChoose }: { preset: SetupPreset
     <View accessibilityRole="radiogroup" accessibilityLabel={t('setup.reminders.title')} style={styles.choices}>
       <RadioCard title={t('reminders.preferred')} subtitle={t('setup.reminders.recommended')} detail={t('setup.reminders.estimated')} detailIcon="notifications"
         selected={preset === 'recommended'} onPress={() => onChoose('recommended')} />
-      <RadioCard title={t('reminders.inappOnly')} subtitle={t('setup.reminders.inapp')} detail={t('reminders.noPushes')} detailIcon="notifications_off"
+      <RadioCard title={t('reminders.inappOnly')} subtitle={t('setup.reminders.inapp')} detail={t('setup.reminders.inappHint')} detailIcon="notifications_off"
         selected={preset === 'inapp'} onPress={() => onChoose('inapp')} />
       <RadioCard title={t('setup.reminders.choose')} subtitle={t('setup.reminders.chooseBody')} detail={t('setup.reminders.chooseHint')} detailIcon="tune"
         selected={preset === 'custom'} onPress={() => onChoose('custom')} />
@@ -131,15 +132,40 @@ export function SetupReminderChoices({ preset, onChoose }: { preset: SetupPreset
   );
 }
 
-export function SetupNotificationPreview({ now, timeZone, quiet }: { now: number; timeZone: string; quiet: { start: number; end: number } }) {
+export function SetupPrayerTimes({ calendar, city, now, choice, onChoose }: {
+  calendar: DaySettings; city: string; now: number; choice: ReminderLevel; onChoose: (choice: ReminderLevel) => void;
+}) {
+  const { palette } = useTheme();
+  const format = useMessageFormat(calendar.place.timeZone);
+  const today = day(civil(now, format.timeZone).iso, calendar);
+  const method = t(`settings.prayerMethodsShort.${calendar.prayer.method}`);
+  return (
+    <View style={styles.details}>
+      <Text style={[typography.setupBody, { color: palette.ink2 }]}>{t('setup.prayers.body', { city })}</Text>
+      <DayLine timeline={dayLine(now, today)} format={format} />
+      <Text style={[typography.supporting, { color: palette.ink2 }]}>{t('setup.prayers.method', { method })}</Text>
+      <View accessibilityRole="radiogroup" accessibilityLabel={t('setup.prayers.title')} style={styles.prayerChoices}>
+        <RadioCard title={t('reminders.push')} subtitle={t('setup.prayers.push')} detail={t('setup.prayers.pushDetail')} detailIcon="notifications"
+          selected={choice === 'push'} onPress={() => onChoose('push')} />
+        <RadioCard title={t('reminders.inapp')} subtitle={t('setup.prayers.inapp')} selected={choice === 'inapp'} onPress={() => onChoose('inapp')} />
+        <RadioCard title={t('reminders.off')} subtitle={t('setup.prayers.off')} selected={choice === 'off'} onPress={() => onChoose('off')} />
+      </View>
+    </View>
+  );
+}
+
+export function SetupNotificationPreview({ now, timeZone, quiet, reminders, prayers }: {
+  now: number; timeZone: string; quiet: { start: number; end: number }; reminders: boolean; prayers: boolean;
+}) {
   const { palette } = useTheme();
   const format = useMessageFormat(timeZone);
   const { iso } = civil(now, timeZone);
   const start = localToMs(iso, quiet.start, timeZone);
   const end = localToMs(iso, quiet.end, timeZone);
+  const body = !prayers ? 'setup.notifications.body' : reminders ? 'setup.notifications.bodyPrayers' : 'setup.notifications.bodyPrayersOnly';
   return (
     <View style={styles.details}>
-      <Text style={[typography.setupBody, { color: palette.ink2 }]}>{t('setup.notifications.body', { start, end }, format)}</Text>
+      <Text style={[typography.setupBody, { color: palette.ink2 }]}>{t(body, { start, end }, format)}</Text>
       <View style={[styles.preview, { backgroundColor: palette.sys, borderColor: palette.hair }]}>
         <Text style={[typography.overline, { color: palette.ink2 }]}>{t('setup.notifications.sample')}</Text>
         <View style={[styles.previewCard, { backgroundColor: palette.surface }]}>
@@ -147,15 +173,29 @@ export function SetupNotificationPreview({ now, timeZone, quiet }: { now: number
             <Crescent size={15} color={palette.green} />
             <Text style={[typography.caption, { color: palette.ink2 }]}>{t('notification.header', { when: t('setup.notifications.sampleDate') })}</Text>
           </View>
-          <Text style={[typography.listTitle, { color: palette.ink }]}>{t('setup.notifications.sampleTitle')}</Text>
-          <Text style={[typography.supporting, { color: palette.ink2 }]}>{t('setup.notifications.sampleBody')}</Text>
-          <Text style={[typography.button, styles.previewAction, { color: palette.green }]}>{t('common.later')}</Text>
+          {reminders ? <>
+            <Text style={[typography.listTitle, { color: palette.ink }]}>{t('setup.notifications.sampleTitle')}</Text>
+            <Text style={[typography.supporting, { color: palette.ink2 }]}>{t('setup.notifications.sampleBody')}</Text>
+            <Text style={[typography.button, styles.previewAction, { color: palette.green }]}>{t('common.later')}</Text>
+          </> : <>
+            <Text style={[typography.listTitle, { color: palette.ink }]}>
+              {t('reminder.prayers.pushTitle', { prayer: t('calendar.prayer.maghrib') })}
+            </Text>
+            <Text style={[typography.supporting, { color: palette.ink2 }]}>{t('reminder.prayers.pushBody')}</Text>
+            <View style={styles.previewActions}>
+              <Text style={[typography.button, { color: palette.green }]}>{t('common.done')}</Text>
+              <Text style={[typography.button, { color: palette.green }]}>{t('common.later')}</Text>
+            </View>
+          </>}
         </View>
       </View>
       <PromiseList>
-        <PromiseRow icon="event" title={t('setup.notifications.fasts')} body={t('setup.notifications.fastTime')} />
-        <PromiseRow icon="mosque" title={t('setup.notifications.friday')} body={t('setup.notifications.fridayTime')} divided />
-        <PromiseRow icon="rainy" title={t('setup.notifications.weather')} body={t('setup.notifications.weatherTime')} divided />
+        {prayers && <PromiseRow icon="schedule" title={t('setup.notifications.prayers')} body={t('setup.notifications.prayersTime')} />}
+        {reminders && <>
+          <PromiseRow icon="event" title={t('setup.notifications.fasts')} body={t('setup.notifications.fastTime')} divided={prayers} />
+          <PromiseRow icon="mosque" title={t('setup.notifications.friday')} body={t('setup.notifications.fridayTime')} divided />
+          <PromiseRow icon="rainy" title={t('setup.notifications.weather')} body={t('setup.notifications.weatherTime')} divided />
+        </>}
       </PromiseList>
     </View>
   );
@@ -176,8 +216,10 @@ const styles = StyleSheet.create({
   monthAbbreviation: { fontSize: 10 },
   weekCaption: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 4, margin: 6 },
   choices: { gap: 10, marginTop: 10 },
+  prayerChoices: { gap: 10 },
   preview: { borderRadius: 20, borderWidth: 1, padding: 14, gap: 10 },
   previewCard: { borderRadius: 15, padding: 14, gap: 3 },
   previewHeading: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 },
   previewAction: { marginTop: 8 },
+  previewActions: { flexDirection: 'row', gap: 24, marginTop: 8 },
 });

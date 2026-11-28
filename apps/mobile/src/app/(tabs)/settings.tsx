@@ -1,4 +1,3 @@
-import catalog from '@adwam/content/catalog';
 import { civil, effectiveHijri, MINUTE_MS, paused, presetOf, pushEstimate } from '@adwam/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
@@ -14,6 +13,7 @@ import { appVersion } from '../../services/app-version';
 import { openNotificationSettings } from '../../services/notification-settings';
 import { HijriSheet, JumuahSheet, LocationSheet, PrayerSheet } from '../../settings/place-time-sheets';
 import { AppearanceSheet, PauseSheet, PrivacySheet, QuietSheet, UdhiyahSheet } from '../../settings/preference-sheets';
+import { reminderCatalog } from '../../state/reminder-catalog';
 import { selectReminderState } from '../../state/selectors';
 import { useClock, useReminderStores } from '../../state/useClock';
 import { isTestBuild } from '../../theme/isTestBuild';
@@ -44,7 +44,7 @@ export default function SettingsScreen() {
   const now = useClock();
   const { location, reminders, prayer, hijri } = settings;
   const format = useMessageFormat(location?.timeZone);
-  const state = selectReminderState(settings, trackers, cache, catalog.sunnahs);
+  const state = selectReminderState(settings, trackers, cache, reminderCatalog);
   if (!state || !location) return null;
   const closeSheet = () => router.setParams({ sheet: undefined });
   const { update } = stores.settings.getState();

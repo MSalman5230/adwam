@@ -48,13 +48,13 @@ export function Button({ label, onPress, variant = 'filled', icon, iconPosition 
 
 type Choice<Value extends string> = { value: Value; label: string; disabled?: boolean };
 
-export function Segmented<Value extends string>({ options, value, onChange, label }: {
-  options: readonly Choice<Value>[]; value: Value; onChange: (value: Value) => void; label: string;
+export function Segmented<Value extends string>({ options, value, onChange, label, testID }: {
+  options: readonly Choice<Value>[]; value: Value; onChange: (value: Value) => void; label: string; testID?: string;
 }) {
   const { palette } = useTheme();
   const stacked = useWindowDimensions().fontScale >= 1.5;
   return (
-    <View accessibilityRole="radiogroup" accessibilityLabel={label} style={[styles.segmented, stacked && styles.stacked,
+    <View testID={testID} accessibilityRole="radiogroup" accessibilityLabel={label} style={[styles.segmented, stacked && styles.stacked,
       { backgroundColor: palette.surface, borderColor: palette.hair2 }]}>
       {options.map((option, index) => {
         const checked = value === option.value;

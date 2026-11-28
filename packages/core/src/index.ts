@@ -39,6 +39,8 @@ export { laterFor, planNotifications, serverNotificationKind } from './notificat
 export type { NotificationState, PlannedNotification } from './notifications';
 export type { QuietHours } from './quiet-hours';
 export { applyPreset, presetOf, pushEstimate } from './presets';
+export { isPrayerReminder, prayerReminder, prayerReminderId, reminderPrayers } from './prayer-reminders';
+export type { PrayerReminderCopy, ReminderPrayer } from './prayer-reminders';
 export type { Preset, PushEstimate } from './presets';
 export { decidePushes, defaultWeatherThresholds, detectEvents } from './weather';
 export type {

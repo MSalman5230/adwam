@@ -1,5 +1,4 @@
-import catalog from '@adwam/content/catalog';
-import { applyPreset, suggestedPrayerMethod, type DaySettings } from '@adwam/core';
+import { applyPreset, suggestedPrayerMethod, type DaySettings, type ReminderLevel } from '@adwam/core';
 import { Link, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { BackHandler, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -8,7 +7,8 @@ import { useStore } from 'zustand';
 
 import { Button } from '../../components/controls';
 import {
-  SetupHijriDate, SetupLocationDetails, SetupNotificationPreview, SetupReminderChoices, SetupWelcome, type SetupPreset,
+  SetupHijriDate, SetupLocationDetails, SetupNotificationPreview, SetupPrayerTimes, SetupReminderChoices, SetupWelcome,
+  type SetupPreset,
 } from '../../components/SetupSteps';
 import { Icon } from '../../icons';
 import { t } from '../../language/messages';
@@ -18,6 +18,8 @@ import { locateCurrentCity } from '../../location/current-city';
 import { requestSetupNotifications } from '../../services/setup-notifications';
 import { track } from '../../services/usage-statistics';
 import { serverCacheStore, settingsStore, trackersStore } from '../../state/native';
+import { prayerEntry, reminderCatalog } from '../../state/reminder-catalog';
+import { setReminderChoice } from '../../state/reminder-choices';
 import type { Settings } from '../../state/schema';
 import { selectReminderState } from '../../state/selectors';
 import { useClock } from '../../state/useClock';
@@ -25,9 +27,11 @@ import { isTestBuild } from '../../theme/isTestBuild';
 import { useTheme } from '../../theme/ThemeProvider';
 import { typography } from '../../theme/typography';
 
-const steps = [1, 2, 3, 4] as const;
+const steps = [1, 2, 3, 4, 5] as const;
 type Step = (typeof steps)[number];
-const titles = { 1: 'setup.location.title', 2: 'setup.hijri.title', 3: 'setup.reminders.title', 4: 'setup.notifications.title' } as const;
+const titles = {
+  1: 'setup.location.title', 2: 'setup.hijri.title', 3: 'setup.prayers.title', 4: 'setup.reminders.title', 5: 'setup.notifications.title',
+} as const;
 
 export default function SetupScreen() {
   const router = useRouter();
@@ -37,6 +41,7 @@ export default function SetupScreen() {
   const now = useClock();
   const [step, setStep] = useState<Step>(1);
   const [preset, setPreset] = useState<SetupPreset>('recommended');
+  const [prayers, setPrayers] = useState<ReminderLevel>('push');
   const [pickerOpen, setPickerOpen] = useState(false);
   const [locating, setLocating] = useState(false);
   const [requesting, setRequesting] = useState(false);
@@ -70,14 +75,14 @@ export default function SetupScreen() {
 
   const finish = (notifications: Settings['reminders']['notifications']) => {
     const state = selectReminderState(settingsStore.getState().value, trackersStore.getState().value,
-      serverCacheStore.getState().value, catalog.sunnahs);
+      serverCacheStore.getState().value, reminderCatalog);
     if (!state || !location) return;
     const reminders = applyPreset(state, preset === 'inapp' ? 'inapp' : 'recommended');
     const properties = { preset, locationMode: location.source, notifications };
-    settingsStore.getState().update((value) => ({
+    settingsStore.getState().update((value) => setReminderChoice({
       ...value, reminders: { ...value.reminders, ...reminders, notifications }, setupDone: true,
       usagePrompt: !value.usageStats, usageSetup: value.usageStats ? undefined : properties,
-    }));
+    }, prayerEntry, prayers));
     if (settings.usageStats) track({ event: 'setup_completed', properties });
     if (preset === 'custom') router.navigate({ pathname: '/reminders', params: { fromSetup: '1' } }, { withAnchor: true });
     else router.replace({ pathname: '/today', params: { setup: '1' } });
@@ -104,11 +109,14 @@ export default function SetupScreen() {
       </>;
       case 2: return calendar && location && <SetupHijriDate calendar={calendar} city={location.name} now={now} shift={hijri.shift}
         onShift={(shift) => settingsStore.getState().update((value) => ({ ...value, hijri: { ...value.hijri, shift } }))} />;
-      case 3: return <>
+      case 3: return calendar && location && <SetupPrayerTimes calendar={calendar} city={location.name} now={now}
+        choice={prayers} onChoose={setPrayers} />;
+      case 4: return <>
         <Text style={[typography.setupBody, { color: palette.ink2 }]}>{t('setup.reminders.body')}</Text>
         <SetupReminderChoices preset={preset} onChoose={setPreset} />
       </>;
-      case 4: return location && <SetupNotificationPreview now={now} timeZone={location.timeZone} quiet={settings.reminders.quietHours} />;
+      case 5: return location && <SetupNotificationPreview now={now} timeZone={location.timeZone} quiet={settings.reminders.quietHours}
+        reminders={preset !== 'inapp'} prayers={prayers === 'push'} />;
     }
   };
 
@@ -136,11 +144,12 @@ export default function SetupScreen() {
         </> : <>
           <Button label={t('common.continue')} disabled={requesting} onPress={() => {
             if (step === 2) setStep(3);
-            else if (step === 3 && preset === 'inapp') finish('unset');
             else if (step === 3) setStep(4);
+            else if (step === 4 && preset === 'inapp' && prayers !== 'push') finish('unset');
+            else if (step === 4) setStep(5);
             else void askNotifications();
           }} />
-          {step === 4 && <Button label={t('common.notNow')} variant="text" style={styles.skip} disabled={requesting} onPress={() => finish('unset')} />}
+          {step === 5 && <Button label={t('common.notNow')} variant="text" style={styles.skip} disabled={requesting} onPress={() => finish('unset')} />}
         </>}
       </View>
       <CityPicker open={pickerOpen} onClose={() => setPickerOpen(false)} onPick={(city) => choose(city, 'city')} />

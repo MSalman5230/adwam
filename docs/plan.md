@@ -190,10 +190,10 @@ A PR is done when:
 
 Phones keep users' data under these, so snapshot tests guard them, and changing one needs a migration:
 
-- **Sunnah IDs,** lowercase with hyphens, such as `friday-prep`.
+- **Sunnah IDs,** lowercase with hyphens, such as `friday-prep`. The built-in prayer-time reminder uses `prayers`, with the occurrence keys `fajr`, `dhuhr`, `asr`, `maghrib` and `isha`.
 - **Tick keys:** `<sunnah id>[.<occurrence key>]:<scope>`. The scope is the ISO date for a daily tick, a Hijri year and month such as `1448-6` for a tick once per Hijri month, or a Hijri year such as `1448` for a tick once per year. Fasts are logged by ISO date instead.
 - **Notification IDs:** `<tick key>|<push key>`, with `|later` added for a Later copy.
-- **Android channel IDs:** `weekly`, `monthly`, `yearly`, `weather`, `corrections` and `corrections-silent`. Their names can change; their IDs can't.
+- **Android channel IDs:** `weekly`, `monthly`, `yearly`, `weather`, `daily`, `corrections` and `corrections-silent`. `daily` is the Prayer times channel. Their names can change; their IDs can't.
 - **RPC names** end in `_v1`.
 - **Saved stores** carry a version number and migrations.
 
@@ -224,6 +224,7 @@ The prototype is the design reference, but the app keeps these settled choices w
 | Report a problem | GitHub issue form only, until the owner sets up an email address. |
 | Delete my data | In a Privacy sheet in Settings, with a confirmation. |
 | Times | Follow the phone's 12- or 24-hour setting, with "1:30 pm" style for 12-hour. |
+| Prayer-time reminders | Optional Push, In-app or Off, asked in setup and Off until chosen. A card for each prayer with a Done tick, and a push as it begins. They follow the prayer settings and may notify in quiet hours unless held. |
 | Qurʾan translation | Quran.com's default English, Dr. Mustafa Khattab's The Clear Quran. |
 
 ## CI workflows

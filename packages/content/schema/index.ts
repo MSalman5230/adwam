@@ -18,6 +18,7 @@ export type {
   WeatherKind,
 } from './timing.ts';
 
+/** The section files under `sunnah/`. */
 export const groups = [
   'weekly',
   'monthly',
@@ -25,7 +26,11 @@ export const groups = [
   'weather',
   'disputed',
 ] as const;
-export type ContentGroup = (typeof groups)[number];
+/**
+ * A reminder's section. `daily` holds the prayer-time reminder, which core
+ * builds from the user's prayer times rather than reading from a content file.
+ */
+export type ContentGroup = (typeof groups)[number] | 'daily';
 
 const webUrl = z.url({ protocol: /^https$/ });
 const reviewed = z.strictObject({ by: wording, on: z.iso.date() });

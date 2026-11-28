@@ -15,7 +15,8 @@ it('registers the permanent Android channels and background notification actions
   try {
     await Promise.all([registerNotificationPresentation(), registerNotificationPresentation()]);
     const channels = jest.mocked(setNotificationChannelAsync).mock.calls;
-    expect(channels.map(([id]) => id)).toEqual(['weekly', 'monthly', 'yearly', 'weather', 'corrections', 'corrections-silent']);
+    expect(channels.map(([id]) => id)).toEqual(['weekly', 'monthly', 'yearly', 'weather', 'daily', 'corrections', 'corrections-silent']);
+    expect(channels.find(([id]) => id === 'daily')?.[1]).toMatchObject({ name: 'Prayer times' });
     expect(channels.find(([id]) => id === 'corrections-silent')?.[1]).toMatchObject({
       name: 'Date corrections (silent)', sound: null, enableVibrate: false,
     });
