@@ -82,6 +82,8 @@ it('asks for notifications when only prayer times will push', async () => {
   jest.mocked(requestSetupNotifications).mockResolvedValue('granted');
   await reachPrayerStep();
   await fireEvent.press(screen.getByRole('button', { name: t('common.continue') }));
+  expect(screen.getByText(t('setup.reminders.inapp'))).toBeOnTheScreen();
+  expect(screen.getByText(t('setup.reminders.inappHint'))).toBeOnTheScreen();
   await fireEvent.press(radio(t('reminders.inappOnly')));
   await fireEvent.press(screen.getByRole('button', { name: t('common.continue') }));
 

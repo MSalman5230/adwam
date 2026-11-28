@@ -1629,7 +1629,7 @@ function renderSetup() {
     const opt = radioCard('setpreset', S.setupPreset);
     body = `<div class="over" style="margin-top:20px">Step 4 of 5</div><h1 class="setup-h">Choose your reminders</h1><p class="setup-p">You can change any of these later in Settings.</p>
       ${opt('recommended', 'Recommended', 'Each reminder at its usual level: Monday and Thursday fasts, Friday, White Days, Ramadan, Eid and more.', `${I('notifications')}About 4 pushes a week`)}
-      ${opt('inapp', 'In-app only', 'No notifications. Everything still shows on Today.', `${I('notifications_off')}No pushes`)}
+      ${opt('inapp', 'In-app only', 'Other reminders stay in the app. Your prayer notification choice stays the same.', `${I('notifications_off')}No other pushes`)}
       ${opt('custom', 'Let me choose', 'Start from Recommended, then set each reminder yourself.', `${I('tune')}Opens the reminder list`)}`;
     actions = `<button class="btn filled" data-act="next">Continue</button>`;
   } else {

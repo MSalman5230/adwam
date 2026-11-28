@@ -124,7 +124,7 @@ export function SetupReminderChoices({ preset, onChoose }: { preset: SetupPreset
     <View accessibilityRole="radiogroup" accessibilityLabel={t('setup.reminders.title')} style={styles.choices}>
       <RadioCard title={t('reminders.preferred')} subtitle={t('setup.reminders.recommended')} detail={t('setup.reminders.estimated')} detailIcon="notifications"
         selected={preset === 'recommended'} onPress={() => onChoose('recommended')} />
-      <RadioCard title={t('reminders.inappOnly')} subtitle={t('setup.reminders.inapp')} detail={t('reminders.noPushes')} detailIcon="notifications_off"
+      <RadioCard title={t('reminders.inappOnly')} subtitle={t('setup.reminders.inapp')} detail={t('setup.reminders.inappHint')} detailIcon="notifications_off"
         selected={preset === 'inapp'} onPress={() => onChoose('inapp')} />
       <RadioCard title={t('setup.reminders.choose')} subtitle={t('setup.reminders.chooseBody')} detail={t('setup.reminders.chooseHint')} detailIcon="tune"
         selected={preset === 'custom'} onPress={() => onChoose('custom')} />

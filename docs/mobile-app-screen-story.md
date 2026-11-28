@@ -29,7 +29,7 @@ Setup runs once, on first launch, and takes under a minute. It has five steps wi
 3. **Remind you at prayer times?** Today's day line with the five prayer times for the chosen place, and the calculation method in use. Three choices: **Push**, a push and a card on Today as each prayer begins, preselected and showing "5 pushes a day"; **In-app**, the card with no push; and **Off**. See [Prayer times](#prayer-times).
 4. **Choose your reminders.** Three choices, each showing its push count:
    - **Recommended:** each item at its default in the calendar. About 4 pushes a week.
-   - **In-app only:** no notifications. Everything still shows on Today.
+   - **In-app only:** other reminders stay in the app. Your prayer notification choice stays the same. The count reads "No other pushes."
    - **Let me choose:** starts from Recommended and ends setup on the Reminders screen, with a Done button.
 5. **Allow notifications?** A sample reminder, a promise of nothing during quiet hours, and when reminders come: fasts the evening before after ʿIshāʾ, Friday about 2 hours before Jumuʿah and near Maghrib, and weather only for the first rain after a dry week. When prayer times push, a Prayer times line comes first and the text says prayer pushes can come in quiet hours. With In-app only and prayer pushes, only the Prayer times line shows. Continue brings up the system permission request right after the user picks reminders, when the request makes sense. Not now skips it. If they picked In-app only and no prayer pushes, setup ends after step 4 and never asks.
 

@@ -345,7 +345,8 @@
       "body": "You can change any of these later in Settings.",
       "recommended": "Each reminder at its usual level: Monday and Thursday fasts, Friday, White Days, Ramadan, Eid and more.",
       "estimated": "About 4 pushes a week",
-      "inapp": "No notifications. Everything still shows on Today.",
+      "inapp": "Other reminders stay in the app. Your prayer notification choice stays the same.",
+      "inappHint": "No other pushes",
       "choose": "Let me choose",
       "chooseBody": "Start from Recommended, then set each reminder yourself.",
       "chooseHint": "Opens the reminder list"
