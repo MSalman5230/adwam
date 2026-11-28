@@ -53,6 +53,28 @@ it('uses standalone Friday wording after a tick and falls back to al-Kahf on its
   expect(kahf.buttons).toEqual(['done', 'later']);
 });
 
+it('pushes al-Sajdah and al-Insān after Thursday ʿIshāʾ only when chosen', () => {
+  const thursday = '2026-12-17';
+  const now = localToMs(thursday, 720, timeZone);
+  const id = `sajdah:${thursday}|main`;
+  expect(planNotifications(now, state).some((push) => push.id === id)).toBe(false);
+
+  const chosen = { ...state, preferences: { ...state.preferences, choice: { sajdah: 'push' } } } as const;
+  expect(planNotifications(now, chosen).find((push) => push.id === id)).toMatchObject({
+    at: day(thursday, state.calendar).times.isha + 15 * MINUTE_MS,
+    title: 'Friday Fajr: al-Sajdah and al-Insān',
+    body: 'Recite them if you lead or pray Fajr yourself.',
+    buttons: ['done', 'later'],
+    doneKey: `sajdah:${thursday}`,
+  });
+  expect(planNotifications(now, chosen).find((push) => push.id === id)?.link).toContain(`/item/sajdah?date=${thursday}`);
+
+  const summer = '2027-06-17';
+  expect(civil(day(summer, state.calendar).times.isha, timeZone).min).toBeGreaterThan(1320);
+  const advanced = planNotifications(localToMs(summer, 720, timeZone), chosen).find((push) => push.id === `sajdah:${summer}|main`);
+  expect(advanced?.at).toBe(localToMs(summer, 1319, timeZone));
+});
+
 it('advances a London summer fasting reminder to just before quiet hours', () => {
   const date = '2027-06-20';
   const now = localToMs(date, 720, timeZone);

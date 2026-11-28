@@ -141,6 +141,7 @@ const startAnchor = z.enum([
   'from-maghrib',
   'after-maghrib',
   'at-maghrib',
+  'after-isha',
 ]);
 const endAnchor = z.enum([
   'fajr',

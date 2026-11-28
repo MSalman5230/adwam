@@ -24,6 +24,15 @@ it('estimates the configured push frequency and counts Friday only once', () => 
   expect(pushEstimate(recommended, year + 1).yearly).toBe(11);
   expect(pushEstimate({ ...state, preferences: { choice: { 'friday-prep': 'off' } } }, year).weekly).toBe(4);
   expect(pushEstimate({ ...state, preferences: { choice: { 'friday-prep': 'off', kahf: 'inapp' } } }, year).weekly).toBe(3);
+  expect(pushEstimate({ ...state, preferences: { choice: { sajdah: 'push' } } }, year).weekly).toBe(5);
+});
+
+it('starts al-Sajdah and al-Insān at In-app and treats Push as a custom choice', () => {
+  expect(presetOf({ ...state, preferences: { choice: { sajdah: 'inapp' } } })).toBe('recommended');
+  const pushed: ReminderState = { ...state, preferences: { choice: { sajdah: 'push' } } };
+  expect(presetOf(pushed)).toBe('custom');
+  expect(applyPreset(pushed, 'inapp').choice).not.toHaveProperty('sajdah');
+  expect(presetOf({ ...pushed, preferences: applyPreset(pushed, 'inapp') })).toBe('inapp');
 });
 
 it('identifies each preset and resets only reminder choices and groups when applied', () => {

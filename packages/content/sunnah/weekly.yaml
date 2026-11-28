@@ -107,12 +107,14 @@
 - id: sajdah
   status: published
   reviewed: { by: MSalman5230, on: 2026-11-22 }
-  tier: inapp
+  tier: push
+  default: inapp
   title: "Friday Fajr: al-Sajdah and al-Insān"
   short: Recite them if you lead or pray Fajr yourself.
   what:
     - Recite al-Sajdah and al-Insān in Fajr if you lead the prayer or pray it yourself.
-  when: Friday, before Fajr.
+  when: Thursday ʿIshāʾ to Friday sunrise.
+  pushNote: A push on Thursday night, about 15 minutes after ʿIshāʾ.
   evidence:
     - muslim-879a
   duas: []
@@ -122,17 +124,24 @@
   occurrences:
     - on:
         weekday:
-          - fri
+          - thu
       window:
         from:
           prayer: isha
-          day: -1
         to:
           prayer: sunrise
-      startAnchor: before-fajr
+          day: 1
+      startAnchor: after-isha
       endAnchor: sunrise
       check: done
-      upcoming: false
+      push:
+        at:
+          prayer: isha
+          plus: 15m
+        title: "Friday Fajr: al-Sajdah and al-Insān"
+        body: Recite them if you lead or pray Fajr yourself.
+        anchor: after-isha
+        quiet: advance
 - id: friday-prep
   status: published
   reviewed: { by: MSalman5230, on: 2026-11-22 }
