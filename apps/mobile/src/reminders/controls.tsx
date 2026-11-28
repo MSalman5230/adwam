@@ -1,7 +1,6 @@
-import catalog from '@adwam/content/catalog';
 import type { ContentGroup, GroupedSunnah } from '@adwam/content/schema';
 import { hijriMonths, level, type CivilDate, type Preset, type PushEstimate, type ReminderLevel, type ReminderState } from '@adwam/core';
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Button, Segmented, Switch } from '../components/controls';
@@ -16,11 +15,6 @@ import { typography } from '../theme/typography';
 
 export const groupOrder = ['weekly', 'monthly', 'yearly', 'weather', 'disputed'] as const;
 const monthOf = (entry: GroupedSunnah) => entry.month ? hijriMonths.indexOf(entry.month) + 1 : 0;
-const groupEntries = new Map(groupOrder.map((group) => {
-  const entries = catalog.sunnahs.filter((entry) => entry.group === group && !entry.hidden);
-  if (group === 'yearly') entries.sort((left, right) => monthOf(left) - monthOf(right));
-  return [group, entries] as const;
-}));
 const presetOptions = [
   { value: 'recommended', label: t('reminders.preferred') },
   { value: 'inapp', label: t('reminders.inappOnly') },
@@ -77,9 +71,14 @@ export function ReminderGroup({ group, state, year, onToggle, onChoice, onOpen, 
 }) {
   const { palette } = useTheme();
   const [open, setOpen] = useState(group === 'weekly');
-  const entries = groupEntries.get(group) ?? [];
-  const choices = entries.map((entry) => ({ entry, choice: level(state, entry.id, year) }));
+  const entries = useMemo(() => {
+    const items = state.catalog.filter((entry) => entry.group === group && !entry.hidden);
+    if (group === 'yearly') items.sort((left, right) => monthOf(left) - monthOf(right));
+    return items;
+  }, [group, state.catalog]);
   const disputed = group === 'disputed';
+  if (disputed && entries.length === 0) return null;
+  const choices = entries.map((entry) => ({ entry, choice: level(state, entry.id, year) }));
   const enabled = disputed || state.preferences.groupOn?.[group] !== false;
   const pushes = choices.filter(({ choice }) => choice === 'push').length;
   const participating = choices.filter(({ choice }) => choice !== 'off').length;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { selectContent } from '../../content/scripts/build.ts';
 import { checkedContent } from '../../content/scripts/check.ts';
 import { isoAdd } from '../src/civil';
 import { hijriMonthStart } from '../src/hijri';
@@ -14,7 +15,7 @@ import {
   type ReminderState,
 } from '../src/rules';
 
-const { sunnahs } = await checkedContent();
+const { sunnahs } = selectContent(await checkedContent(), true);
 const year = 1448;
 const withPreferences = (preferences: ReminderPreferences = {}): ReminderState => ({
   calendar: {
@@ -38,9 +39,18 @@ describe('reminder level', () => {
   });
 
   it('keeps disputed items off by default and allows opt-in without a group switch', () => {
-    expect(level(withPreferences(), 'shaban15', year)).toBe('off');
-    const state = withPreferences({ groupOn: { disputed: false }, choice: { shaban15: 'inapp' } });
-    expect(level(state, 'shaban15', year)).toBe('inapp');
+    const state = withPreferences({ groupOn: { disputed: false } });
+    const sample = sunnahs.find(({ id }) => id === 'after-jumuah')!;
+    const catalog = [...state.catalog, { ...sample, id: 'disputed-example', group: 'disputed', default: 'off' } as const];
+    expect(level({ ...state, catalog }, 'disputed-example', year)).toBe('off');
+    const preferences = { ...state.preferences, choice: { 'disputed-example': 'inapp' } } as const;
+    expect(level({ ...state, catalog, preferences }, 'disputed-example', year)).toBe('inapp');
+  });
+
+  it('ignores saved opt-ins for the two retired reminders', () => {
+    const state = withPreferences({ choice: { shaban15: 'inapp', 'ashura-family': 'inapp' } });
+    expect(level(state, 'shaban15', year)).toBe('off');
+    expect(level(state, 'ashura-family', year)).toBe('off');
   });
 
   it('uses the sacrifice answer for the occurrence year', () => {

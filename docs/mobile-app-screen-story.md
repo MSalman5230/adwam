@@ -152,7 +152,7 @@ Each item has up to three choices:
 - **Groups** follow the calendar: Weekly, Monthly, Yearly, and Weather and eclipses. Each group expands to its items, shows how many of them push, and has a switch. Turning a group off and on again restores the choices made inside it, and picking a choice inside an off group turns the group back on. Yearly items appear in Hijri month order, under month headings, with the sacred months under "Through the year". Each item's name opens its detail screen.
 - **Weather and eclipses.** When this whole group is off, the app stops sending its area to the server.
 - **Hair and nails** has no choice until the uḍḥiyah answer is Yes, and links to that setting.
-- **Disputed** sits at the bottom and holds the two disputed items from the calendar. They are off by default, have no group switch, and offer only In-app and Off. Each carries one line on why it's disputed.
+- If the calendar includes any disputed items, **Disputed** sits at the bottom. Those items are off by default, have no group switch, and offer only In-app and Off. Each carries one line on why it's disputed.
 
 ## About
 

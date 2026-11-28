@@ -69,7 +69,9 @@ export function generateCalendar(document: string, content: RepositoryContent) {
   output = replaceSection(output, 'future', table('Trigger', 'Detection and timing', future));
   const disputed = items.filter(({ group }) => group === 'disputed').map((item) =>
     `- **${item.title}.** ${sunnahText(item)} ${citations(item.evidence)}`);
-  output = replaceSection(output, 'disputed', disputed.join('\n'));
+  output = replaceSection(output, 'disputed', disputed.length
+    ? ['## Disputed, so off by default', '', 'If a user turns these on, show them In-app only.', '', ...disputed].join('\n')
+    : '');
   return output.replaceAll('\n', lineEnding);
 }
 

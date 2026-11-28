@@ -1,10 +1,11 @@
 import { expect, it } from 'vitest';
 
+import { selectContent } from '../../content/scripts/build.ts';
 import { checkedContent } from '../../content/scripts/check.ts';
 import { applyPreset, presetOf, pushEstimate } from '../src/presets';
 import type { ReminderState } from '../src/rules';
 
-const { sunnahs } = await checkedContent();
+const { sunnahs } = selectContent(await checkedContent(), true);
 const state: ReminderState = {
   calendar: {
     place: { latitude: 51.5074, longitude: -0.1278, timeZone: 'Europe/London', countryCode: 'GB' },
@@ -29,13 +30,17 @@ it('identifies each preset and resets only reminder choices and groups when appl
   expect(presetOf(state)).toBe('recommended');
   const custom: ReminderState = {
     ...state,
-    preferences: { ...state.preferences, choice: { shaban15: 'inapp' }, groupOn: { yearly: false }, pause: {} },
+    preferences: { ...state.preferences, choice: { 'friday-prep': 'inapp' }, groupOn: { yearly: false }, pause: {} },
   };
   expect(presetOf(custom)).toBe('custom');
-  expect(presetOf({ ...state, preferences: { choice: { shaban15: 'inapp' } } })).toBe('custom');
   const inapp = { ...custom, preferences: applyPreset(custom, 'inapp') };
   expect(presetOf(inapp)).toBe('inapp');
   expect(inapp.preferences).toMatchObject({ notifications: 'denied', pause: {} });
   expect(pushEstimate(inapp, 1448)).toEqual({ weekly: 0, monthly: 0, yearly: 0, weather: false, none: true });
   expect(presetOf({ ...inapp, preferences: applyPreset(inapp, 'recommended') })).toBe('recommended');
+});
+
+it('does not mark the preset custom for saved choices for retired reminders', () => {
+  const choice = { shaban15: 'inapp', 'ashura-family': 'inapp' } as const;
+  expect(presetOf({ ...state, preferences: { ...state.preferences, choice } })).toBe('recommended');
 });
