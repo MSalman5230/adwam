@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/MSalman5230/adwam/compare/v1.0.0...v1.1.0) (2026-11-28)
+
+
+### Features
+
+* offer a push for Friday Fajr al-Sajdah and list it in Upcoming ([#224](https://github.com/MSalman5230/adwam/issues/224)) ([585aaa1](https://github.com/MSalman5230/adwam/commit/585aaa1c685e385b94b0b5f132556794828bdd42))
+* prayer-time reminders with Push, In-app and Off ([#226](https://github.com/MSalman5230/adwam/issues/226)) ([2556763](https://github.com/MSalman5230/adwam/commit/25567631499985c26f28d462141480c8460fd5da))
+
+
+### Content
+
+* retire the two disputed reminders ([#225](https://github.com/MSalman5230/adwam/issues/225)) ([58345d9](https://github.com/MSalman5230/adwam/commit/58345d9f9f86c5a1bdf3da32c7b418952b091e87))
+
 ## [1.0.0](https://github.com/MSalman5230/adwam/compare/v0.1.0...v1.0.0) (2026-11-26)
 
 
