@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest';
 
 import english from '../../content/messages/en.json';
+import { selectContent } from '../../content/scripts/build.ts';
 import { checkedContent } from '../../content/scripts/check.ts';
 import { calendarSettings, compareDay, places } from '../../../tools/prototype-match/compare.ts';
 import { prototype } from '../../../tools/prototype-match/prototype.ts';
@@ -12,7 +13,7 @@ import { prayerReminder, reminderPrayers, type PrayerReminderCopy } from '../src
 import { reminderOccurrences } from '../src/rules';
 import { todayState } from '../src/views';
 
-const { sunnahs } = await checkedContent();
+const { sunnahs } = selectContent(await checkedContent(), true);
 const stateFor = (calendar: NotificationState['calendar']): NotificationState => ({
   calendar, catalog: sunnahs, tracking: { makeup: 3 },
   preferences: { notifications: 'granted', udhiyah: { 1447: 'yes', 1448: 'yes', 1449: 'yes', 1450: 'yes' } },

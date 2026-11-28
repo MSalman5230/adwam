@@ -648,7 +648,7 @@ const MON = ['January','February','March','April','May','June','July','August','
 const MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const HM = ['','Muḥarram','Ṣafar','Rabīʿ al-Awwal','Rabīʿ al-Ākhir','Jumādā al-Ūlā','Jumādā al-Ākhirah','Rajab','Shaʿbān','Ramadan','Shawwāl','Dhul-Qaʿdah','Dhul-Ḥijjah'];
 const SACRED = [1, 7, 11, 12];
-const CONTENT_VERSION = '2026.11.21';
+const CONTENT_VERSION = '2026.11.27';
 const CURRENT_YEAR = 2026;
 
 const isoParts = iso => iso.split('-').map(Number);
@@ -741,10 +741,11 @@ const ITEMS = {
     pushNote:'A push on Friday morning, in the same notification as Friday preparation. It drops the al-Kahf line if you tick Done first.',
     quran:{label:'Read al-Kahf on Quran.com', url:'https://quran.com/18'},
     sources:[s('Sūrat al-Kahf (quran.com)','https://quran.com/18'), s('Al-Bayhaqī','https://hadithweb.com/bayhaqi:5996'), s('Al-Shāfiʿī, Al-Umm','https://islamweb.net/ar/library/content/31/442/'), s('Abū Dāwūd 1047', SN('abudawud:1047'))]},
-  sajdah: {group:'weekly', name:'Friday Fajr: al-Sajdah and al-Insān', tier:'inapp',
+  sajdah: {group:'weekly', name:'Friday Fajr: al-Sajdah and al-Insān', tier:'push', def:'inapp',
     short:'Recite them if you lead or pray Fajr yourself.',
     what:['Recite al-Sajdah and al-Insān in Fajr if you lead the prayer or pray it yourself.'],
-    when:'Friday, before Fajr.',
+    when:'Thursday ʿIshāʾ to Friday sunrise.',
+    pushNote:'A push on Thursday night, about 15 minutes after ʿIshāʾ.',
     quran:{label:'Open al-Sajdah on Quran.com', url:'https://quran.com/32'},
     sources:[s('Muslim 879a', SN('muslim:879a'))]},
   fridayPrep: {group:'weekly', name:'Friday preparation', tier:'push',
@@ -915,19 +916,6 @@ const ITEMS = {
     when:'While an eclipse is visible from your area.',
     pushNote:'A push at the start.',
     sources:[s('Bukhārī 1044', SN('bukhari:1044'))]},
-  /* Disputed */
-  shaban15: {group:'disputed', name:'Night of 15 Shaʿbān', tier:'inapp', def:'off',
-    short:'Scholars differ on the forgiveness reports.',
-    what:['Scholars differ on the forgiveness reports for this night.'],
-    notes:['The narration prescribing a special night prayer and daytime fast is graded fabricated. The daytime fast already falls under the White Days.'],
-    when:'The night of 15 Shaʿbān.',
-    sources:[s('Ibn Mājah 1388', SN('ibnmajah:1388')), s('Ibn Mājah 1390', SN('ibnmajah:1390')), s('Dār al-Iftāʾ','https://www.dar-alifta.org/en/fatwa/details/663/celebrating-the-night-of-mid-shaban-and-other-religious-occasions')]},
-  ashuraFamily: {group:'disputed', name:'Spending more on family on ʿĀshūrāʾ', tier:'inapp', def:'off',
-    short:'The evidence is disputed.',
-    what:['Spend more generously on your family on ʿĀshūrāʾ.'],
-    notes:['The evidence is disputed.'],
-    when:'10 Muḥarram.',
-    sources:[s('Dār al-Iftāʾ','https://dar-alifta.org/ar/fatwa/details/21973/')]},
   /* Tracker-only */
   makeup: {group:'yearly', hidden:true, name:'Ramadan days to make up', tier:'inapp',
     short:'Log each make-up fast.',
@@ -1079,9 +1067,11 @@ function occsForDay(iso) {
     }
   }
   /* weekly */
-  if (wd === 4) add({item: 'kahf', title: 'Sūrat al-Kahf', start: t.maghrib, end: N.t.maghrib, push: N.t.jumuah - 2 * HOUR, pushAnchor: 'morning', startAnchor: 'from Maghrib', endAnchor: 'Maghrib', check: 'done'});
+  if (wd === 4) {
+    add({item: 'kahf', title: 'Sūrat al-Kahf', start: t.maghrib, end: N.t.maghrib, push: N.t.jumuah - 2 * HOUR, pushAnchor: 'morning', startAnchor: 'from Maghrib', endAnchor: 'Maghrib', check: 'done'});
+    add({item: 'sajdah', title: 'Friday Fajr: al-Sajdah and al-Insān', start: t.isha, end: N.t.sunrise, push: t.isha + 15 * MIN, pushAnchor: 'after ʿIshāʾ', startAnchor: 'after ʿIshāʾ', endAnchor: 'sunrise', check: 'done'});
+  }
   if (wd === 5) {
-    add({item: 'sajdah', title: 'Friday Fajr: al-Sajdah and al-Insān', start: P.t.isha, end: t.sunrise, startAnchor: 'before Fajr', endAnchor: 'sunrise', check: 'done'});
     add({item: 'fridayPrep', title: 'Friday preparation', start: t.fajr, end: t.jumuah, push: t.jumuah - 2 * HOUR, pushAnchor: 'morning', startAnchor: 'morning', endAnchor: 'Jumuʿah', toJumuah: true, check: 'done'});
     const aj = Math.max(t.asr, t.jumuah + 90 * MIN);
     add({item: 'afterJumuah', title: 'Four rakʿahs after Jumuʿah', start: t.jumuah, end: aj, startAnchor: 'time', endAnchor: aj === t.asr ? 'ʿAṣr' : null, check: 'done'});
@@ -1091,10 +1081,8 @@ function occsForDay(iso) {
   if (hd === 29 || hd === 30) add({item: 'crescent', title: 'Look for the new crescent', start: t.maghrib, end: t.isha + 45 * MIN, startAnchor: 'after Maghrib', endAnchor: null, check: 'done', key: `crescent:${hy}-${hm}`});
   /* yearly */
   if (hm === 1 && hd <= 8) add({item: 'ashura', title: 'ʿĀshūrāʾ is coming', short: 'Plan to fast the 9th and 10th of Muḥarram.', start: P.t.maghrib, end: t.maghrib, series: `ashura-plan:${hy}`, startAnchor: 'all day', plan: true, key: `ashura-plan:${iso}`, noUpcoming: true});
-  if (hm === 1 && hd === 10) add({item: 'ashuraFamily', title: 'Spending on family on ʿĀshūrāʾ', start: P.t.maghrib, end: t.maghrib, startAnchor: 'all day'});
   if (hm === 8 && hd === 1) add({item: 'shaban', title: 'Shaʿbān has begun', short: 'Fast often, and make up missed Ramadan fasts.', start: t.fajr, end: t.maghrib, push: t.fajr + 3 * HOUR, pushAnchor: 'morning', startAnchor: 'morning', kind: 'pushOnly'});
   if ((hm === 8 || hm === 10) && S.makeup !== 0) add({item: 'makeup', title: 'Ramadan days to make up', start: P.t.maghrib, end: t.maghrib, tracker: 'makeup', series: `makeup:${hy}-${hm}`, noUpcoming: true});
-  if (hm === 8 && hd === 14) add({item: 'shaban15', title: 'Night of 15 Shaʿbān', start: t.maghrib, end: N.t.fajr, startAnchor: 'from Maghrib'});
   if (hm === 9) {
     add({item: 'ramadanDaily', title: 'Suḥūr', short: 'Take suḥūr shortly before Fajr.', start: t.fajr - 2 * HOUR, end: t.fajr, startAnchor: 'before Fajr', endAnchor: 'Fajr', key: 'suhur:' + iso, series: 'suhur', noUpcoming: true});
     add({item: 'ramadanDaily', title: 'Ifṭār', short: 'Break the fast promptly with fresh dates, then dried dates, then water.', start: t.maghrib, end: t.isha, startAnchor: 'at Maghrib', endAnchor: 'ʿIshāʾ', key: 'iftar:' + iso, series: 'iftar', noUpcoming: true});
@@ -1199,7 +1187,7 @@ function nextSentence(o, now) {
 /* push estimate */
 function pushEstimate() {
   const P = id => level(id) === 'push';
-  const wk = (P('monthu') ? 2 : 0) + (P('kahf') || P('fridayPrep') ? 1 : 0) + (P('lastHour') ? 1 : 0);
+  const wk = (P('monthu') ? 2 : 0) + (P('sajdah') ? 1 : 0) + (P('kahf') || P('fridayPrep') ? 1 : 0) + (P('lastHour') ? 1 : 0);
   const mo = P('whiteDays') ? 1 : 0;
   let yr = 0; for (const id of itemsIn('yearly')) if (P(id)) yr += ITEMS[id].pushes || 1;
   const weather = ['rain', 'heavyRain', 'wind', 'eclipse'].some(P);
@@ -1212,13 +1200,14 @@ function presetOf() {
   const ids = Object.keys(ITEMS).filter(id => !ITEMS[id].hidden && followsPresets(id));
   const allOn = GROUPS.every(g => S.groupOn[g.id]);
   const disputedDefault = itemsIn('disputed').every(id => level(id) === 'off');
-  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || ITEMS[id].tier) === ITEMS[id].tier)) return 'recommended';
-  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || ITEMS[id].tier) === (ITEMS[id].tier === 'push' ? 'inapp' : ITEMS[id].tier))) return 'inapp';
+  const usual = id => ITEMS[id].def || ITEMS[id].tier;
+  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || usual(id)) === usual(id))) return 'recommended';
+  if (allOn && disputedDefault && ids.every(id => (S.choice[id] || usual(id)) === (usual(id) === 'push' ? 'inapp' : usual(id)))) return 'inapp';
   return 'custom';
 }
 function applyPreset(p) {
   S.choice = S.choice.prayers ? {prayers: S.choice.prayers} : {}; S.groupOn = {weekly: true, monthly: true, yearly: true, weather: true};
-  if (p === 'inapp') for (const id in ITEMS) if (ITEMS[id].tier === 'push' && followsPresets(id)) S.choice[id] = 'inapp';
+  if (p === 'inapp') for (const id in ITEMS) if (followsPresets(id) && (ITEMS[id].def || ITEMS[id].tier) === 'push') S.choice[id] = 'inapp';
 }
 function estimateText(e = pushEstimate()) {
   if (e.none) return 'No pushes. Everything still shows on Today.';
@@ -1379,7 +1368,7 @@ function upcomingRows() {
     for (const o of occsForDay(iso)) {
       if (o.end <= now) continue;
       const it = ITEMS[o.item];
-      if (o.noUpcoming || it.weather || ['sajdah', 'afterJumuah', 'ramadanDaily', 'makeup'].includes(o.item)) continue;
+      if (o.noUpcoming || it.weather || ['afterJumuah', 'ramadanDaily', 'makeup'].includes(o.item)) continue;
       if (o.kind !== 'marker' && level(o.item) === 'off') continue;
       const sk = o.series || o.key;
       (series[sk] = series[sk] || []).push(iso);
@@ -1566,7 +1555,8 @@ function renderReminders() {
     return `<section class="grp ${open ? 'open' : ''} ${on ? '' : 'off'}"><header class="grp-h" data-act="expand" data-v="${g.id}" role="button" aria-expanded="${open}"><div class="tx"><div class="t">${g.name}</div><div class="s">${on ? `${ids.length} reminders · ${np ? np + ' push' : 'in-app only'}` : 'Off'}</div></div>${I('expand_more', 'chev')}${sw(on, 'group', `data-v="${g.id}"`)}</header>${open ? `<div class="grp-b">${body}</div>` : ''}</section>`;
   }).join('');
   const disputedOpen = !!S.expanded.disputed;
-  const dCount = itemsIn('disputed').filter(id => level(id) !== 'off').length;
+  const disputedIds = itemsIn('disputed');
+  const dCount = disputedIds.filter(id => level(id) !== 'off').length;
   const pauseOn = paused(), lp = level('prayers');
   return `<header class="appbar"><button class="iconbtn" data-act="back" aria-label="Back">${I('arrow_back')}</button><div class="ab-title">Reminders</div></header>
   <div class="scroll"><div class="ptitle"><h1>Reminders</h1><div class="sub">Each reminder can push, show only in the app, or stay off.</div></div>
@@ -1581,8 +1571,8 @@ function renderReminders() {
     <div class="pause"><div class="top"><div class="tx"><div class="t">Pause fasting reminders</div><div class="s">${pauseOn ? (S.pause.until ? 'Paused until ' + fmtLong(S.pause.until) : 'Paused until you turn it off') : 'For illness, travel or any reason. No questions.'}</div></div>${sw(pauseOn, 'pausesw')}</div>
       ${pauseOn ? `<div class="chips">${[[3, '3 days'], [7, '7 days'], [14, '14 days'], [0, 'Until I turn it off']].map(([d, l]) => { const on = d ? S.pause.days === d : !S.pause.until; return `<button class="chip ${on ? 'on' : ''}" data-act="pausefor" data-v="${d}">${on ? I('check') : ''}${l}</button>`; }).join('')}</div>` : ''}</div>
     ${groups}
-    <section class="grp ${disputedOpen ? 'open' : ''}"><header class="grp-h" data-act="expand" data-v="disputed" role="button"><div class="tx"><div class="t">Disputed · off by default</div><div class="s">${dCount ? dCount + ' turned on, in-app only' : '2 reminders · in-app only if turned on'}</div></div>${I('expand_more', 'chev')}</header>
-      ${disputedOpen ? `<div class="grp-b">${itemsIn('disputed').map(itemRow).join('')}</div>` : ''}</section>
+    ${disputedIds.length ? `<section class="grp ${disputedOpen ? 'open' : ''}"><header class="grp-h" data-act="expand" data-v="disputed" role="button"><div class="tx"><div class="t">Disputed · off by default</div><div class="s">${dCount ? dCount + ' turned on, in-app only' : disputedIds.length + ' reminder' + (disputedIds.length === 1 ? '' : 's') + ' · in-app only if turned on'}</div></div>${I('expand_more', 'chev')}</header>
+      ${disputedOpen ? `<div class="grp-b">${disputedIds.map(itemRow).join('')}</div>` : ''}</section>` : ''}
     ${UI.fromSetup ? `<button class="btn filled" style="margin-top:22px" data-act="finishchoose">Done</button>` : ''}
   </div>`;
 }

@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RemindersScreen from '../src/app/reminders';
 import { t } from '../src/language/messages';
 import { settingsStore } from '../src/state/native';
+import * as reminderCatalog from '../src/state/reminder-catalog';
 import { defaultSettings } from '../src/state/schema';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
 import { setFixedClock } from './fixed-clock';
@@ -146,4 +147,17 @@ it('sets prayer-time reminders on their own, outside the presets', async () => {
 
   await fireEvent.press(screen.getByRole('button', { name: t('reminders.prayers.title') }));
   expect(mockPush).toHaveBeenCalledWith({ pathname: '/item/[id]', params: { id: 'prayers' } });
+});
+
+it('omits the Disputed group when no disputed reminders ship', async () => {
+  const replacement = jest.replaceProperty(reminderCatalog, 'reminderCatalog',
+    reminderCatalog.reminderCatalog.filter(({ group }) => group !== 'disputed'));
+  try {
+    await renderReminders();
+    expect(screen.getByRole('button', { name: t('reminders.group.yearly') })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: t('reminders.disputedTitle') })).toBeNull();
+    expect(screen.getByRole('button', { name: t('reminders.prayers.title') })).toBeOnTheScreen();
+  } finally {
+    replacement.restore();
+  }
 });

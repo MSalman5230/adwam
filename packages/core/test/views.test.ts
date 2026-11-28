@@ -81,6 +81,24 @@ describe('Upcoming and detail', () => {
     expect(count).toBe(items.length);
   });
 
+  it('lists al-Sajdah and al-Insān on Thursday after ʿIshāʾ, with a bell only when set to Push', () => {
+    const thursday = '2026-12-17';
+    const now = localToMs('2026-12-16', 720, timeZone);
+    const sajdah = (reminders: ReminderState) => upcomingRows(now, reminders).rows
+      .flatMap((row) => row.kind === 'item' && row.occurrence.entry.id === 'sajdah' && row.date === thursday ? [row] : [])[0];
+    const row = sajdah(state);
+    expect(row).toMatchObject({ bell: false, title: 'Friday Fajr: al-Sajdah and al-Insān' });
+    expect(row?.occurrence.definition.startAnchor).toBe('after-isha');
+    const times = day(thursday, state.calendar).times;
+    const friday = day(isoAdd(thursday, 1), state.calendar).times;
+    expect([row?.occurrence.start, row?.occurrence.end]).toEqual([times.isha, friday.sunrise]);
+    expect(sajdah({ ...state, preferences: { notifications: 'granted', choice: { sajdah: 'push' } } })?.bell).toBe(true);
+    expect(upcomingRows(now, state, 'push').rows.some((item) => item.kind === 'item' && item.occurrence.entry.id === 'sajdah')).toBe(false);
+
+    const active = (at: number) => todayState(at, state).active.some(({ occurrence }) => occurrence.entry.id === 'sajdah');
+    expect([active(times.isha - MINUTE_MS), active(times.isha), active(friday.fajr), active(friday.sunrise)]).toEqual([false, true, true, false]);
+  });
+
   it('shows paused fasts without bells and includes calculated eclipses in the push filter', () => {
     const now = localToMs('2026-08-01', 720, timeZone);
     const paused: ReminderState = { ...state, preferences: { notifications: 'granted', pause: {} } };

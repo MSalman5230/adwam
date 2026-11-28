@@ -33,6 +33,7 @@ function annualPushes(definition: OccurrenceDefinition): number {
 export function pushEstimate(state: ReminderState, year: number): PushEstimate {
   const pushes = (id: string) => level(state, id, year) === 'push';
   const weekly = (pushes('monthu') ? 2 : 0) +
+    (pushes('sajdah') ? 1 : 0) +
     (pushes('kahf') || pushes('friday-prep') ? 1 : 0) +
     (pushes('last-hour') ? 1 : 0);
   const monthly = pushes('white-days') ? 1 : 0;

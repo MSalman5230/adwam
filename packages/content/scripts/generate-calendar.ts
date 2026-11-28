@@ -50,14 +50,15 @@ export function generateCalendar(document: string, content: RepositoryContent) {
     });
     return [...item.what, ...readings, ...(item.notes ?? [])].join(' ');
   };
-  const tierLabel = (tier: 'push' | 'inapp') => tier === 'push' ? '**Push**' : 'In-app';
+  const tierLabel = (tier: 'push' | 'inapp', usual?: 'push' | 'inapp' | 'off') =>
+    tier === 'push' && usual === 'inapp' ? 'In-app, **Push** optional' : tier === 'push' ? '**Push**' : 'In-app';
   const items = content.sunnahs.filter(({ status }) => status !== 'retired');
   const lineEnding = document.includes('\r\n') ? '\r\n' : '\n';
   let output = document.replaceAll('\r\n', '\n');
   for (const group of ['weekly', 'monthly', 'yearly', 'weather'] as const) {
     const event = group === 'weather';
     const rows = items.filter((item) => item.group === group).map((item) => [
-      `**${item.title}**`, tierLabel(item.tier), sunnahText(item),
+      `**${item.title}**`, tierLabel(item.tier, item.default), sunnahText(item),
       [item.when, item.pushNote].filter(Boolean).join(' '), citations(item.evidence),
     ]);
     output = replaceSection(output, group, table(event ? 'Trigger' : 'Reminder', event ? 'Detection and timing' : 'Timing', rows));
@@ -69,7 +70,9 @@ export function generateCalendar(document: string, content: RepositoryContent) {
   output = replaceSection(output, 'future', table('Trigger', 'Detection and timing', future));
   const disputed = items.filter(({ group }) => group === 'disputed').map((item) =>
     `- **${item.title}.** ${sunnahText(item)} ${citations(item.evidence)}`);
-  output = replaceSection(output, 'disputed', disputed.join('\n'));
+  output = replaceSection(output, 'disputed', disputed.length
+    ? ['## Disputed, so off by default', '', 'If a user turns these on, show them In-app only.', '', ...disputed].join('\n')
+    : '');
   return output.replaceAll('\n', lineEnding);
 }
 

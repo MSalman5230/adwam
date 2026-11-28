@@ -9,6 +9,8 @@ The tables come from the YAML source files described in [sunnah-content-format.m
 - **Push.** Important and easy to forget. The app sends a push notification and also shows the item in the app.
 - **In-app.** Shown only when the user opens the app during the item's time window. No push.
 
+A Push item can start as In-app instead. The tables mark it "In-app, **Push** optional", and the user can turn its push on.
+
 The app's home screen shows everything active right now: Push items and In-app items together.
 
 **Push budget:** about 4 a week, 1 a month and 12 a year from the calendar. Detected events add up to one weather push a day. Per-item on/off toggles will help users who find this too much.
@@ -22,7 +24,7 @@ The app's home screen shows everything active right now: Push items and In-app i
 | --- | --- | --- | --- | --- |
 | **Monday and Thursday fast** | **Push** | Voluntary fast. Deeds are presented on Mondays and Thursdays, and the Prophet ﷺ liked to be fasting when his were presented. | Every Monday and Thursday, Fajr to Maghrib. The card appears the evening before. A push the evening before, after ʿIshāʾ. | [Tirmidhī 747](https://sunnah.com/tirmidhi:747) |
 | **Sūrat al-Kahf** | **Push** | Read Sūrat al-Kahf and send extra ṣalawāt on the Prophet ﷺ. Al-Shāfiʿī placed al-Kahf on Friday night or day. Scholars differ on the strength of the al-Kahf reports. | Thursday Maghrib to Friday Maghrib. A push on Friday morning with Friday preparation, or on its own when Friday preparation will not push. | [Sūrat al-Kahf](https://quran.com/18), [Sunan al-Kubrā](https://hadithweb.com/bayhaqi:5996), [Al-Umm](https://islamweb.net/ar/library/content/31/442/), [Abū Dāwūd 1047](https://sunnah.com/abudawud:1047) |
-| **Friday Fajr: al-Sajdah and al-Insān** | In-app | Recite al-Sajdah and al-Insān in Fajr if you lead the prayer or pray it yourself. | Friday, before Fajr. | [Muslim 879a](https://sunnah.com/muslim:879a) |
+| **Friday Fajr: al-Sajdah and al-Insān** | In-app, **Push** optional | Recite al-Sajdah and al-Insān in Fajr if you lead the prayer or pray it yourself. | Thursday ʿIshāʾ to Friday sunrise. A push on Thursday night, about 15 minutes after ʿIshāʾ. | [Muslim 879a](https://sunnah.com/muslim:879a) |
 | **Friday preparation** | **Push** | Ghusl, siwāk, clean clothes and, for men, fragrance. Walk if able, arrive early, and pray voluntary rakʿahs before the khuṭbah. Most jurists treat the ghusl as an emphasized Sunnah, and some consider it obligatory. | Friday morning until Jumuʿah. A push about 2 hours before Jumuʿah, combined with al-Kahf. | [Bukhārī 880](https://sunnah.com/bukhari:880), [Bukhārī 883](https://sunnah.com/bukhari:883), [Abū Dāwūd 345](https://sunnah.com/abudawud:345), [Tirmidhī 497](https://sunnah.com/tirmidhi:497) |
 | **Four rakʿahs after Jumuʿah** | In-app | Pray four rakʿahs, or two at home as the Prophet ﷺ did. | From Jumuʿah until ʿAṣr. | [Muslim 881a](https://sunnah.com/muslim:881a), [Bukhārī 937](https://sunnah.com/bukhari:937) |
 | **Last hour of Friday** | **Push** | Spend the last hour before Maghrib on Friday in duʿāʾ. Another report places the special hour between the imam sitting down and the end of the prayer. | Friday, from ʿAṣr to Maghrib. A push about 45 minutes before Maghrib. | [Abū Dāwūd 1048](https://sunnah.com/abudawud:1048), [Muslim 853](https://sunnah.com/muslim:853) |
@@ -111,13 +113,8 @@ These need background location, which requires Google Play approval the app can�
 - **Ramadan.** Skip Monday, Thursday and White Days reminders during Ramadan, when the Ramadan fast itself is obligatory.
 - **Last day or two of Shaʿbān.** Don’t prompt a new voluntary fast unless it is a regular habit, such as Monday, or a make-up fast. [Bukhārī 1914](https://sunnah.com/bukhari:1914)
 
-## Disputed, so off by default
-
-If a user turns these on, show them In-app only.
-
 <!-- calendar:disputed:start -->
-- **Night of 15 Shaʿbān.** Scholars differ on the forgiveness reports for this night. The narration prescribing a special night prayer and daytime fast is graded fabricated. The daytime fast already falls under the White Days. [Ibn Mājah 1388](https://sunnah.com/ibnmajah:1388), [Ibn Mājah 1390](https://sunnah.com/ibnmajah:1390), [Observing the night of mid-Shaʿbān](https://www.dar-alifta.org/en/fatwa/details/663/celebrating-the-night-of-mid-shaban-and-other-religious-occasions)
-- **Spending more on family on ʿĀshūrāʾ.** Spend more generously on your family on ʿĀshūrāʾ. The evidence is disputed. [Spending more on the family on ʿĀshūrāʾ](https://dar-alifta.org/ar/fatwa/details/21973/%D8%AD%D9%83%D9%85-%D8%A7%D9%84%D8%AA%D9%88%D8%B3%D8%B9%D8%A9-%D8%B9%D9%84%D9%89-%D8%A7%D9%84%D8%A3%D9%87%D9%84-%D9%8A%D9%88%D9%85-%D8%B9%D8%A7%D8%B4%D9%88%D8%B1%D8%A7%D8%A1)
+
 <!-- calendar:disputed:end -->
 
 ## Left out of the app list

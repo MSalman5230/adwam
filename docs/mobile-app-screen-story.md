@@ -28,7 +28,7 @@ Setup runs once, on first launch, and takes under a minute. It has five steps wi
 2. **Check your Hijri date.** For example: "Today is 9 Rajab 1448. Is that right where you live?" with −1, 0 and +1 buttons. The date and a strip of this week in both calendars update as the user shifts it. A note says when the Hijri day turns at Maghrib today, or after Maghrib, that the new Hijri day has begun. Another explains that Adwam calculates the date with Umm al-Qura and offers a correction when an announced date differs in the region.
 3. **Remind you at prayer times?** Today's day line with the five prayer times for the chosen place, and the calculation method in use. Three choices: **Push**, a push and a card on Today as each prayer begins, preselected and showing "5 pushes a day"; **In-app**, the card with no push; and **Off**. See [Prayer times](#prayer-times).
 4. **Choose your reminders.** Three choices, each showing its push count:
-   - **Recommended:** each item at its tier in the calendar. About 4 pushes a week.
+   - **Recommended:** each item at its default in the calendar. About 4 pushes a week.
    - **In-app only:** no notifications. Everything still shows on Today.
    - **Let me choose:** starts from Recommended and ends setup on the Reminders screen, with a Done button.
 5. **Allow notifications?** A sample reminder, a promise of nothing during quiet hours, and when reminders come: fasts the evening before after ʿIshāʾ, Friday about 2 hours before Jumuʿah and near Maghrib, and weather only for the first rain after a dry week. When prayer times push, a Prayer times line comes first and the text says prayer pushes can come in quiet hours. With In-app only and prayer pushes, only the Prayer times line shows. Continue brings up the system permission request right after the user picks reminders, when the request makes sense. Not now skips it. If they picked In-app only and no prayer pushes, setup ends after step 4 and never asks.
@@ -110,7 +110,7 @@ Upcoming lists the next 60 days.
 - **Month starts** get their own row, such as "Rajab begins · a sacred month", with the Maghrib the month starts from.
 - **No-fasting days** are tagged: both Eids and the Tashrīq days. This helps a user planning voluntary fasts. During a pause, fasts are tagged Paused and lose their bell.
 - **Eclipses** visible from the user's area are listed, since they are known well in advance.
-- **Left out:** weather, because it can't be forecast that far ahead, and items that would crowd the list: Friday's al-Sajdah and after-Jumuʿah cards, Suḥūr and Ifṭār, planning cards and the make-up card.
+- **Left out:** weather, because it can't be forecast that far ahead, and items that would crowd the list: Friday's after-Jumuʿah card, Suḥūr and Ifṭār, planning cards and the make-up card. Friday's al-Sajdah and al-Insān card is listed on Thursday, "after ʿIshāʾ".
 - **A legend and a count** close the list.
 - **A month grid** can come later. A list is simpler and fits a phone screen.
 
@@ -161,12 +161,12 @@ Each item has up to three choices:
 
 - **A live total** at the top adds up the pushes a week, a month and a year, plus prayer times and weather. Under it, **Recommended** and **In-app only** set every item at once, except prayer times. Any other mix shows as custom choices, with a Reset button.
 - **Prayer times** sits under the total, as its own card with Push, In-app and Off and a line on what the choice means. Its title opens its detail screen. See [Prayer times](#prayer-times).
-- **Defaults** follow the calendar's tiers. Push items offer all three choices. In-app items offer only In-app and Off, because the calendar gives them no push time.
+- **Defaults** follow the calendar. Items with a push time offer all three choices. Other items offer only In-app and Off. The al-Sajdah and al-Insān reminder offers all three but starts at In-app.
 - **Pause fasting reminders** sits under the total. Its switch pauses for 7 days, with Undo, and chips change that to 3, 7 or 14 days or until turned back on. It gives no reason and asks for none, so it covers illness, travel and periods alike. Fasting cards, pushes and bells stop, and nothing else changes. Fasting items are tagged in the shared JSON so the pause can find them.
 - **Groups** follow the calendar: Weekly, Monthly, Yearly, and Weather and eclipses. Each group expands to its items, shows how many of them push, and has a switch. Turning a group off and on again restores the choices made inside it, and picking a choice inside an off group turns the group back on. Yearly items appear in Hijri month order, under month headings, with the sacred months under "Through the year". Each item's name opens its detail screen.
 - **Weather and eclipses.** When this whole group is off, the app stops sending its area to the server.
 - **Hair and nails** has no choice until the uḍḥiyah answer is Yes, and links to that setting.
-- **Disputed** sits at the bottom and holds the two disputed items from the calendar. They are off by default, have no group switch, and offer only In-app and Off. Each carries one line on why it's disputed.
+- If the calendar includes any disputed items, **Disputed** sits at the bottom. Those items are off by default, have no group switch, and offer only In-app and Off. Each carries one line on why it's disputed.
 
 ## About
 
@@ -193,8 +193,8 @@ This follows one user who picked the Recommended reminders.
 - **Monday.** From Fajr the card has a Fasting today tick. The user ticks it, and the White Days card later shows 1 of 3. The card leaves at Maghrib.
 - **Tuesday.** Nothing applies. Today shows "Nothing special right now" and names the Thursday fast. Coming up lists Thursday's fast and al-Kahf from Thursday Maghrib.
 - **Wednesday after ʿIshāʾ.** The Thursday fast push arrives, like Sunday's.
-- **Thursday Maghrib.** The al-Kahf card appears. The user reads al-Kahf that night and ticks Done.
-- **Friday.** Before Fajr, a card shows al-Sajdah and al-Insān. About 2 hours before the user's Jumuʿah time, a push arrives for Friday preparation, without the al-Kahf line because it's done. After Jumuʿah, a card for the four rakʿahs stays until ʿAṣr. From ʿAṣr, the last-hour card shows, and a push comes about 45 minutes before Maghrib.
+- **Thursday Maghrib.** The al-Kahf card appears. The user reads al-Kahf that night and ticks Done. After ʿIshāʾ, a card for al-Sajdah and al-Insān appears and stays until sunrise. It sends no push, because it starts at In-app.
+- **Friday.** About 2 hours before the user's Jumuʿah time, a push arrives for Friday preparation, without the al-Kahf line because it's done. After Jumuʿah, a card for the four rakʿahs stays until ʿAṣr. From ʿAṣr, the last-hour card shows, and a push comes about 45 minutes before Maghrib.
 - **Saturday.** Nothing is scheduled. Rain starts after a dry week, so a weather push and card arrive with the rain duʿāʾ and the Open-Meteo credit.
 
 ## Times the prototype settles
@@ -204,7 +204,7 @@ The calendar gives each item's window in words. The prototype turns these into t
 - **Evening-before fasting pushes:** 15 minutes after ʿIshāʾ.
 - **Morning pushes** on 1 Shaʿbān, 2 Shawwāl, 29 Dhul-Qaʿdah and 1 Dhul-Ḥijjah: 3 hours after Fajr.
 - **Eid pushes:** 20 minutes after Fajr. **Zakāt al-fiṭr push:** Ẓuhr on 27 Ramadan. **ʿArafah duʿāʾ push:** 2½ hours after Ẓuhr.
-- **al-Sajdah and al-Insān card:** Thursday ʿIshāʾ to Friday sunrise.
+- **al-Sajdah and al-Insān card:** Thursday ʿIshāʾ to Friday sunrise. When set to Push, the push comes 15 minutes after ʿIshāʾ, moved before quiet hours if they have started.
 - **Four rakʿahs after Jumuʿah:** until ʿAṣr, but for at least 90 minutes, because in winter ʿAṣr can come soon after Jumuʿah.
 - **New crescent card:** from Maghrib to 45 minutes after ʿIshāʾ, on the 29th and the 30th.
 - **Suḥūr card:** the 2 hours before Fajr. **Ifṭār card:** Maghrib to ʿIshāʾ.
